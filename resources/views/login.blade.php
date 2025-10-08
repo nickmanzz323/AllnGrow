@@ -11,7 +11,7 @@
   <meta property="og:title" content="Login | HinGrow - Secure Access to Your Account" />
   <meta property="og:description" content="Sign in to your HinGrow account securely. Access your dashboard with email/password or continue with Google." />
 
-<link rel="stylesheet" href="{{ asset('css/styles.css') }}">
+<link rel="stylesheet" href="{{ asset('css/login.css') }}">
 
 </head>
 <body>
