@@ -17,7 +17,7 @@
         <!-- Bagian logo dan judul halaman -->
         <div class="logo-section">
             <img src="images/companyLogo.png" alt="HinGrow Logo" class="logo" />
-            <h1 class="login-title">Login</h1>
+            <h1 class="login-title">Register</h1>
         </div>
 
         <!-- Pemilihan role (Student / Teacher) -->

@@ -159,7 +159,7 @@ img {
 .hero-title {
   font-size: 32px;
   font-family: Poppins;
-  font-weight: 700;
+  font-weight: 150;
   line-height: 42px;
   text-transform: capitalize;
   color: #000000;
@@ -171,10 +171,12 @@ img {
   font-size: 14px;
   font-family: Sora;
   font-weight: 400;
-  line-height: 28px;
+  line-height: 30px;
   color: #000000;
+  margin-top: 25px;
   margin-bottom: 24px;
   margin-left: 50px;
+  max-width: 500px;
 }
 
 .hero-btn {
@@ -831,7 +833,7 @@ img {
 /* Footer */
 .footer {
   background-color: #000000;
-  background-image: url('../assets/images/img_0x0.png');
+  /* background-image: url('../assets/images/img_0x0.png'); */
   background-size: cover;
   background-position: center;
   color: #ffffff;
@@ -853,6 +855,7 @@ img {
 }
 
 .footer-logo {
+  margin-top: -25px;
   width: 246px;
   height: 82px;
 }
@@ -863,6 +866,7 @@ img {
   font-weight: 400;
   line-height: 32px;
   color: #ffffff;
+  margin-top: -10px;
 }
 
 .footer-contact {
@@ -1020,6 +1024,7 @@ button:active, .btn:active {
   .hero-title {
     font-size: 45px;
     line-height: 64px;
+    
   }
 
   .about-content {
@@ -1076,12 +1081,12 @@ button:active, .btn:active {
   }
 
   .hero-title {
-    font-size: 70px;
+    font-size: 31px;
     line-height: 72px;
   }
 
   .hero-welcome {
-    font-size: 30px;
+    font-size: 100px;
     font:bold;
     /* font-weight: ; */
     /* margin-bottom: 50; */

@@ -53,7 +53,7 @@
     <section class="hero-section">
       <img src="images/workspace3.jpg" alt="Learning background" class="hero-bg-image" />
       <div class="hero-content">
-        <p class="hero-welcome">Welcome To AllnGrow Courses</p>
+        <p class="hero-welcome">Welcome</p>
         <h1 class="hero-title">Achieving Your Dreams Through Education</h1>
         <p class="hero-description">We are experienced in educational platform and skilled strategies for the success of our online learning.</p>
         <button class="hero-btn">
@@ -334,11 +334,12 @@
     </section>
   </main>
 
+  <!-- footer section -->
   <footer class="footer fade-section">
     <div class="footer-content">
       <div class="footer-brand">
         <img src="images/companyLogo.png" alt="AllnGrow Footer Logo" class="footer-logo" />
-        <p class="footer-description">One Platform, All Skills. From Hobby to Professional.<br /><br />Learn. Grow. and Certify</p>
+        <p class="footer-description">One Platform, All Skills. From Hobby to Professional <br> Learn. Grow. and Certify</p>
       </div>
       <div class="footer-contact">
         <h3 class="contact-title">Contact Info</h3>
