@@ -20,17 +20,19 @@ class LoginController extends Controller
             $request->session()->regenerate();
 
             $user = Auth::user();
-            // If user has an intended URL (tried to access a protected route), redirect there
-            $intended = redirect()->intended();
 
+            // Choose a sensible default based on role
             if ($user->level === 'teacher') {
-                return $intended->getTargetUrl() ? $intended : redirect('/teacherDashboard');
+                $default = '/teacherDashboard';
             } elseif ($user->level === 'student') {
-                return $intended->getTargetUrl() ? $intended : redirect('/studentDashboard');
+                $default = '/studentDashboard';
             } else {
                 Auth::logout();
                 return redirect()->route('login')->withErrors(['level' => 'Invalid user level.']);
             }
+
+            // Redirect to the intended URL if present, otherwise to the role default
+            return redirect()->intended($default);
         }
 
         return redirect()->route('login')->withErrors(['email' => 'Invalid credentials.'])->withInput($request->only('email'));
