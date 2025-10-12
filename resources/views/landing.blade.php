@@ -36,8 +36,8 @@
     <div class="header-content">
       <img src="images/companyLogo.png" alt="AllnGrow Logo" class="logo" />
       <nav class="nav-menu" role="navigation">
-        <a href="#" class="nav-item" role="menuitem">Home</a>
-        <a href="#" class="nav-item" role="menuitem">About us</a>
+        <a href="{{ route('home') }}" class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
+        <a href="{{ route('about') }}" class="nav-item" role="menuitem">About us</a>
         <a href="#" class="nav-item" role="menuitem">Courses</a>
       </nav>
       <button class="hamburger" aria-label="Toggle menu">☰</button>
