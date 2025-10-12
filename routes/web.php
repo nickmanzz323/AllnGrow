@@ -14,3 +14,10 @@ Route::get('/register', function () {
     return view('register');
 });
 
+Route::get('/teacherDashboard', function () {
+    return view('teacherDashboard');
+});
+
+Route::get('/studentDashboard', function () {
+    return view('studentDashboard');
+});

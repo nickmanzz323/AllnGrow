@@ -67,7 +67,7 @@
     <!-- Link untuk Sign Up -->
     <div class="signup-section">
       <span class="signup-text">Don't have an account yet?</span>
-      <a href="#" class="signup-link">Sign up</a>
+      <a href="/register" class="signup-link">Sign up</a>
     </div>
     
     <!-- Divider / Pemisah -->
