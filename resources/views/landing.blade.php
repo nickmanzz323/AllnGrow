@@ -4,14 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AllnGrow - Professional Online Learning & Certification Platform</title>
+  <!-- SEO -->
   <meta name="description" content="Transform your career with AllnGrow's professional online courses. Get certified by global institutions like Google, Adobe & ABRSM. Live coaching, expert instructors, flexible learning plans from 99K/month." />
   <meta name="keywords" content="online learning, professional certification, courses, education platform, career development, skill training" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="AllnGrow - Professional Online Learning & Certification Platform" />
   <meta property="og:description" content="Transform your career with AllnGrow's professional online courses. Get certified by global institutions like Google, Adobe & ABRSM." />
 
+  <!-- refer ke file css -->
   <link rel="stylesheet" href="css/landing.css">
 
+  <!-- animation effect -->
   <style>
     .fade-section, .fade-left, .fade-right {
       opacity: 0;
@@ -26,6 +29,7 @@
     }
   </style>
 
+<!-- header contennt (yang paling atas sendiri) -->
 </head>
 <body>
   <header class="header">
@@ -44,6 +48,7 @@
     </div>
   </header>
 
+  <!-- tampilan awal (hero section (bawahnnya header)) -->
   <main>
     <section class="hero-section">
       <img src="images/workspace3.jpg" alt="Learning background" class="hero-bg-image" />
@@ -58,6 +63,7 @@
       </div>
     </section>
 
+  <!-- partnership section -->
     <section class="certification-section fade-section">
       <h2 class="certification-title">Collaborate with Certification Institution</h2>
       <div class="certification-logos">
@@ -101,6 +107,7 @@
       </div>
     </section>
 
+    <!-- ini yang sudah enroll dkk -->
     <section class="stats-section fade-section">
       <div class="stats-container">
         <div class="stat-item">
@@ -134,6 +141,7 @@
       </div>
     </section>
 
+    <!-- why learn section -->
     <section class="why-learn-section fade-right">
       <h2 class="why-learn-title">Why Learn with AllnGrow?</h2>
       <div class="features-grid">
@@ -206,6 +214,7 @@
       </div>
     </section>
 
+    <!-- categories section -->
     <section class="categories-section fade-left">
       <h2 class="categories-title">Browse By Categories</h2>
       <div class="categories-grid">
@@ -266,6 +275,7 @@
       </div>
     </section>
 
+    <!-- pricting section -->
     <section class="pricing-section fade-section">
       <h2 class="pricing-title">Choose Your Learning Plan</h2>
       <div class="pricing-grid">
@@ -318,6 +328,7 @@
       </div>
     </section>
 
+    <!-- choose your plan section -->
     <section class="cta-section fade-right">
       <p class="cta-text">Choose your package, get certified, and upgrade your skills today!</p>
     </section>

@@ -233,7 +233,6 @@ img {
   width: auto;
 }
 
-/* About Section */
 .about-section {
   background-color: #ffffff;
   padding: 48px 16px;
@@ -248,47 +247,46 @@ img {
 }
 
 .about-images {
-  display: flex; /* Use flexbox for horizontal layout */
-  flex-direction: row; /* Arrange items in a row */
-  gap: 16px; /* Space between images */
+  display: flex; 
+  flex-direction: row; 
+  gap: 16px; 
   width: 100%;
   max-width: 400px;
-  /* Adjust alignment to match the visual reference */
-  align-items: flex-end; /* Align images to the bottom of their container */
+  align-items: flex-end; 
   position: relative;
-  margin-left: 150px; /* Adjust as needed for alignment with green triangle */
-  margin-top: 50px; /* Pull up to overlap with the green triangle area */
+  margin-left: 150px; 
+  margin-top: 50px; 
   margin-right: 200px;
 }
 
-.about-images img:nth-child(1) { /* fotoCewek1.png */
-  width: 200px; /* Original width */
-  height: 400px; /* Original height */
+.about-images img:nth-child(1) { /* gambar1.png */
+  width: 200px; 
+  height: 400px; 
   object-fit: cover;
-  border-radius: 10px; /* Example border-radius */
+  border-radius: 10px;
   position: relative;
-  z-index: 1; /* Ensure it's above the green triangle if needed */
-  margin-top: 50px; /* Push this image down slightly */
+  z-index: 1; 
+  margin-top: 50px; 
 }
 
 .about-images img:nth-child(2) { /* ijoIjojelek.png */
   position: absolute;
-  top: 0; /* Position at the top */
-  left: -100px; /* Adjust left position as needed to align with triangle */
-  width: 66px; /* Original width */
-  height: 74px; /* Original height */
+  top: 0; 
+  left: -100px; 
+  width: 66px;
+  height: 74px;
   object-fit: contain;
-  z-index: 0; /* Behind other images */
+  z-index: 0; 
 }
 
-.about-images img:nth-child(3) { /* fotoCewek2.png */
-  width: 250px; /* Original width */
-  height: 344px; /* Original height */
+.about-images img:nth-child(3) { /* Gambar2.png */
+  width: 250px; 
+  height: 344px; 
   object-fit: cover;
-  border-radius: 10px; /* Example border-radius */
+  border-radius: 10px; 
   position: relative;
   z-index: 1;
-  margin-bottom: -80px; /* Push this image up slightly */
+  margin-bottom: -80px; 
 }
 
 .about-text {
@@ -389,7 +387,6 @@ img {
   padding: 64px 16px;
 }
 
-/* sumpah heran gatau apa yang salah ini icon ga bisa lebar gg */
 .stat-icon-large { 
   width: auto;
   height: auto;
@@ -446,7 +443,6 @@ img {
 .why-learn-section {
   background-color: #eef5ff;
   padding: 80px 16px;
-  /* box-shadow: 0px 4px 10px rgba(136, 136, 136, 1); */
   margin-top: 50px;
 }
 
@@ -613,7 +609,7 @@ img {
   padding: 14px 20px;
   display: flex;
   justify-content: space-between;
-  align-items: center; /* pastikan sejajar tengah */
+  align-items: center; 
   gap: 10px;
   font-size: 14px;
   font-family: 'Sora', sans-serif;
@@ -1148,25 +1144,22 @@ button:active, .btn:active {
    SMOOTH SCROLLING & SECTION FADE-IN ANIMATION
    ======================================================= */
 
-/* Efek scroll halus untuk navigasi antar-anchor link */
+/* Efek animasi ygy */
 html {
   scroll-behavior: smooth;
 }
 
-/* Animasi muncul halus untuk semua section */
 .fade-section {
   opacity: 0;
   transform: translateY(50px);
   transition: all 0.8s ease-out;
 }
 
-/* Saat section terlihat di layar */
 .fade-section.visible {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* Variasi animasi tambahan opsional */
 .fade-left {
   opacity: 0;
   transform: translateX(-50px);
@@ -1185,7 +1178,7 @@ html {
   transform: translateX(0);
 }
 
-/* Tambahan transisi untuk elemen-elemen interaktif */
+/* transmisi untuk elemen interaktif */
 button, .btn, .nav-item, .get-started-btn, .hero-btn, .about-btn, .plan-btn {
   transition: all 0.3s ease-in-out;
 }
