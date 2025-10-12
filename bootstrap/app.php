@@ -11,8 +11,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Register route middleware aliases used in routes/web.php
-        $middleware->alias('auth', \App\Http\Middleware\Authenticate::class);
+    // Register route middleware aliases used in routes/web.php
+    $middleware->alias('auth', 'App\\Http\\Middleware\\Authenticate');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
