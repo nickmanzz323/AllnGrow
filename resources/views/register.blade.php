@@ -24,23 +24,20 @@
         <form class="form-container" method="POST" action="{{ route('register') }}">
             @csrf
             <input type="hidden" name="level" value="student" />
-            @if(session('success'))
-                <div style="background:#d4edda;border:1px solid #c3e6cb;color:#155724;padding:12px;margin:12px 0;border-radius:4px;font-weight:600;">
-                    {{ session('success') }}
-                </div>
-            @endif
-            @if(session('error'))
-                <div style="background:#fff3cd;border:1px solid #ffeeba;color:#856404;padding:12px;margin:12px 0;border-radius:4px;font-weight:600;">
-                    {{ session('error') }}
-                </div>
-            @endif
-            @if($errors->any())
-                <div class="error-messages">
-                    <ul>
-                        @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
+            {{-- Prominent warning box when registration fails --}}
+            @if(session('error') || $errors->any())
+                <div style="background:#fff3cd;border:1px solid #ffeeba;color:#856404;padding:14px;margin:12px 0;border-radius:6px;">
+                    <strong style="display:block;margin-bottom:8px;">Registration failed</strong>
+                    @if(session('error'))
+                        <div style="margin-bottom:6px;">{{ session('error') }}</div>
+                    @endif
+                    @if($errors->any())
+                        <ul style="margin:0;padding-left:18px;">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    @endif
                 </div>
             @endif
             <div class="form-fields">
