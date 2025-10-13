@@ -69,7 +69,7 @@
         <!-- Checkbox Remember me & Forgot Password -->
         <div class="remember-forgot-row">
           <div class="checkbox-wrapper">
-            <input type="checkbox" id="remember" class="checkbox" />
+            <input type="checkbox" id="remember" name="remember" class="checkbox" />
             <label for="remember" class="checkbox-label">Remember me</label>
           </div>
           <a href="#" class="forgot-link">Forgot Password?</a>

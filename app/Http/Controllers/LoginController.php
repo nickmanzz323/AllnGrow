@@ -11,11 +11,13 @@ class LoginController extends Controller
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|string',
+            'remember' => 'nullable',
         ]);
 
         $credentials = $request->only('email', 'password');
+        $remember = $request->boolean('remember');
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials, $remember)) {
             // Prevent session fixation
             $request->session()->regenerate();
 

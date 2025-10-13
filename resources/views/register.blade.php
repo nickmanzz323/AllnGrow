@@ -20,12 +20,10 @@
             <h1 class="login-title">Register</h1>
         </div>
 
-        <!-- Pemilihan role (Student only) -->
-        <input type="hidden" name="level" value="student" />
-        
         <!-- Formulir Sign-Up -->
         <form class="form-container" method="POST" action="{{ route('register') }}">
             @csrf
+            <input type="hidden" name="level" value="student" />
             @if(session('success'))
                 <div class="success-message">{{ session('success') }}</div>
             @endif
@@ -125,7 +123,7 @@
         <!-- Link ke Sign-In -->
         <div class="signup-section">
             <span class="signup-text">Already have an account yet?</span>
-            <a href="#" class="signup-link">Sign in</a>
+            <a href="{{ route('login') }}" class="signup-link">Sign in</a>
         </div>
         
     </main>
