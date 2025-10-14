@@ -112,20 +112,35 @@ img {
   display: grid;
   place-content: center;
   text-align: center;
-  background: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=2070') 50%;
+  background: linear-gradient(120deg, #9ABC4F, #D2CBCF, #f0f0f0);
+  background-size: 200% 200%;
+  animation: movingGradient 10s ease infinite;
+  transition: background 0.5s ease;
 }
+
+@keyframes movingGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 
 .hero-content {
   max-width: 800px;
   padding: 20px;
 }
 
-
 .hero-title {
   font-size: 4rem; 
   font-weight: 800;
   margin: 20px 0;
-  background: linear-gradient(90deg, #81c784, #4caf50, #a5d3d6, #81bcc7);
+  background: linear-gradient(90deg, #c7d24f, #89f868, #edf0f1, #dcdede);
   background-size: 300% 300%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -140,9 +155,24 @@ img {
   100% { background-position: 0% 50%; }
 }
 
-.hero-welcome,
+@keyframes shimmer {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.hero-welcome{
+  font-size: 180px; /* large text */
+  font-weight: 1900; /* extra bold */
+  background: linear-gradient(90deg, #ffffff, #c0f450);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 6s ease-in-out infinite;
+}
+
 .hero-description {
-  color: #000000; 
+  color: #f6f4f4f0; 
 }
 
 .hero-welcome {
@@ -156,12 +186,14 @@ img {
   margin-bottom: 50px;
 }
 
+/* Rubah dikit pakcik ngetes */
+
 .hero-btn {
-  background-color: #000000;
-  color: white;
+  background-color: #ded9d9b1;
+  color: rgb(138, 138, 136);
   border: none;
-  padding: 25px 30px;
-  border-radius: 28px;
+  padding: 20px 55px;
+  border-radius: 38px;
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
