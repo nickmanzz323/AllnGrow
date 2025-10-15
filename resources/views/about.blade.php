@@ -15,16 +15,12 @@
   <!-- HEADER -->
   <header class="header">
     <div class="header-content">
-      <img src="images/companyLogo.png" alt="AllnGrow Logo" class="logo" />
+      <!-- <img src="images/companyLogo.png" alt="AllnGrow Logo" class="logo" /> -->
       <nav class="nav-menu" role="navigation">
         <a href="{{ route('home') }}" class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
         <a href="{{ route('about') }}" class="nav-item" role="menuitem">About us</a>
         <a href="#" class="nav-item" role="menuitem">Courses</a>
-      </nav>
-      <button class="hamburger" aria-label="Toggle menu">☰</button>
-      <button onclick="window.location.href='/login'" class="get-started-btn">
-        Get Started
-        <img src="images/arrowLeft.png" alt="" width="16" height="14" />
+        <a href="#" class="nav-item" role="menuitem">Get Started</a>
       </button>
     </div>
   </header>

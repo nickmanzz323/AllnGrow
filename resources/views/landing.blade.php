@@ -28,40 +28,47 @@
       transform: translate(0, 0);
     }
   </style>
+  
+  </head>
+      <header class="header">
+        <div class="header-content">
+          <div class="logo">AllnGrow</div>
+          <nav class="nav-menu">
+            <a href="{{ route('home') }}" class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
+            <a href="{{ route('about') }}" class="nav-item" role="menuitem">About us</a>
+            <a href="#" class="nav-item">Courses</a>
+            <a href="#" class="nav-item get-started-btn">Get Started</a>
+          </nav>
+        </div>
+      </header>
+      </div>
+    </header>
 
-<!-- header contennt (yang paling atas sendiri) -->
-</head>
-<body>
-  <header class="header">
-    <div class="header-content">
-      <img src="images/companyLogo.png" alt="AllnGrow Logo" class="logo" />
-      <nav class="nav-menu" role="navigation">
-        <a href="{{ route('home') }}" class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
-        <a href="{{ route('about') }}" class="nav-item" role="menuitem">About us</a>
-        <a href="#" class="nav-item" role="menuitem">Courses</a>
-      </nav>
-      <button class="hamburger" aria-label="Toggle menu">☰</button>
-      <button onclick="window.location.href='/login'" class="get-started-btn">
-        Get Started
-        <img src="images/arrowLeft.png" alt="" width="16" height="14" />
-      </button>
-    </div>
-  </header>
-
-  <!-- tampilan awal (hero section (bawahnnya header)) -->
   <main>
     <section class="hero-section">
-      <!-- <img src="images/workspace3.jpg" alt="Learning background" class="hero-bg-image" /> -->
+      <div class="hero-animation"> 
+        <img src = "images/peoplehappy.jpg" alt="PeopleHappy" class="hero-img"
+          background = "transparent"
+          speed = "1"
+          style = "width: 100%; max-width: 400px;"
+          loop
+          autoplay />
+      </div>
+
       <div class="hero-content">
         <p class="hero-welcome">Welcome</p>
         <h1 class="hero-title">Achieving Your Dreams Through Education</h1>
-        <p class="hero-description">We are experienced in educational platform and skilled strategies for the success of our online learning.</p>
+        <p class="hero-description">
+          We are experienced in educational platform and skilled strategies for the success of our online learning.
+        </p>
         <button class="hero-btn">
           Find courses
           <img src="/images/arrowWhiteBlackBackground.png" alt="" width="58" height="58" />
         </button>
       </div>
     </section>
+  </main>
+
 
   <!-- partnership section -->
     <section class="certification-section fade-section">
