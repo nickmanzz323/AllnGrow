@@ -72,7 +72,7 @@
     <h2 class="values-title">Our Core Values</h2>
     <div class="values-grid">
       <div class="value-card">
-        <h3>Growth Mindset</h3>
+        <h3> Mindset</h3>
         <p>We believe in lifelong learning and continuous improvement for every student and mentor.</p>
       </div>
       <div class="value-card">
