@@ -16,6 +16,11 @@ Route::middleware('web')->group(function () {
     Route::get('/about', function () {
         return view('about');
     })->name('about');
+
+    Route::get('/courses', function () {
+        return view('courses'); 
+    })->name('courses');
+
     
     Route::get('/register', function () {
         return view('register');
@@ -40,4 +45,6 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/studentDashboard', function () {
         return view('studentDashboard');
     });
+
+
 });
