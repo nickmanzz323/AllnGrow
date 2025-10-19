@@ -20,6 +20,11 @@ Route::middleware('web')->group(function () {
     Route::get('/courses', function () {
         return view('courses'); 
     })->name('courses');
+    
+    // ini nanti dihapus aja ini cuma placehorder agar bisa di view di localhost
+    Route::get('/overviewcourses', function () {
+        return view('overviewcourses'); 
+    })->name('overviewcourses');
 
     
     Route::get('/register', function () {

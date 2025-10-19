@@ -1,0 +1,499 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #ffffff;
+  color: #111111;
+  margin: 0;
+  padding: 0;
+  line-height: 1.7;
+}
+
+/* ======================
+   COURSE CONTAINER
+   ====================== */
+.course-detail {
+  max-width: 1100px;
+  margin: 80px auto;
+  padding: 0 20px;
+}
+
+/* ======================
+   COURSE HEADER
+   ====================== */
+.course-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.course-header h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #000;
+}
+
+.course-header .subtitle {
+  color: #555;
+  font-size: 1rem;
+  margin-top: 10px;
+}
+
+.rating {
+  margin-top: 15px;
+  color: #135402;
+  font-weight: 600;
+}
+
+/* ======================
+   MAIN COURSE INFO
+   ====================== */
+.course-info {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 40px;
+  margin-bottom: 80px;
+}
+
+.course-main h3 {
+  margin-top: 30px;
+  font-size: 1.1rem;
+  color: #000;
+}
+
+.course-main ul {
+  margin-top: 10px;
+  padding-left: 20px;
+  color: #444;
+}
+
+.course-outline details {
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-top: 10px;
+  transition: all 0.3s ease;
+  border: 1px solid #eee;
+}
+
+.course-outline summary {
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.course-outline summary::-webkit-details-marker {
+  display: none;
+}
+
+.course-outline details[open] {
+  border-left: 3px solid #135402;
+  background: #f4faf2;
+}
+
+.course-image {
+  width: 100%;
+  max-width: 1100px;
+  height: 500px;
+  margin: 0 auto 50px auto;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.course-image img {
+  width: 100%;
+  height: fit-content; 
+  object-fit: cover;
+  filter: brightness(0.95);
+  transition: all 0.4s ease;
+}
+
+.course-image img:hover {
+  transform: scale(1.02);
+  filter: brightness(1);
+}
+
+/* RIGHT SIDE - ENROLL BOX */
+.enroll-box {
+  border: 1px solid #eaeaea;
+  border-radius: 16px;
+  padding: 25px;
+  background: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  height: fit-content;
+  position: sticky;
+  top: 100px;
+}
+
+.enroll-box .price {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.enroll-box .price h2 {
+  color: #135402;
+  margin-bottom: 5px;
+  font-size: 1.6rem;
+}
+
+.enroll-box .price p {
+  color: #999;
+  font-size: 0.9rem;
+}
+
+.enroll-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #135402;
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.enroll-btn:hover {
+  background: #0e3f01;
+}
+
+.enroll-box ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: #444;
+}
+
+.enroll-box li {
+  margin: 8px 0;
+}
+
+/* ======================
+   LESSON SUMMARY SECTION
+   ====================== */
+.lesson-summary {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.lesson-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.lesson-item i {
+  color: #135402;
+  font-size: 1rem;
+}
+
+.lesson-divider {
+  border: none;
+  border-top: 1px solid #e0e0e0;
+  margin: 10px 0 20px;
+}
+
+.course-outline details {
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+  background: #fff;
+  padding: 16px 18px;
+  margin-bottom: 10px;
+  transition: all 0.3s ease;
+}
+
+.course-outline summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  color: #222;
+  list-style: none;
+}
+
+.course-outline summary::before {
+  content: "●";
+  color: #135402;
+  font-size: 0.9rem;
+}
+
+.course-outline details[open] {
+  background: #f8fdf7;
+  border-left: 3px solid #135402;
+}
+
+/* ======================
+   INSTRUCTOR SECTION 
+   ====================== */
+.instructor {
+  margin-top: 80px;
+  margin-bottom: 80px;
+  text-align: center;
+}
+
+.instructor h2 {
+  font-size: 40px;
+  font-weight: 500;
+  color: #000;
+  margin-bottom: 40px;
+}
+
+/* CARD CONTAINER */
+.instructor-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  background: #f9f9f9;
+  border-radius: 24px;
+  padding: 40px 50px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: left;
+  transition: all 0.35s ease;
+  cursor: pointer;
+}
+
+.instructor-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  background: #f5f9f5; 
+}
+
+/* INSTRUCTOR IMAGE */
+.instructor-card img {
+  width: 180px;
+  height: 180px;
+  border-radius: 12px;
+  object-fit: cover;
+  flex-shrink: 0;
+  transition: all 0.4s ease;
+}
+
+.instructor-card:hover img {
+  transform: scale(1.05);
+}
+
+/* INSTRUCTOR INFO */
+.instructor-info {
+  max-width: 500px;
+}
+
+.instructor-info h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #000;
+  margin-bottom: 8px;
+  transition: color 0.3s ease;
+}
+
+.instructor-card:hover h3 {
+  color: #135402;
+}
+
+.instructor-info p {
+  color: #444;
+  margin: 4px 0;
+  line-height: 1.6;
+}
+
+.instructor-info .bio {
+  margin-top: 10px;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .instructor-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 30px 20px;
+  }
+
+  .instructor-card img {
+    width: 200px;
+    height: 200px;
+  }
+
+  .instructor-info {
+    text-align: center;
+  }
+}
+
+/* ======================
+   TESTIMONIALS 
+   ====================== */
+.testimonials {
+  overflow: hidden;
+  position: relative;
+  padding: 40px 0 100px;
+}
+
+.testimonials h2 {
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 50px;
+  color: #000;
+}
+
+.testimonial-slider {
+  width: 100%;
+  overflow: hidden;
+}
+
+.testimonial-track {
+  display: flex;
+  gap: 24px;
+  animation: scrollTestimonials 40s linear infinite;
+  will-change: transform;
+}
+
+.testimonial-slider:hover .testimonial-track {
+  animation-play-state: paused;
+}
+
+.testimonial-card {
+  flex: 0 0 320px;
+  padding: 28px 24px;
+  border-radius: 20px;
+  background: #f5f5f5;
+  color: #222;
+  transition: all 0.3s ease;
+}
+
+.testimonial-card:hover {
+  background: #eef4ee;
+  transform: translateY(-2px);
+}
+
+.testimonial-card p {
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+.testimonial-card span {
+  display: block;
+  color: #135402;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+@keyframes scrollTestimonials {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .testimonial-card {
+    flex: 0 0 260px;
+    padding: 22px 20px;
+  }
+
+  .testimonials h2 {
+    font-size: 1.5rem;
+  }
+}
+
+/* ======================
+   GLOBAL ANIMATION EFFECTS
+   ====================== */
+
+.fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeUp 0.8s ease forwards;
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.delay-1 { animation-delay: 0.2s; }
+.delay-2 { animation-delay: 0.4s; }
+.delay-3 { animation-delay: 0.6s; }
+.delay-4 { animation-delay: 0.8s; }
+
+.enroll-btn {
+  position: relative;
+  overflow: hidden;
+  transition: background 0.4s ease, transform 0.3s ease;
+}
+
+.enroll-btn::before {
+  content: "";
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: left 0.4s ease;
+}
+
+.enroll-btn:hover::before {
+  left: 0;
+}
+
+.enroll-btn:hover {
+  transform: translateY(-2px);
+  background: #0f3f02;
+}
+
+.course-outline details p {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: all 0.4s ease;
+  margin-top: 0;
+}
+
+.course-outline details[open] p {
+  max-height: 200px;
+  opacity: 1;
+  margin-top: 10px;
+}
+
+.course-image img, 
+.instructor-card img {
+  animation: fadeIn 1.2s ease forwards;
+  transform: scale(1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes scrollTestimonials {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.testimonial-card {
+  animation: fadeUp 0.8s ease forwards;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-3px);
+  background: #f3f7f3;
+}
+

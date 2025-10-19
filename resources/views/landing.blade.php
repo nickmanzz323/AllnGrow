@@ -33,7 +33,7 @@
             <a href="{{ route('home') }}" class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
             <a href="{{ route('about') }}" class="nav-item" role="menuitem">About us</a>
             <a href="{{ route('courses') }}" class="nav-item {{ request()->routeIs('courses') ? 'active' : '' }}">Courses</a>
-            <a href="#" class="nav-item get-started-btn">Get Started</a>
+            <a href="#" class="nav-item">Get Started</a>
           </nav>
         </div>
       </header>
@@ -57,9 +57,9 @@
         <p class="hero-description">
           We are experienced in educational platform and skilled strategies for the success of our online learning.
         </p>
-        <button class="hero-btn">
+        <a href="{{ route('courses') }}" class="hero-btn {{ request()->routeIs('courses') ? 'active' : '' }}">
           Find courses
-        </button>
+        </a>
       </div>
     </section>
   </main>

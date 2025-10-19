@@ -79,12 +79,11 @@ body {
 
 
 /* --- FILTERS --- */
-/* --- FILTERS (Minimalist & Modern - Underline Style) --- */
 .filters {
   margin-top: 1.5rem;
   display: flex;
   justify-content: center;
-  gap: 1.5rem; /* Sedikit lebih banyak ruang */
+  gap: 1.5rem; 
 }
 
 .filters select {
