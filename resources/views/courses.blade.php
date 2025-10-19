@@ -17,8 +17,8 @@
       <nav class="nav-menu">
         <a href="{{ route('home') }}" class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
         <a href="{{ route('about') }}" class="nav-item">About us</a>
-        <a href="#" class="nav-item">Courses</a>
-        <a href="#" class="nav-item get-started-btn">Get Started</a>
+        <a href="{{ route('courses') }}" class="nav-item {{ request()->routeIs('courses') ? 'active' : '' }}">Courses</a>
+        <a href="#" class="nav-item">Get Started</a>
       </nav>
     </div>
   </header>
