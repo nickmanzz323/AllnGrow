@@ -26,6 +26,10 @@ Route::middleware('web')->group(function () {
         return view('overviewcourses'); 
     })->name('overviewcourses');
 
+    Route::get('/userprofile', function () {
+        return view('userprofile'); 
+    })->name('userprofile');
+
     
     Route::get('/register', function () {
         return view('register');
