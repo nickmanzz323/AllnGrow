@@ -174,7 +174,7 @@ img {
   background-color: #000000;
   color: white;
   border: none;
-  padding: 15px 25px;
+  padding: 25px 30px;
   border-radius: 28px;
   font-size: 1rem;
   font-weight: bold;
@@ -185,7 +185,6 @@ img {
   animation-delay: 1.6s;
   position: relative;
   overflow: hidden;
-  text-decoration: none;
 }
 
 .hero-btn::before {
@@ -214,6 +213,8 @@ img {
   position: relative;
   z-index: 2;
 }
+
+
 
 @keyframes gradientAnimation {
   0% { background-position: 0% 50%; }
@@ -617,7 +618,7 @@ img {
 .courses-title {
   font-family: "Poppins", sans-serif;
   font-weight: 600;
-  font-size: 10px;
+  font-size: 32px;
   color: #111;
   margin: 0;
 }

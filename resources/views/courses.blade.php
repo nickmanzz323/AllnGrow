@@ -10,20 +10,20 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 
-<body>
-  <header class="header">
-    <div class="header-content">
-      <div class="logo">
-        <img src="images/allngrowlogo.svg" alt="AllnGrow Logo" width="150" height="auto">
+  </head>
+      <header class="header">
+        <div class="header-content">
+          <div class="logo">AllnGrow</div>
+          <nav class="nav-menu">
+            <a href="{{ route('home') }}" class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
+            <a href="{{ route('about') }}" class="nav-item" role="menuitem">About us</a>
+            <a href="{{ route('courses') }}" class="nav-item {{ request()->routeIs('courses') ? 'active' : '' }}">Courses</a>
+            <a href="{{ route('login') }}" class="nav-item {{ request()->routeIs('login') ? 'active' : '' }}">Get Started</a>
+          </nav>
+        </div>
+      </header>
       </div>
-      <nav class="nav-menu">
-        <a href="{{ route('home') }}" class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
-        <a href="{{ route('about') }}" class="nav-item">About us</a>
-        <a href="{{ route('courses') }}" class="nav-item {{ request()->routeIs('courses') ? 'active' : '' }}">Courses</a>
-        <a href="{{ route('login') }}" class="nav-item {{ request()->routeIs('login') ? 'active' : '' }}">Get Started</a>
-      </nav>
-    </div>
-  </header>
+    </header>
 
   <section class="search-section">
     <h2 class="fade-up">Explore Courses</h2>

@@ -28,9 +28,7 @@
   </head>
       <header class="header">
         <div class="header-content">
-          <div class="logo">
-            <img src="images/allngrowlogo.svg" alt="AllnGrow Logo" width="150" height="auto">
-          </div>
+          <div class="logo">AllnGrow</div>
           <nav class="nav-menu">
             <a href="{{ route('home') }}" class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
             <a href="{{ route('about') }}" class="nav-item" role="menuitem">About us</a>
@@ -59,9 +57,9 @@
         <p class="hero-description">
           We are experienced in educational platform and skilled strategies for the success of our online learning.
         </p>
-        <a href="{{ route('courses') }}" class="hero-btn {{ request()->routeIs('courses') ? 'active' : '' }}">
+        <button class="hero-btn">
           Find courses
-        </a>
+        </button>
       </div>
     </section>
   </main>
@@ -139,7 +137,6 @@
       </div>
     </section>
 
-    <!-- Explore our course section -->
     <section class="courses-section fade-section">
         <div class="courses-header">
           <h2 class="courses-title">Explore Our Courses</h2>
