@@ -28,7 +28,9 @@
   </head>
       <header class="header">
         <div class="header-content">
-          <div class="logo">AllnGrow</div>
+          <div class="logo">
+            <img src="images/allngrowlogo.svg" alt="AllnGrow Logo" width="150" height="auto">
+          </div>
           <nav class="nav-menu">
             <a href="{{ route('home') }}" class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
             <a href="{{ route('about') }}" class="nav-item" role="menuitem">About us</a>
