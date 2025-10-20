@@ -1,0 +1,521 @@
+  /* Typography */
+  @import url('https://fonts.googleapis.com/css2?family=Epilogue:wght@600;700&family=Poppins:wght@100;400;500;600;700&family=Sora:wght@400;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+  height: 100vh;
+  background: white;
+  overflow: hidden; 
+}
+
+.slider-thumb::before,
+.slider-thumb1::before,
+.slider-thumb2::before,
+.slider-thumb3::before,
+.slider-thumb4::before,
+.slider-thumb5::before {
+  position: absolute;
+  content: "";
+  width: 450px;
+  height: 450px;
+  border-radius: 62% 47% 82% 35% / 45% 45% 80% 66%;
+  will-change: border-radius, transform, opacity;
+  display: block;
+  z-index: -1;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+  filter: blur(10px);
+  opacity: 0.85;
+}
+
+/* BLOP 1 */
+.slider-thumb::before {
+  left: 57%;
+  top: 20%;
+  background: #204600;
+  animation: sliderShape 7s ease-in-out infinite alternate, slowRotate1 20s linear infinite;
+}
+
+/* BLOP 2 */
+.slider-thumb1::before {
+  left: 30%;
+  top: -25%;
+  background: #247d4a;
+  animation: sliderShape 8s ease-in-out infinite alternate-reverse, slowRotate2 24s linear infinite;
+}
+
+/* BLOP 3 */
+.slider-thumb2::before {
+  left: -10%;
+  top: 20%;
+  background: #adbd34;
+  animation: sliderShape 10s ease-in-out infinite alternate, slowRotate3 18s linear infinite reverse;
+}
+
+/* BLOP 4 */
+.slider-thumb3::before {
+  left: 75%;
+  top: 80%;
+  background: #024a2b;
+  animation: sliderShape 9s ease-in-out infinite alternate-reverse, slowRotate4 22s linear infinite;
+}
+
+/* BLOP 5 */
+.slider-thumb4::before {
+  left: 80%;
+  top: -20%;
+  background: #003317;
+  animation: sliderShape 11s ease-in-out infinite alternate, slowRotate5 28s linear infinite reverse;
+}
+
+/* BLOP 6 */
+.slider-thumb5::before {
+  left: 15%;
+  top: 75%;
+  background: #22392c;
+  animation: sliderShape 12s ease-in-out infinite alternate, slowRotate6 26s linear infinite;
+}
+
+@keyframes sliderShape {
+  0% {
+    border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+    transform: scale(1) translate(0, 0);
+    opacity: 0.9;
+  }
+  25% {
+    border-radius: 70% 30% 46% 54% / 30% 29% 71% 70%;
+    transform: scale(1.03) translate(10px, -10px);
+    opacity: 0.85;
+  }
+  50% {
+    border-radius: 55% 45% 65% 35% / 50% 50% 60% 40%;
+    transform: scale(0.97) translate(-10px, 10px);
+    opacity: 0.88;
+  }
+  75% {
+    border-radius: 65% 35% 45% 55% / 60% 40% 55% 45%;
+    transform: scale(1.04) translate(5px, -5px);
+    opacity: 0.92;
+  }
+  100% {
+    border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+    transform: scale(1) translate(0, 0);
+    opacity: 0.9;
+  }
+}
+
+
+@keyframes slowRotate1 {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes slowRotate2 {
+  0% { transform: rotate(0deg) scale(1); }
+  100% { transform: rotate(-360deg) scale(1.02); }
+}
+
+@keyframes slowRotate3 {
+  0% { transform: rotate(0deg) scale(1); }
+  100% { transform: rotate(180deg) scale(0.98); }
+}
+
+@keyframes slowRotate4 {
+  0% { transform: rotate(0deg) scale(1.03); }
+  100% { transform: rotate(-360deg) scale(1); }
+}
+
+@keyframes slowRotate5 {
+  0% { transform: rotate(0deg) scale(0.98); }
+  100% { transform: rotate(360deg) scale(1.03); }
+}
+
+@keyframes slowRotate6 {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(-360deg); }
+}
+
+
+  .links {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      font-size: 18px;
+      font-family: sans-serif;
+  }
+  a {
+      text-decoration: none;
+      color: black;
+      margin-left: 1em;
+  }
+  a:hover {
+      text-decoration: underline;
+  }
+  a img.icon {
+      display: inline-block;
+      height: 1em;
+      margin: 0 0 -0.1em 0.3em;
+  }
+
+
+  .login-container {
+    background-color: #000000;
+    border-radius: 16px;
+    box-shadow: 0px 4px 6px #00000007;
+    width: 100%;
+    max-width: 400px;
+    justify-content: center; 
+    align-items: center; 
+    margin:auto;
+  }
+
+
+  .logo-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0px;
+    margin-bottom: 16px;
+  }
+
+  .logo {
+    font-family: "Sora", sans-serif;
+    font-weight: 900;          
+    font-size: 30px;
+    color: #ffffff;
+    letter-spacing: -0.5px;
+  }
+
+
+  .login-title {
+    font-size: 20px;
+    font-family: Poppins;
+    font-weight: 600;
+    line-height: 30px;
+    text-align: center;
+    color: #ffffff;
+    padding: 0 32px;
+  }
+
+  .form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+  }
+
+  .form-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    width: 100%;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+  }
+
+  .input-label {
+    font-size: 14px;
+    font-family: Poppins;
+    font-weight: 400;
+    line-height: 21px;
+    text-align: left;
+    color: #ffffff;
+  }
+
+  .input-wrapper {
+    position: relative;
+    width: 100%;
+  }
+
+  .input-field {
+    width: 100%;
+    padding: 10px 12px 10px 40px;
+    border: 1px solid #ffffff;
+    border-radius: 10px;
+    background-color: transparent;
+    color: #ffffff;
+    font-size: 14px;
+    font-family: Poppins;
+    font-weight: 400;
+    line-height: 21px;
+    box-shadow: 0px 1px 2px #1018280c;
+    outline: none;
+    transition: all 0.3s ease;
+  }
+
+  .input-field::placeholder {
+    color: #ffffff;
+    opacity: 0.7;
+  }
+
+  .input-field:focus {
+    border-color: #ffffff;
+    box-shadow: 0px 1px 2px #1018280c, 0 0 0 2px rgba(255, 255, 255, 0.2);
+  }
+
+  .input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+  }
+
+  .password-field {
+    border-color: #ffffff;
+  }
+
+  .remember-forgot-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 16px;
+  }
+
+  .checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .checkbox {
+    width: 16px;
+    height: 16px;
+    accent-color: #ffffff;
+  }
+
+  .checkbox-label {
+    font-size: 14px;
+    font-family: Poppins;
+    font-weight: 500;
+    line-height: 21px;
+    color: #ffffff;
+    cursor: pointer;
+  }
+
+  .forgot-link {
+    font-size: 14px;
+    font-family: Poppins;
+    font-weight: 600;
+    line-height: 21px;
+    color: #ffffff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .forgot-link:hover {
+    color: #8fa642;
+  }
+
+  .sign-in-btn {
+    width: 100%;
+    padding: 10px 34px;
+    background-color: #1e1e1e;
+    border: 1px solid #d5d94f;
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 16px;
+    font-family: Poppins;
+    font-weight: 600;
+    line-height: 24px;
+    cursor: pointer;
+    box-shadow: 0px 1px 2px #1018280c;
+    transition: all 0.3s ease;
+  }
+
+  .sign-in-btn:hover {
+    background-color: #8fa642;
+    transform: translateY(-1px);
+  }
+
+  .sign-in-btn:active {
+    transform: translateY(0);
+  }
+
+  .signup-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 24px;
+    margin-bottom: 24px;
+    gap: 8px;
+    padding: 0 32px;
+  }
+
+  .signup-text {
+    font-size: 14px;
+    font-family: Poppins;
+    font-weight: 400;
+    line-height: 17px;
+    color: #ffffff;
+  }
+
+  .signup-link {
+    font-size: 14px;
+    font-family: Poppins;
+    font-weight: 500;
+    line-height: 20px;
+    color: #ffffff;;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .signup-link:hover {
+    color: #8fa642;
+  }
+
+  .divider-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .divider-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .divider-line {
+    flex: 1;
+    height: 1px;
+    background-color: #eaecf0;
+  }
+
+  .divider-text {
+    font-size: 16px;
+    font-family: Poppins;
+    font-weight: 400;
+    line-height: 20px;
+    color: #ffffff;
+  }
+
+  .google-btn {
+    width: 100%;
+    padding: 8px 34px 8px 70px;
+    background-color: #ffffff;
+    border: 1px solid #d0d5dd;
+    border-radius: 8px;
+    color: #344054;
+    font-size: 16px;
+    font-family: Poppins;
+    font-weight: 600;
+    line-height: 20px;
+    cursor: pointer;
+    box-shadow: 0px 1px 2px #1018280c;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+
+  .google-btn:hover {
+    background-color: #f9fafb;
+    transform: translateY(-1px);
+  }
+
+  .google-btn:active {
+    transform: translateY(0);
+  }
+
+  .google-icon {
+    position: absolute;
+    left: 34px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+  }
+
+  button:focus, input:focus, a:focus {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+  }
+  @media (min-width: 640px) {
+    .login-container {
+      padding: 40px;
+      margin-top: 60px;
+    }
+    
+    .login-title {
+      font-size: 24px;
+      line-height: 36px;
+      padding: 0 56px;
+    }
+    
+    .signup-section {
+      padding: 0 56px;
+    }
+  }
+
+  @media (min-width: 768px) {
+    body {
+      padding: 24px;
+    }
+    
+    .login-container {
+      padding: 50px;
+      margin-top: 82px;
+      max-width: 456px;
+    }
+    
+    .logo {
+      max-width: 214px;
+      height: 70px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .login-container {
+      width: 38%;
+      max-width: 500px;
+    }
+  }
+
+  @media (max-width: 639px) {
+    .remember-forgot-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    
+    .forgot-link {
+      align-self: flex-end;
+    }
+  }
+
+  .animated-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    opacity: 1;
+    pointer-events: none;
+    background: rgb(255, 255, 255);
+  }
+
+  .animated-bg svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  @keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+

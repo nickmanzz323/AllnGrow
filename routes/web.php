@@ -21,7 +21,7 @@ Route::middleware('web')->group(function () {
         return view('courses'); 
     })->name('courses');
     
-    // ini nanti dihapus aja ini cuma placehorder agar bisa di view di localhost
+    // ini nanti dihapus atau nggak dirapiin logikanya aja, soalnay ini cuma placehorder agar bisa di view di localhost biar lebih gampang
     Route::get('/overviewcourses', function () {
         return view('overviewcourses'); 
     })->name('overviewcourses');
@@ -29,6 +29,14 @@ Route::middleware('web')->group(function () {
     Route::get('/userprofile', function () {
         return view('userprofile'); 
     })->name('userprofile');
+
+    Route::get('/loginInstructor', function () {
+        return view('loginInstructor'); 
+    })->name('loginInstructor');
+
+    Route::get('/registerInstructor', function () {
+        return view('registerInstructor'); 
+    })->name('registerInstructor');
 
     
     Route::get('/register', function () {
