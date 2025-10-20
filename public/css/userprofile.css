@@ -9,26 +9,79 @@
 body {
   background: #ffffff;
   color: #f0f0f0;
-  min-height: 100vh;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
 }
+
+/* ===== BACKGROUND ANIMATION ===== */
+@keyframes move {
+  100% {
+    transform: translate3d(0, 0, 1px) rotate(360deg);
+  }
+}
+
+.background {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  background: #e6e6e6;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.ball {
+  position: absolute;
+  width: 20vmin;
+  height: 20vmin;
+  border-radius: 50%;
+  backface-visibility: hidden;
+  animation: move linear infinite;
+}
+
+.ball:nth-child(odd) {
+  color: #006d5b;
+}
+
+.ball:nth-child(even) {
+  color: #ff6f61;
+}
+
+/* random motion setup */
+.ball:nth-child(1) { top: 77%; left: 88%; animation-duration: 40s; animation-delay: -3s; transform-origin: 16vw -2vh; box-shadow: 40vmin 0 5vmin currentColor; }
+.ball:nth-child(2) { top: 42%; left: 2%; animation-duration: 53s; animation-delay: -29s; transform-origin: -19vw 21vh; box-shadow: -40vmin 0 5vmin currentColor; }
+.ball:nth-child(3) { top: 28%; left: 18%; animation-duration: 49s; animation-delay: -8s; transform-origin: -22vw 3vh; box-shadow: 40vmin 0 5vmin currentColor; }
+.ball:nth-child(4) { top: 50%; left: 79%; animation-duration: 26s; animation-delay: -21s; transform-origin: -17vw -6vh; box-shadow: 40vmin 0 5vmin currentColor; }
+.ball:nth-child(5) { top: 46%; left: 15%; animation-duration: 36s; animation-delay: -40s; transform-origin: 4vw 0vh; box-shadow: -40vmin 0 6vmin currentColor; }
+.ball:nth-child(6) { top: 77%; left: 16%; animation-duration: 31s; animation-delay: -10s; transform-origin: 18vw 4vh; box-shadow: 40vmin 0 5vmin currentColor; }
+.ball:nth-child(7) { top: 22%; left: 17%; animation-duration: 55s; animation-delay: -6s; transform-origin: 1vw -23vh; box-shadow: -40vmin 0 5vmin currentColor; }
+.ball:nth-child(8) { top: 41%; left: 47%; animation-duration: 43s; animation-delay: -28s; transform-origin: 25vw -3vh; box-shadow: 40vmin 0 5vmin currentColor; }
 
 /* ===== BACK BUTTON ===== */
 .back-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 20px;
   background: none;
   border: none;
-  color: #111;
-  font-size: 1rem;
+  color: #000;
   font-weight: 500;
   cursor: pointer;
-  margin: 25px 35px;
+  position: absolute;
+  top: 20px;
+  left: 25px;
   transition: all 0.3s ease;
+  z-index: 2;
+  font-size: 20px;
 }
 
 .back-btn i {
-  font-size: 1rem;
+  font-size: 20px;
 }
 
 .back-btn:hover {
@@ -37,59 +90,76 @@ body {
 }
 
 /* ===== CONTAINER ===== */
+@keyframes slideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-80px);
+  }
+  60% {
+    opacity: 1;
+    transform: translateX(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 .profile-container {
-  max-width: 800px;
-  margin: 50px auto;
-  padding: 40px 30px;
-  background: #000000; 
-  border-radius: 24px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  position: relative;
+  z-index: 2;
+  max-width: 640px;
+  padding: 40px 45px;
+  background: #000000;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   text-align: center;
+  animation: slideIn 0.8s ease-out forwards; 
 }
 
 .profile-container h2 {
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   font-weight: 600;
   color: #ffffff;
-  margin-bottom: 25px;
+  margin-bottom: 12px;
 }
 
-/* ===== PROFILE PICTURE CENTER ===== */
+/* ===== PROFILE PICTURE ===== */
 .profile-picture-center {
   display: flex;
   justify-content: center;
-  margin-bottom: 25px;
+  margin-bottom: 15px;
 }
 
 .profile-picture {
   position: relative;
-  width: 150px;
-  height: 150px;
+  width: 100px;
+  height: 100px;
 }
 
 .profile-picture img {
-  width: 150px;
-  height: 150px;
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #135402;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+  border: 2px solid #135402;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .upload-btn {
   position: absolute;
-  bottom: 4px;
-  right: 6px;
+  bottom: 5px;
+  right: 5px;
   background: #135402;
   color: #fff;
-  width: 38px;
-  height: 38px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   transition: all 0.3s ease;
 }
 
@@ -104,46 +174,46 @@ body {
 
 /* ===== SUBTITLE ===== */
 .profile-subtitle {
-  color: #d0d0d0;
-  margin-bottom: 40px;
-  font-size: 0.95rem;
+  color: #c8c8c8;
+  margin-bottom: 20px;
+  font-size: 0.85rem;
 }
 
 /* ===== FORM ===== */
 .profile-form {
   text-align: left;
-  max-width: 600px;
+  max-width: 480px;
   margin: 0 auto;
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 14px;
   display: flex;
   flex-direction: column;
 }
 
 .form-group label {
-  font-size: 0.9rem;
-  color: #e5e5e5; /* lebih putih agar lebih jelas */
+  font-size: 0.85rem;
+  color: #eaeaea;
   font-weight: 500;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .form-group input,
 .form-group textarea {
-  background: #262626;
-  border: 1px solid #3b3b3b;
-  border-radius: 10px;
-  padding: 10px 14px;
-  color: #ffffff; /* teks input jadi putih */
-  font-size: 0.95rem;
+  background: #202020;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #ffffff;
+  font-size: 0.85rem;
   transition: all 0.3s ease;
   outline: none;
 }
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
-  color: #bcbcbc; /* placeholder abu terang */
+  color: #bcbcbc;
 }
 
 .form-group input:focus,
@@ -157,23 +227,22 @@ body {
   display: flex;
   gap: 10px;
   justify-content: center;
-  margin-top: 30px;
+  margin-top: 20px;
 }
 
 button {
   font-family: inherit;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   cursor: pointer;
-  border-radius: 10px;
-  padding: 10px 20px;
+  border-radius: 8px;
+  padding: 8px 16px;
   border: none;
   transition: all 0.3s ease;
 }
 
 .btn-save {
   background: #135402;
-  color: #ffffff;
-  font-weight: 500;
+  color: #fff;
 }
 
 .btn-save:hover {
@@ -194,22 +263,18 @@ button {
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
   .profile-container {
-    padding: 30px 20px;
+    width: 90%;
+    padding: 25px 20px;
+    animation: slideIn 0.7s ease-out forwards;
   }
 
   .profile-picture {
-    width: 120px;
-    height: 120px;
+    width: 85px;
+    height: 85px;
   }
 
-  .profile-picture img {
-    width: 120px;
-    height: 120px;
-  }
-
-  .upload-btn {
-    width: 34px;
-    height: 34px;
-    font-size: 0.85rem;
+  .btn-group {
+    flex-direction: column;
+    gap: 8px;
   }
 }
