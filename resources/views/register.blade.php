@@ -26,7 +26,9 @@
   </div>
     <main class="login-container">
         <div class="logo-section">
-            <div class="logo">AllnGrow</div>
+            <div class="logo">
+                <img src="images/AllnGrowDark.svg" alt="AllnGrow Logo" width="155" height="auto">
+              </div>
             <h1 class="login-title">Register</h1>
         </div>
         <form class="form-container" method="POST" action="{{ route('register') }}">

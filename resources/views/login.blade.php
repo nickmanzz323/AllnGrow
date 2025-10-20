@@ -32,7 +32,9 @@
 
   <main class="login-container">
     <section class="logo-section">
-      <div class="logo">AllnGrow</div>
+      <div class="logo">
+        <img src="images/AllnGrowDark.svg" alt="AllnGrow Logo" width="155" height="auto">
+      </div>
       <h1 class="login-title">Login</h1>
     </section>
 
