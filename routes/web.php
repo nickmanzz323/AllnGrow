@@ -49,7 +49,7 @@ Route::middleware('web')->group(function () {
     Route::post('/register', [\App\Http\Controllers\RegisterController::class, 'register'])->name('register');
     
     // Authentication form handlers
-    Route::post('/login', [LoginController::class, 'postLogin'])->name('postlogin');
+    Route::post('/login', [LoginController::class, 'postLogin'])->name('postlogin')->middleware('throttle:5,1');
     Route::post('/logout', function (\Illuminate\Http\Request $request) {
         \Illuminate\Support\Facades\Auth::logout();
         $request->session()->invalidate();

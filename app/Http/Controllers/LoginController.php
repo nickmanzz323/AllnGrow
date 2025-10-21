@@ -8,6 +8,11 @@ class LoginController extends Controller
 {
     public function postLogin(Request $request)
     {
+        // Normalize inputs: trim and lowercase email
+        $request->merge([
+            'email' => isset($request->email) ? trim(strtolower($request->email)) : null,
+        ]);
+
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|string',
