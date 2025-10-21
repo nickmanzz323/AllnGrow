@@ -46,6 +46,7 @@ class Kernel extends HttpKernel
      */
     protected $routeMiddleware = [
         'auth' => 'App\\Http\\Middleware\\Authenticate',
+        'role' => 'App\\Http\\Middleware\\EnsureRole',
         // Add other aliases as needed (guest, verified, etc.)
     ];
 }

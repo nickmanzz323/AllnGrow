@@ -61,11 +61,11 @@ Route::middleware('web')->group(function () {
 Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/teacherDashboard', function () {
         return view('teacherDashboard');
-    });
+    })->middleware('role:teacher');
 
     Route::get('/studentDashboard', function () {
         return view('studentDashboard');
-    });
+    })->middleware('role:student');
 
 
 });
