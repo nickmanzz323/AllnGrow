@@ -22,6 +22,18 @@ class User extends Authenticatable
         'level',
         'email',
         'password',
+        // instructor fields
+        'gender',
+        'dob',
+        'phone',
+        'country',
+        'bio',
+        'expertise',
+        'years_experience',
+        'linkedin',
+        'profile_photo',
+        'cv',
+        'certifications',
     ];
 
     /**
@@ -44,6 +56,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'certifications' => 'array',
         ];
     }
 }

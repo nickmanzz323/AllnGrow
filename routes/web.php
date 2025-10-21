@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\InstructorRegisterController;
 
 Route::middleware('web')->group(function () {
     Route::get('/', function () {
@@ -47,6 +48,7 @@ Route::middleware('web')->group(function () {
         return view('register');
     });
     Route::post('/register', [\App\Http\Controllers\RegisterController::class, 'register'])->name('register');
+    Route::post('/register-instructor', [InstructorRegisterController::class, 'register'])->name('register.instructor');
     
     // Authentication form handlers
     Route::post('/login', [LoginController::class, 'postLogin'])->name('postlogin')->middleware('throttle:5,1');
