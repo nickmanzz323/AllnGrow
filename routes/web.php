@@ -7,29 +7,45 @@ use App\Http\Controllers\InstructorRegisterController;
 
 Route::middleware('web')->group(function () {
     Route::get('/', function () {
-        return view('landing');
+        return view('/landingPage/landing');
     })->name('home');
 
     Route::get('/login', function () {
-        return view('login');
+        return view('/loginRegisterSiswa/login');
     })->name('login');
 
     Route::get('/about', function () {
-        return view('about');
+        return view('/landingPage/about');
     })->name('about');
 
     Route::get('/courses', function () {
-        return view('courses'); 
+        return view('/landingPage/courses'); 
     })->name('courses');
     
     // ini nanti dihapus atau nggak dirapiin logikanya aja, soalnay ini cuma placehorder agar bisa di view di localhost biar lebih gampan
     
     Route::get('/dashboardSiswa', function () {
-        return view('dashboardSiswa'); 
+        return view('/dashboardSiswa/dashboardSiswa'); 
     })->name('dashboardSiswa');
 
+    Route::get('/progress', function () {
+        return view('/dashboardSiswa/progress'); 
+    })->name('progress');
+
+    Route::get('/schedule', function () {
+        return view('/dashboardSiswa/schedule'); 
+    })->name('schedule');
+
+    Route::get('/settings', function () {
+        return view('/dashboardSiswa/settings'); 
+    })->name('settings');
+
+    Route::get('/myCourses', function () {
+        return view('/dashboardSiswa/myCourses'); 
+    })->name('myCourses');
+
     Route::get('/overviewcourses', function () {
-        return view('overviewcourses'); 
+        return view('/detailCourses/overviewcourses'); 
     })->name('overviewcourses');
 
     Route::get('/userprofile', function () {
@@ -37,19 +53,19 @@ Route::middleware('web')->group(function () {
     })->name('userprofile');
 
     Route::get('/loginInstructor', function () {
-        return view('loginInstructor'); 
+        return view('/loginRegisterInstructor/loginInstructor'); 
     })->name('loginInstructor');
 
     Route::get('/registerInstructor', function () {
-        return view('registerInstructor'); 
+        return view('/loginRegisterInstructor/registerInstructor'); 
     })->name('registerInstructor');
 
     Route::get('/registerInstructorForm', function () {
-        return view('registerInstructorForm'); 
+        return view('/loginRegisterInstructor/registerInstructorForm'); 
     })->name('registerInstructorForm');
 
     Route::get('/register', function () {
-        return view('register');
+        return view('/loginRegisterSiswa/register');
     });
     Route::post('/register', [\App\Http\Controllers\RegisterController::class, 'register'])->name('register');
     Route::post('/register-instructor', [InstructorRegisterController::class, 'register'])->name('register.instructor');

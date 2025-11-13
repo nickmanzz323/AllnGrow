@@ -15,10 +15,10 @@
       <div class="logo">AllnGrow</div>
       <nav>
         <a class="active"><i class="fas fa-home"></i> Dashboard</a>
-        <a><i class="fas fa-book"></i> My Courses</a>
-        <a><i class="fas fa-calendar"></i> Schedule</a>
-        <a><i class="fas fa-chart-line"></i> Progress</a>
-        <a><i class="fas fa-cog"></i> Settings</a>
+        <a href="myCourses"><i class="fas fa-book"></i> My Courses</a>
+        <a href="schedule"><i class="fas fa-calendar"></i> Schedule</a>
+        <a href="progress"><i class="fas fa-chart-line"></i> Progress</a>
+        <a href="settings"><i class="fas fa-chart-line"></i> Settings</a>
       </nav>
     </aside>
 
