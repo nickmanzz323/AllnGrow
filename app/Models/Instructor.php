@@ -19,22 +19,13 @@ class Instructor extends Authenticatable
 
     protected $hidden = [
         'password',
+        'remember_token', 
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'password' => 'hashed',
-        ];
-    }
-
-    /**
-     * Get the password for the user.
-     */
-    public function getAuthPassword()
-    {
-        return $this->password;
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed', 
+    ];
 
     /**
      * Instructor detail (1-1)
@@ -50,5 +41,15 @@ class Instructor extends Authenticatable
     public function courses(): HasMany
     {
         return $this->hasMany(Course::class, 'instructorID');
+    }
+
+    /**
+     * Scope untuk instructor yang approved
+     */
+    public function scopeApproved($query)
+    {
+        return $query->whereHas('detail', function($q) {
+            $q->where('status', 'approved');
+        });
     }
 }

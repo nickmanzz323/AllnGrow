@@ -20,22 +20,13 @@ class Student extends Authenticatable
 
     protected $hidden = [
         'password',
+        'remember_token', 
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'password' => 'hashed',
-        ];
-    }
-
-    /**
-     * Get the password for the user.
-     */
-    public function getAuthPassword()
-    {
-        return $this->password;
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed', 
+    ];
 
     /**
      * Student detail (1-1)
