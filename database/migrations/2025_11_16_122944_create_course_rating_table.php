@@ -6,21 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
         Schema::create('course_rating', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('courseID')->constrained('courses')->cascadeOnDelete();
+            $table->foreignId('studentID')->constrained('students')->cascadeOnDelete();
+            $table->tinyInteger('rating')->comment('1-5 scale');
+            $table->text('review')->nullable();
             $table->timestamps();
+
+            $table->unique(['courseID', 'studentID']);
+            $table->index('courseID');
+            $table->index('studentID');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('course_rating');
     }

@@ -6,21 +6,22 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
         Schema::create('subcourses', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('course_id')->constrained('courses')->cascadeOnDelete();
+            $table->string('title');
+            $table->text('content')->nullable();
+            $table->string('thumbnail')->nullable();
+            $table->string('fileUpload')->nullable();
             $table->timestamps();
+
+            $table->index('course_id');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('subcourses');
     }
