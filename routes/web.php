@@ -4,15 +4,18 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\InstructorRegisterController;
+use App\Http\Controllers\StudentLoginController;
+use App\Http\Controllers\InstructorLoginController;
 
 Route::middleware('web')->group(function () {
     Route::get('/', function () {
         return view('/landingPage/landing');
     })->name('home');
 
-    Route::get('/login', function () {
-        return view('/loginRegisterSiswa/login');
-    })->name('login');
+    // Student Login
+    Route::get('/login', [StudentLoginController::class, 'showLoginForm'])->name('student.login');
+    Route::post('/login', [StudentLoginController::class, 'login'])->name('student.login.post')->middleware('throttle:5,1');
+    Route::post('/student/logout', [StudentLoginController::class, 'logout'])->name('student.logout');
 
     Route::get('/about', function () {
         return view('/landingPage/about');
@@ -62,10 +65,10 @@ Route::middleware('web')->group(function () {
         return view('/dashboardInstructor/settingsInstructor'); 
     })->name('settingsInstructor');
 
-    // login register Instructor
-    Route::get('/loginInstructor', function () {
-        return view('/loginRegisterInstructor/loginInstructor'); 
-    })->name('loginInstructor');
+    // Instructor Login
+    Route::get('/loginInstructor', [InstructorLoginController::class, 'showLoginForm'])->name('instructor.login');
+    Route::post('/loginInstructor', [InstructorLoginController::class, 'login'])->name('instructor.login.post')->middleware('throttle:5,1');
+    Route::post('/instructor/logout', [InstructorLoginController::class, 'logout'])->name('instructor.logout');
 
     Route::get('/registerInstructor', function () {
         return view('/loginRegisterInstructor/registerInstructor'); 
@@ -80,25 +83,4 @@ Route::middleware('web')->group(function () {
     });
     Route::post('/register', [\App\Http\Controllers\RegisterController::class, 'register'])->name('register');
     Route::post('/register-instructor', [InstructorRegisterController::class, 'register'])->name('register.instructor');
-    
-    // Authentication form handlers
-    Route::post('/login', [LoginController::class, 'postLogin'])->name('postlogin')->middleware('throttle:5,1');
-    Route::post('/logout', function (\Illuminate\Http\Request $request) {
-        \Illuminate\Support\Facades\Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect()->route('login');
-    })->name('logout');
-});
-
-Route::middleware(['web', 'auth'])->group(function () {
-    Route::get('/teacherDashboard', function () {
-        return view('teacherDashboard');
-    })->middleware('role:teacher');
-
-    Route::get('/studentDashboard', function () {
-        return view('studentDashboard');
-    })->middleware('role:student');
-
-
 });

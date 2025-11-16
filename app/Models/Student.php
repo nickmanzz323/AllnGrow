@@ -22,6 +22,21 @@ class Student extends Authenticatable
         'password',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'password' => 'hashed',
+        ];
+    }
+
+    /**
+     * Get the password for the user.
+     */
+    public function getAuthPassword()
+    {
+        return $this->password;
+    }
+
     /**
      * Student detail (1-1)
      */

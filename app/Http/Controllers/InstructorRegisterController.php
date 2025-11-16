@@ -105,7 +105,7 @@ class InstructorRegisterController extends Controller
 
             // Optionally, you may want to flag teacher accounts for manual approval. For now
             // we simply redirect to login with a success message.
-            return redirect()->route('login')->with('success', 'Instructor registration submitted. Your account will be reviewed.');
+            return redirect()->route('instructor.login')->with('success', 'Instructor registration submitted. Your account will be reviewed.');
         } catch (\Exception $e) {
             Log::error('Instructor registration failed: '.$e->getMessage(), ['exception' => $e]);
             return redirect()->back()->withInput()->with('error', 'Registration failed. Please try again later.');

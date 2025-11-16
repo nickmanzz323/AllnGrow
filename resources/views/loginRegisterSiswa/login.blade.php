@@ -58,7 +58,7 @@
       </div>
     @endif
 
-    <form class="form-container" method="POST" action="{{ route('postlogin') }}">
+    <form class="form-container" method="POST" action="{{ route('student.login.post') }}">
       @csrf
       <div class="form-fields">
         <div class="input-group">

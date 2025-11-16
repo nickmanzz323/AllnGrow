@@ -41,7 +41,7 @@ class RegisterController extends Controller
                 'bio' => $request->input('bio') ? InputSanitizer::sanitizeHtml($request->input('bio')) : null,
             ]);
 
-            return redirect()->route('login')->with('success', 'Registration successful. Please log in.');
+            return redirect()->route('student.login')->with('success', 'Registration successful. Please log in.');
         } catch (\Exception $e) {
             Log::error('Student registration failed: '.$e->getMessage(), ['exception' => $e]);
             return redirect()->back()->withInput()->with('error', 'Registration failed. Please try again later.');

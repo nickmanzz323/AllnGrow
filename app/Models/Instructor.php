@@ -21,6 +21,21 @@ class Instructor extends Authenticatable
         'password',
     ];
 
+    protected function casts(): array
+    {
+        return [
+            'password' => 'hashed',
+        ];
+    }
+
+    /**
+     * Get the password for the user.
+     */
+    public function getAuthPassword()
+    {
+        return $this->password;
+    }
+
     /**
      * Instructor detail (1-1)
      */
