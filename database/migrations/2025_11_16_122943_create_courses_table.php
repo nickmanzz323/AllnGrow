@@ -10,11 +10,17 @@ return new class extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('instructorID')->constrained('instructors')->cascadeOnDelete();
+            $table->unsignedBigInteger('instructorID'); // Ubah ini
             $table->string('title');
             $table->decimal('price', 10, 2)->default(0);
             $table->string('thumbnail')->nullable();
             $table->timestamps();
+
+            // Foreign key terpisah
+            $table->foreign('instructorID')
+                  ->references('id')
+                  ->on('instructors')
+                  ->onDelete('cascade');
 
             $table->index('instructorID');
         });

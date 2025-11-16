@@ -10,12 +10,18 @@ return new class extends Migration
     {
         Schema::create('subcourses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('course_id')->constrained('courses')->cascadeOnDelete();
+            $table->unsignedBigInteger('course_id'); // Ubah ini
             $table->string('title');
             $table->text('content')->nullable();
             $table->string('thumbnail')->nullable();
             $table->string('fileUpload')->nullable();
             $table->timestamps();
+
+            // Foreign key terpisah
+            $table->foreign('course_id')
+                  ->references('id')
+                  ->on('courses')
+                  ->onDelete('cascade');
 
             $table->index('course_id');
         });

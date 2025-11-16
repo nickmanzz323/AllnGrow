@@ -10,11 +10,22 @@ return new class extends Migration
     {
         Schema::create('course_rating', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('courseID')->constrained('courses')->cascadeOnDelete();
-            $table->foreignId('studentID')->constrained('students')->cascadeOnDelete();
+            $table->unsignedBigInteger('courseID'); // Ubah ini
+            $table->unsignedBigInteger('studentID'); // Ubah ini
             $table->tinyInteger('rating')->comment('1-5 scale');
             $table->text('review')->nullable();
             $table->timestamps();
+
+            // Foreign key terpisah
+            $table->foreign('courseID')
+                  ->references('id')
+                  ->on('courses')
+                  ->onDelete('cascade');
+
+            $table->foreign('studentID')
+                  ->references('id')
+                  ->on('students')
+                  ->onDelete('cascade');
 
             $table->unique(['courseID', 'studentID']);
             $table->index('courseID');
