@@ -23,7 +23,7 @@
             <a href="{{ route('home') }}" class="nav-item {{ request()->routeIs('home') ? 'active' : '' }}">Home</a>
             <a href="{{ route('about') }}" class="nav-item" role="menuitem">About us</a>
             <a href="{{ route('courses') }}" class="nav-item {{ request()->routeIs('courses') ? 'active' : '' }}">Courses</a>
-            <a href="{{ route('login') }}" class="nav-item {{ request()->routeIs('login') ? 'active' : '' }}">Get Started</a>
+            <a href="{{ route('student.login') }}" class="nav-item {{ request()->routeIs('student.login') ? 'active' : '' }}">Get Started</a>
           </nav>
         </div>
       </header>

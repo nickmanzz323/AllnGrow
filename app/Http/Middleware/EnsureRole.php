@@ -16,7 +16,7 @@ class EnsureRole
     {
         if (! Auth::check()) {
             // Not authenticated — let auth middleware handle redirect. Return login.
-            return redirect()->route('login');
+            return redirect()->route('student.login');
         }
 
         $user = Auth::user();

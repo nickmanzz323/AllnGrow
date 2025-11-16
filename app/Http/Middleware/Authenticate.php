@@ -23,7 +23,7 @@ class Authenticate
             if ($request->expectsJson()) {
                 return response()->json(['message' => 'Unauthenticated.'], 401);
             }
-            return redirect()->route('login');
+            return redirect()->route('student.login');
         }
 
         // Allow the request to proceed
