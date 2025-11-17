@@ -273,4 +273,123 @@ class InstructorCourseController extends Controller
             return redirect()->back()->with('error', 'Failed to delete course. Please try again.');
         }
     }
+
+    /**
+     * Store subcourse baru untuk course
+     */
+    public function storeSubcourse(Request $request, $courseId)
+    {
+        $instructor = Auth::guard('instructor')->user();
+        $course = Course::where('instructorID', $instructor->id)->findOrFail($courseId);
+
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'nullable|string|max:10000',
+            'thumbnail' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:5120',
+            'fileUpload' => 'nullable|mimes:pdf,doc,docx,ppt,pptx,mp4,mov,avi|max:51200',
+        ]);
+
+        try {
+            $thumbnailPath = null;
+            $filePath = null;
+
+            if ($request->hasFile('thumbnail')) {
+                $thumbnailPath = $request->file('thumbnail')->store("courses/{$courseId}/subcourses/thumbnails", 'public');
+            }
+
+            if ($request->hasFile('fileUpload')) {
+                $filePath = $request->file('fileUpload')->store("courses/{$courseId}/subcourses/files", 'public');
+            }
+
+            Subcourse::create([
+                'course_id' => $courseId,
+                'title' => InputSanitizer::sanitizeText($data['title']),
+                'content' => isset($data['content']) ? InputSanitizer::sanitizeHtml($data['content']) : null,
+                'thumbnail' => $thumbnailPath,
+                'fileUpload' => $filePath,
+            ]);
+
+            Log::info('Subcourse created', ['course_id' => $courseId]);
+
+            return redirect()->route('instructor.courses.edit', $courseId)->with('success', 'Module added successfully!');
+        } catch (\Exception $e) {
+            Log::error('Failed to create subcourse: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Failed to add module. Please try again.');
+        }
+    }
+
+    /**
+     * Update subcourse
+     */
+    public function updateSubcourse(Request $request, $courseId, $subcourseId)
+    {
+        $instructor = Auth::guard('instructor')->user();
+        $course = Course::where('instructorID', $instructor->id)->findOrFail($courseId);
+        $subcourse = Subcourse::where('course_id', $courseId)->findOrFail($subcourseId);
+
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'nullable|string|max:10000',
+            'thumbnail' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:5120',
+            'fileUpload' => 'nullable|mimes:pdf,doc,docx,ppt,pptx,mp4,mov,avi|max:51200',
+        ]);
+
+        try {
+            if ($request->hasFile('thumbnail')) {
+                if ($subcourse->thumbnail) {
+                    Storage::disk('public')->delete($subcourse->thumbnail);
+                }
+                $data['thumbnail'] = $request->file('thumbnail')->store("courses/{$courseId}/subcourses/thumbnails", 'public');
+            }
+
+            if ($request->hasFile('fileUpload')) {
+                if ($subcourse->fileUpload) {
+                    Storage::disk('public')->delete($subcourse->fileUpload);
+                }
+                $data['fileUpload'] = $request->file('fileUpload')->store("courses/{$courseId}/subcourses/files", 'public');
+            }
+
+            $subcourse->update([
+                'title' => InputSanitizer::sanitizeText($data['title']),
+                'content' => isset($data['content']) ? InputSanitizer::sanitizeHtml($data['content']) : null,
+                'thumbnail' => $data['thumbnail'] ?? $subcourse->thumbnail,
+                'fileUpload' => $data['fileUpload'] ?? $subcourse->fileUpload,
+            ]);
+
+            Log::info('Subcourse updated', ['subcourse_id' => $subcourseId]);
+
+            return redirect()->route('instructor.courses.edit', $courseId)->with('success', 'Module updated successfully!');
+        } catch (\Exception $e) {
+            Log::error('Failed to update subcourse: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Failed to update module. Please try again.');
+        }
+    }
+
+    /**
+     * Delete subcourse
+     */
+    public function destroySubcourse($courseId, $subcourseId)
+    {
+        $instructor = Auth::guard('instructor')->user();
+        $course = Course::where('instructorID', $instructor->id)->findOrFail($courseId);
+        $subcourse = Subcourse::where('course_id', $courseId)->findOrFail($subcourseId);
+
+        try {
+            if ($subcourse->thumbnail) {
+                Storage::disk('public')->delete($subcourse->thumbnail);
+            }
+            if ($subcourse->fileUpload) {
+                Storage::disk('public')->delete($subcourse->fileUpload);
+            }
+
+            $subcourse->delete();
+
+            Log::info('Subcourse deleted', ['subcourse_id' => $subcourseId]);
+
+            return redirect()->route('instructor.courses.edit', $courseId)->with('success', 'Module deleted successfully!');
+        } catch (\Exception $e) {
+            Log::error('Failed to delete subcourse: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to delete module. Please try again.');
+        }
+    }
 }

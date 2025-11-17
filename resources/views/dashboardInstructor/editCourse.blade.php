@@ -302,6 +302,128 @@
         <button type="submit" class="btn btn-primary">Update Course</button>
       </div>
     </form>
+
+    <!-- Manage Subcourses Section -->
+    <div style="margin-top: 40px; padding-top: 40px; border-top: 2px solid #e2e8f0;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <div>
+          <h2 style="font-size: 20px; margin-bottom: 4px;">Course Modules</h2>
+          <p style="color: #718096; font-size: 14px;">Manage lessons and materials for this course</p>
+        </div>
+        <button onclick="showAddSubcourseForm()" style="background: #48bb78; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600;">
+          <i class="fas fa-plus"></i> Add Module
+        </button>
+      </div>
+
+      <!-- Add Subcourse Form (Hidden by default) -->
+      <div id="addSubcourseForm" style="display: none; background: #f7fafc; padding: 24px; border-radius: 12px; margin-bottom: 24px; border: 2px solid #e2e8f0;">
+        <h3 style="font-size: 16px; margin-bottom: 16px;">Add New Module</h3>
+        <form method="POST" action="{{ route('instructor.subcourses.store', $course->id) }}" enctype="multipart/form-data">
+          @csrf
+          <div class="form-group">
+            <label>Module Title <span style="color: #e53e3e;">*</span></label>
+            <input type="text" name="title" required placeholder="e.g. Introduction to React">
+          </div>
+          <div class="form-group">
+            <label>Module Content</label>
+            <textarea name="content" rows="4" placeholder="Describe this module..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>Thumbnail</label>
+            <input type="file" name="thumbnail" accept="image/*">
+          </div>
+          <div class="form-group">
+            <label>Upload File (PDF, Video, etc.)</label>
+            <input type="file" name="fileUpload" accept=".pdf,.doc,.docx,.ppt,.pptx,.mp4,.mov,.avi">
+          </div>
+          <div style="display: flex; gap: 12px;">
+            <button type="submit" class="btn btn-primary">Save Module</button>
+            <button type="button" onclick="hideAddSubcourseForm()" class="btn btn-secondary">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- List of Subcourses -->
+      @if($course->subcourses->count() > 0)
+        @foreach($course->subcourses as $index => $subcourse)
+          <div style="background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+              <div style="flex: 1;">
+                <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">
+                  {{ $index + 1 }}. {{ $subcourse->title }}
+                </h4>
+                @if($subcourse->content)
+                  <p style="color: #718096; font-size: 14px; margin-bottom: 8px;">{{ Str::limit($subcourse->content, 150) }}</p>
+                @endif
+                <div style="display: flex; gap: 16px; font-size: 13px; color: #718096;">
+                  @if($subcourse->thumbnail)
+                    <span><i class="fas fa-image"></i> Has thumbnail</span>
+                  @endif
+                  @if($subcourse->fileUpload)
+                    <span><i class="fas fa-file"></i> Has file</span>
+                  @endif
+                </div>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button onclick="toggleEditForm({{ $subcourse->id }})" style="background: #4299e1; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px;">
+                  <i class="fas fa-edit"></i> Edit
+                </button>
+                <form method="POST" action="{{ route('instructor.subcourses.destroy', [$course->id, $subcourse->id]) }}" style="display: inline;" onsubmit="return confirm('Delete this module?')">
+                  @csrf
+                  @method('DELETE')
+                  <button type="submit" style="background: #fc8181; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px;">
+                    <i class="fas fa-trash"></i> Delete
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            <!-- Edit Form (Hidden by default) -->
+            <div id="editForm{{ $subcourse->id }}" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
+              <form method="POST" action="{{ route('instructor.subcourses.update', [$course->id, $subcourse->id]) }}" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <div class="form-group">
+                  <label>Module Title <span style="color: #e53e3e;">*</span></label>
+                  <input type="text" name="title" value="{{ $subcourse->title }}" required>
+                </div>
+                <div class="form-group">
+                  <label>Module Content</label>
+                  <textarea name="content" rows="4">{{ $subcourse->content }}</textarea>
+                </div>
+                <div class="form-group">
+                  <label>Thumbnail</label>
+                  @if($subcourse->thumbnail)
+                    <div style="margin-bottom: 8px;">
+                      <img src="{{ asset('storage/' . $subcourse->thumbnail) }}" style="max-width: 200px; border-radius: 8px;">
+                    </div>
+                  @endif
+                  <input type="file" name="thumbnail" accept="image/*">
+                </div>
+                <div class="form-group">
+                  <label>Upload File</label>
+                  @if($subcourse->fileUpload)
+                    <div style="margin-bottom: 8px; color: #718096; font-size: 14px;">
+                      Current: {{ basename($subcourse->fileUpload) }}
+                    </div>
+                  @endif
+                  <input type="file" name="fileUpload" accept=".pdf,.doc,.docx,.ppt,.pptx,.mp4,.mov,.avi">
+                </div>
+                <div style="display: flex; gap: 12px;">
+                  <button type="submit" class="btn btn-primary">Update Module</button>
+                  <button type="button" onclick="toggleEditForm({{ $subcourse->id }})" class="btn btn-secondary">Cancel</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        @endforeach
+      @else
+        <div style="text-align: center; padding: 40px; color: #718096; background: #f7fafc; border-radius: 12px;">
+          <i class="fas fa-book-open" style="font-size: 48px; margin-bottom: 16px; opacity: 0.3;"></i>
+          <p>No modules yet. Click "Add Module" to create your first lesson.</p>
+        </div>
+      @endif
+    </div>
   </div>
 
   <script>
@@ -311,6 +433,23 @@
         target.textContent = `Selected: ${input.files[0].name}`;
       } else {
         target.textContent = '';
+      }
+    }
+
+    function showAddSubcourseForm() {
+      document.getElementById('addSubcourseForm').style.display = 'block';
+    }
+
+    function hideAddSubcourseForm() {
+      document.getElementById('addSubcourseForm').style.display = 'none';
+    }
+
+    function toggleEditForm(subcourseId) {
+      const form = document.getElementById('editForm' + subcourseId);
+      if (form.style.display === 'none' || form.style.display === '') {
+        form.style.display = 'block';
+      } else {
+        form.style.display = 'none';
       }
     }
   </script>
