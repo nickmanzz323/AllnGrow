@@ -49,11 +49,11 @@ Route::middleware('web')->group(function () {
 
     // Register Instructor & Student (view)
     Route::get('/registerInstructor', function () {
-        return view('/loginRegisterInstructor/registerInstructor'); 
+        return view('loginRegisterInstructor.registerInstructor'); 
     })->name('registerInstructor');
 
     Route::get('/registerInstructorForm', function () {
-        return view('/loginRegisterInstructor/registerInstructorForm'); 
+        return view('loginRegisterInstructor.registerInstructorForm'); 
     })->name('registerInstructorForm');
 
     Route::get('/register', function () {
