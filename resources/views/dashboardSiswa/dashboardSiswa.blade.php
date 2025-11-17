@@ -19,6 +19,16 @@
         <a href="schedule"><i class="fas fa-calendar"></i> Schedule</a>
         <a href="progress"><i class="fas fa-chart-line"></i> Progress</a>
         <a href="settings"><i class="fas fa-chart-line"></i> Settings</a>
+        <form method="POST" action="{{ route('student.logout') }}">
+            @csrf
+            
+            <a href="{{ route('student.logout') }}"
+              onclick="event.preventDefault();
+                        this.closest('form').submit();">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                Logout
+            </a>
+        </form>
       </nav>
     </aside>
 
