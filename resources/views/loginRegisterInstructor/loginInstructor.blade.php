@@ -82,7 +82,7 @@
     
     <div class="signup-section">
       <span class="signup-text">Don't have an account yet?</span>
-      <a href="/registerInstructorForm" class="signup-link">Sign up</a>
+      <a href="{{ route('registerInstructor') }}" class="signup-link">Sign up</a>
     </div>
     
     <div class="divider-section">
