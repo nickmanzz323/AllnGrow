@@ -31,42 +31,91 @@
 
   <section class="search-section">
     <h2 class="fade-up">Explore Courses</h2>
-    <div class="search-box fade-up">
+    <!-- <div class="search-box fade-up">
       <input type="text" placeholder="Search ...">
       <button class="search-btn"><i class="fa fa-search"></i></button>
+    </div> -->
+
+    <!-- search -->
+    <div class="search-box fade-up">
+      <form action="{{ route('courses.search') }}" method="GET" class="d-flex w-100">
+        <input type="text" name="search" placeholder="Search ..." class="form-control">
+        <button class="search-btn" type="submit"><i class="fa fa-search"></i></button>
     </div>
+    <style>
+      .form-control:focus {
+        box-shadow: none;
+        outline: none;
+        border-color: #ccc;
+      }
 
+      .courses-wrapper-3col .courses-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 24px;
+          overflow-x: unset; /* memastikan tidak scroll horizontal */
+      }
+    </style>
 
-    <div class="filters fade-up dropdown mt-5">
+      <!-- filter by -->
+    <div class="filters fade-up dropdown mt-5 mb-5">
+      
+    <!-- category -->
       <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background-color:white; color:#767676">
         Categories
       </button>
-      
       <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="#">All</a></li>
-        <li><a class="dropdown-item" href="#">Business & Finance</a></li>
-        <li><a class="dropdown-item" href="#">Arts & Design</a></li>
-        <li><a class="dropdown-item" href="#">Music & Performing Arts</a></li>
-        <li><a class="dropdown-item" href="#">Cooking & Culinary</a></li>
-        <li><a class="dropdown-item" href="#">Health & Sports</a></li>
-        <li><a class="dropdown-item" href="#">Lifestyle & Personal Development</a></li>
-        <li><a class="dropdown-item" href="#">Certification & Professional Skills</a></li>
+        <li><a class="dropdown-item" href="{{route('courses.search')}}">All</a></li>
+        @foreach($categories as $cat)
+          <li><a class="dropdown-item"
+              href="{{ route('courses.search') . '?' . http_build_query(array_merge(request()->query(), ['category' => $cat->name])) }}">
+              {{ $cat->name }}
+            </a></li>
+        @endforeach
       </ul>
 
+      <!-- partner -->
       <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background-color:white; color:#767676">
         Partner
       </button>
-      
       <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="#">All</a></li>
-        <li><a class="dropdown-item" href="#">Google</a></li>
-        <li><a class="dropdown-item" href="#">EdX</a></li>
-        <li><a class="dropdown-item" href="#">ABRSM</a></li>
-        <li><a class="dropdown-item" href="#">Adobe</a></li>
-        <li><a class="dropdown-item" href="#">Le Cordon Bleu</a></li>
-        <li><a class="dropdown-item" href="#">Microsoft</a></li>
-        <li><a class="dropdown-item" href="#">Certification & Professional Skills</a></li>
+        <li><a class="dropdown-item" href="{{route('courses.search')}}">All</a></li>
+        @foreach($partners as $partner)
+            <li>
+                <a class="dropdown-item" href="{{ route('courses.search') . '?' . http_build_query(array_merge(request()->query(), ['partner' => $partner->name])) }}">
+                    {{ $partner->name }}
+                </a>
+            </li>
+        @endforeach
       </ul>
+    </div>
+
+    </form>
+        <div class="active-filters mb-3">
+        @if(request('search'))
+            <span class="badge bg-primary">
+                Search: "{{ request('search') }}"
+                <a href="{{ route('courses.search', request()->except('search')) }}" class="text-white ms-1" style="decoration:None;">&times;</a>
+            </span>
+        @endif
+
+        @if(request('category'))
+            <span class="badge bg-success">
+                Category: {{ request('category') }}
+                <a href="{{ route('courses.search', request()->except('category')) }}" class="text-white ms-1" style="decoration:None;">&times;</a>
+            </span>
+        @endif
+
+        @if(request('partner'))
+            <span class="badge bg-warning text-dark">
+                Partner: {{ request('partner') }}
+                <a href="{{ route('courses.search', request()->except('partner')) }}" class="text-dark ms-1" style="decoration:None;">&times;</a>
+            </span>
+        @endif
+
+        @if(request()->hasAny(['search','category','partner']))
+            <a href="{{ route('courses.search') }}" class="btn btn-outline-secondary btn-sm ms-2" style="background-color:white;">Clear All</a>
+        @endif
     </div>
 
     <!-- <div class="filters fade-up">
@@ -77,10 +126,30 @@
         <option>Partner</option>
       </select>
     </div> -->
-
   </section>
 
-  <section class="courses-section">
+  <section class="courses-section mt-8">
+
+  <!-- result searched coureses -->
+    <div class="courses-wrapper-3col">
+      <div class="courses-grid stagger-children">
+        @if($courses->count()>0)
+          @foreach($courses as $course)
+              @include('components.course-card', ['course'=>$course])
+          @endforeach
+        @else
+          <p class="text-center w-100" style="grid-column: 1 / -1; font-size: 1.2rem; color: #555;">
+            Courses not found...
+          </p>
+        @endif
+      </div>
+    </div>
+    <!-- pagination (prev, next) -->
+    <div class="d-flex justify-content-center mt-4">
+        {{ $courses->links() }}
+    </div>
+
+    <!-- explore top courses -->
     <div class="courses-header fade-up">
       <h2 class="courses-title">Explore Our Courses</h2>
       <div class="courses-badge">Top Popular Course</div>

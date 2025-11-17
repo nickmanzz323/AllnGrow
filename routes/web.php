@@ -23,12 +23,10 @@ Route::middleware('web')->group(function () {
         return view('/landingPage/about');
     })->name('about');
 
-    Route::get('/courses', function () {
-        return view('/landingPage/courses'); 
-    })->name('courses');
+    Route::get('/courses', [CourseController::class, 'course_page'])->name('courses');
 
     // searching courses (filter)
-    Route::get('/search-courses', [CourseController::class, 'search'])->name('search.courses');
+    Route::get('/search-courses', [CourseController::class, 'search'])->name('courses.search');
 
     // Course overview & detail
     Route::get('/overviewcourses', function () {

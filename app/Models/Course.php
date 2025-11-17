@@ -14,6 +14,7 @@ class Course extends Model
 
     protected $fillable = [
         'instructorID',
+        'category_id',
         'title',
         'price',
         'thumbnail',
@@ -51,6 +52,21 @@ class Course extends Model
     public function ratings(): HasMany
     {
         return $this->hasMany(CourseRating::class, 'courseID');
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function courses(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+     public function partner(): BelongsTo
+    {
+        return $this->belongsTo(Partner::class);
     }
 
     /**
