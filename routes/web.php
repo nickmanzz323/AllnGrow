@@ -27,6 +27,32 @@ Route::middleware('web')->group(function () {
     
     // ini nanti dihapus atau nggak dirapiin logikanya aja, soalnay ini cuma placehorder agar bisa di view di localhost biar lebih gampan
     
+    Route::get('/overviewcourses', function () {
+        return view('/detailCourses/overviewcourses'); 
+    })->name('overviewcourses');
+
+    // Instructor Login
+    Route::get('/loginInstructor', [InstructorLoginController::class, 'showLoginForm'])->name('instructor.login');
+    Route::post('/loginInstructor', [InstructorLoginController::class, 'login'])->name('instructor.login.post')->middleware('throttle:5,1');
+    Route::post('/instructor/logout', [InstructorLoginController::class, 'logout'])->name('instructor.logout');
+
+    Route::get('/registerInstructor', function () {
+        return view('/loginRegisterInstructor/registerInstructor'); 
+    })->name('registerInstructor');
+
+    Route::get('/registerInstructorForm', function () {
+        return view('/loginRegisterInstructor/registerInstructorForm'); 
+    })->name('registerInstructorForm');
+
+    Route::get('/register', function () {
+        return view('/loginRegisterSiswa/register');
+    });
+    Route::post('/register', [\App\Http\Controllers\RegisterController::class, 'register'])->name('register');
+    Route::post('/register-instructor', [InstructorRegisterController::class, 'register'])->name('register.instructor');
+});
+
+// Protected routes untuk Student (harus login sebagai student)
+Route::middleware(['web', 'auth.student'])->group(function () {
     // dashboard student
     Route::get('/dashboardSiswa', function () {
         return view('/dashboardSiswa/dashboardSiswa'); 
@@ -47,11 +73,10 @@ Route::middleware('web')->group(function () {
     Route::get('/myCourses', function () {
         return view('/dashboardSiswa/myCourses'); 
     })->name('myCourses');
+});
 
-    Route::get('/overviewcourses', function () {
-        return view('/detailCourses/overviewcourses'); 
-    })->name('overviewcourses');
-
+// Protected routes untuk Instructor (harus login sebagai instructor)
+Route::middleware(['web', 'auth.instructor'])->group(function () {
     // dashboard instructor
     Route::get('/dashboardInstructor', function () {
         return view('/dashboardInstructor/dashboardInstructor'); 
@@ -64,23 +89,4 @@ Route::middleware('web')->group(function () {
     Route::get('/settingsInstructor', function () {
         return view('/dashboardInstructor/settingsInstructor'); 
     })->name('settingsInstructor');
-
-    // Instructor Login
-    Route::get('/loginInstructor', [InstructorLoginController::class, 'showLoginForm'])->name('instructor.login');
-    Route::post('/loginInstructor', [InstructorLoginController::class, 'login'])->name('instructor.login.post')->middleware('throttle:5,1');
-    Route::post('/instructor/logout', [InstructorLoginController::class, 'logout'])->name('instructor.logout');
-
-    Route::get('/registerInstructor', function () {
-        return view('/loginRegisterInstructor/registerInstructor'); 
-    })->name('registerInstructor');
-
-    Route::get('/registerInstructorForm', function () {
-        return view('/loginRegisterInstructor/registerInstructorForm'); 
-    })->name('registerInstructorForm');
-
-    Route::get('/register', function () {
-        return view('/loginRegisterSiswa/register');
-    });
-    Route::post('/register', [\App\Http\Controllers\RegisterController::class, 'register'])->name('register');
-    Route::post('/register-instructor', [InstructorRegisterController::class, 'register'])->name('register.instructor');
 });

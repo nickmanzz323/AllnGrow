@@ -15,6 +15,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'auth' => 'App\\Http\\Middleware\\Authenticate',
             'role' => 'App\\Http\\Middleware\\EnsureRole',
+            'auth.student' => 'App\\Http\\Middleware\\AuthenticateStudent',
+            'auth.instructor' => 'App\\Http\\Middleware\\AuthenticateInstructor',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
