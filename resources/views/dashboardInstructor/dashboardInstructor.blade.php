@@ -623,15 +623,23 @@
       navLinks.forEach(nav => nav.classList.remove('active'));
       tabContents.forEach(tab => tab.classList.remove('active'));
       
-      document.querySelector(`[data-page="${pageName}"]`).classList.add('active');
-      document.getElementById(pageName).classList.add('active');
+      const targetNav = document.querySelector(`[data-page="${pageName}"]`);
+      const targetTab = document.getElementById(pageName);
+      
+      if (targetNav) targetNav.classList.add('active');
+      if (targetTab) targetTab.classList.add('active');
     }
 
     navLinks.forEach(link => {
       link.addEventListener('click', function(e) {
-        e.preventDefault();
         const targetPage = this.dataset.page;
-        switchTab(targetPage);
+        
+        // Hanya prevent default jika link punya data-page (internal tab)
+        // Biarkan link dengan href biasa (external page) bekerja normal
+        if (targetPage && !this.getAttribute('href')) {
+          e.preventDefault();
+          switchTab(targetPage);
+        }
       });
     });
   </script>
