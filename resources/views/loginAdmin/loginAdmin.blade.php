@@ -37,8 +37,29 @@
         <p>Sign in to access the admin dashboard</p>
       </div>
 
+      @if(session('success'))
+        <div style="background:#d4edda;border:1px solid #c3e6cb;color:#155724;padding:12px;margin:12px 0;border-radius:4px;font-weight:600;">
+          {{ session('success') }}
+        </div>
+      @endif
+      @if(session('error'))
+        <div style="background:#fff3cd;border:1px solid #ffeeba;color:#856404;padding:12px;margin:12px 0;border-radius:4px;font-weight:600;">
+          {{ session('error') }}
+        </div>
+      @endif
+      @if($errors->any())
+        <div style="background:#f8d7da;border:1px solid #f5c6cb;color:#721c24;padding:12px;margin:12px 0;border-radius:4px;">
+          <ul style="margin:0;padding-left:20px;">
+            @foreach($errors->all() as $error)
+              <li>{{ $error }}</li>
+            @endforeach
+          </ul>
+        </div>
+      @endif
+
       <!-- Login Form -->
-      <form class="login-form">
+      <form class="login-form" method="POST" action="{{ route('admin.login.post') }}">
+        @csrf
         <!-- Email Input -->
         <div class="input-group">
           <label for="email">Email Address</label>
@@ -51,6 +72,7 @@
               placeholder="admin@allngrow.com" 
               required 
               autocomplete="email"
+              value="{{ old('email') }}"
             >
           </div>
         </div>

@@ -6,6 +6,8 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\InstructorRegisterController;
 use App\Http\Controllers\StudentLoginController;
 use App\Http\Controllers\InstructorLoginController;
+use App\Http\Controllers\AdminLoginController;
+use App\Http\Controllers\AdminInstructorController;
 
 Route::middleware('web')->group(function () {
     // landing page
@@ -40,14 +42,10 @@ Route::middleware('web')->group(function () {
     Route::post('/loginInstructor', [InstructorLoginController::class, 'login'])->name('instructor.login.post')->middleware('throttle:5,1');
     Route::post('/instructor/logout', [InstructorLoginController::class, 'logout'])->name('instructor.logout');
 
-    // Login & Dashboard Admin (sementara tanpa middleware auth khusus)
-    Route::get('/loginAdmin', function () {
-        return view('/loginAdmin/loginAdmin'); 
-    })->name('loginAdmin');
-
-    Route::get('/dashboardAdmin', function () {
-        return view('/dashboardAdmin/dashboardAdmin'); 
-    })->name('dashboardAdmin');
+    // Admin Login
+    Route::get('/loginAdmin', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
+    Route::post('/loginAdmin', [AdminLoginController::class, 'login'])->name('admin.login.post')->middleware('throttle:5,1');
+    Route::post('/admin/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
 
     // Register Instructor & Student (view)
     Route::get('/registerInstructor', function () {
@@ -105,4 +103,13 @@ Route::middleware(['web', 'auth.instructor'])->group(function () {
     Route::get('/settingsInstructor', function () {
         return view('/dashboardInstructor/settingsInstructor'); 
     })->name('settingsInstructor');
+});
+
+// Protected routes untuk Admin (harus login sebagai admin)
+Route::middleware(['web', 'auth.admin'])->group(function () {
+    // dashboard admin - menampilkan daftar instructor
+    Route::get('/dashboardAdmin', [AdminInstructorController::class, 'index'])->name('dashboardAdmin');
+    
+    // Update status instructor (approve/reject)
+    Route::post('/admin/instructor/{id}/update-status', [AdminInstructorController::class, 'updateStatus'])->name('admin.instructor.updateStatus');
 });

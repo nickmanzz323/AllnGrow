@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => 'App\\Http\\Middleware\\EnsureRole',
             'auth.student' => 'App\\Http\\Middleware\\AuthenticateStudent',
             'auth.instructor' => 'App\\Http\\Middleware\\AuthenticateInstructor',
+            'auth.admin' => 'App\\Http\\Middleware\\AuthenticateAdmin',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
