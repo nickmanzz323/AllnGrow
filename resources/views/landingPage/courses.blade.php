@@ -8,6 +8,8 @@
   <link rel="stylesheet" href="css/courses.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
 
 
   </head>
@@ -33,14 +35,49 @@
       <input type="text" placeholder="Search ...">
       <button class="search-btn"><i class="fa fa-search"></i></button>
     </div>
-    <div class="filters fade-up">
+
+
+    <div class="filters fade-up dropdown mt-5">
+      <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background-color:white; color:#767676">
+        Categories
+      </button>
+      
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#">All</a></li>
+        <li><a class="dropdown-item" href="#">Business & Finance</a></li>
+        <li><a class="dropdown-item" href="#">Arts & Design</a></li>
+        <li><a class="dropdown-item" href="#">Music & Performing Arts</a></li>
+        <li><a class="dropdown-item" href="#">Cooking & Culinary</a></li>
+        <li><a class="dropdown-item" href="#">Health & Sports</a></li>
+        <li><a class="dropdown-item" href="#">Lifestyle & Personal Development</a></li>
+        <li><a class="dropdown-item" href="#">Certification & Professional Skills</a></li>
+      </ul>
+
+      <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background-color:white; color:#767676">
+        Partner
+      </button>
+      
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#">All</a></li>
+        <li><a class="dropdown-item" href="#">Google</a></li>
+        <li><a class="dropdown-item" href="#">EdX</a></li>
+        <li><a class="dropdown-item" href="#">ABRSM</a></li>
+        <li><a class="dropdown-item" href="#">Adobe</a></li>
+        <li><a class="dropdown-item" href="#">Le Cordon Bleu</a></li>
+        <li><a class="dropdown-item" href="#">Microsoft</a></li>
+        <li><a class="dropdown-item" href="#">Certification & Professional Skills</a></li>
+      </ul>
+    </div>
+
+    <!-- <div class="filters fade-up">
       <select>
         <option>Categories</option>
       </select>
       <select>
         <option>Partner</option>
       </select>
-    </div>
+    </div> -->
+
   </section>
 
   <section class="courses-section">
@@ -120,9 +157,12 @@
     
     <div class="categories-grid stagger-children">
       <div class="category-item">
-        <div class="category-icon"><img src="images/bnfIcon.png" alt="Business icon" /></div>
-        <div class="category-name">Business & Finance</div>
+        <a href="">
+          <div class="category-icon"><img src="images/bnfIcon.png" alt="Business icon" /></div>
+          <div class="category-name">Business & Finance</div>
+        </a>
       </div>
+      
       <div class="category-item">
         <div class="category-icon"><img src="images/mnpIcon.png" alt="Music icon" /></div>
         <div class="category-name">Music & Perform Arts</div>
@@ -175,5 +215,7 @@
       sections.forEach(section => observer.observe(section));
     });
   </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 </body>
 </html>

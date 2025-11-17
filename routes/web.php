@@ -6,6 +6,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\InstructorRegisterController;
 use App\Http\Controllers\StudentLoginController;
 use App\Http\Controllers\InstructorLoginController;
+use App\Http\Controllers\CourseController;
 
 Route::middleware('web')->group(function () {
     // landing page
@@ -25,6 +26,9 @@ Route::middleware('web')->group(function () {
     Route::get('/courses', function () {
         return view('/landingPage/courses'); 
     })->name('courses');
+
+    // searching courses (filter)
+    Route::get('/search-courses', [CourseController::class, 'search'])->name('search.courses');
 
     // Course overview & detail
     Route::get('/overviewcourses', function () {
