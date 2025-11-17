@@ -15,7 +15,7 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #fafafa;
       min-height: 100vh;
       padding: 20px;
     }
@@ -24,9 +24,9 @@
       max-width: 900px;
       margin: 0 auto;
       background: white;
-      border-radius: 16px;
+      border-radius: 12px;
       padding: 40px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
 
     .header {
@@ -48,7 +48,7 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      color: #667eea;
+      color: #000000;
       text-decoration: none;
       margin-bottom: 20px;
       font-size: 14px;
@@ -120,8 +120,8 @@
 
     .form-group input:focus {
       outline: none;
-      border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      border-color: #000000;
+      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
     }
 
     .file-input-wrapper {
@@ -148,12 +148,12 @@
     }
 
     .file-input-label:hover {
-      border-color: #667eea;
-      background: #edf2f7;
+      border-color: #000000;
+      background: #f5f5f5;
     }
 
     .file-input-label i {
-      color: #667eea;
+      color: #000000;
       font-size: 20px;
     }
 
@@ -198,13 +198,13 @@
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #000000;
       color: white;
     }
 
     .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
 
     .btn-secondary {

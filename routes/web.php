@@ -94,9 +94,7 @@ Route::middleware(['web', 'auth.student'])->group(function () {
 // Protected routes untuk Instructor (harus login sebagai instructor)
 Route::middleware(['web', 'auth.instructor'])->group(function () {
     // dashboard instructor
-    Route::get('/dashboardInstructor', function () {
-        return view('dashboardInstructor.dashboardInstructor'); 
-    })->name('dashboardinstructor');
+    Route::get('/dashboardInstructor', [InstructorCourseController::class, 'dashboard'])->name('dashboardinstructor');
 
     Route::get('/messageInstructor', function () {
         return view('dashboardInstructor.messageInstructor'); 

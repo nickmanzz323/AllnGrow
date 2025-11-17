@@ -13,6 +13,44 @@ use App\Services\InputSanitizer;
 class InstructorCourseController extends Controller
 {
     /**
+     * Display dashboard dengan recent courses
+     */
+    public function dashboard()
+    {
+        try {
+            $instructor = Auth::guard('instructor')->user();
+            
+            if (!$instructor) {
+                return redirect()->route('instructor.login')->with('error', 'Please login first.');
+            }
+
+            // Get recent 5 courses
+            $recentCourses = Course::where('instructorID', $instructor->id)
+                ->withCount('subcourses')
+                ->withCount('students')
+                ->latest()
+                ->take(5)
+                ->get();
+
+            // Get statistics
+            $totalCourses = Course::where('instructorID', $instructor->id)->count();
+            $totalStudents = Course::where('instructorID', $instructor->id)
+                ->withCount('students')
+                ->get()
+                ->sum('students_count');
+
+            return view('dashboardInstructor.dashboardInstructor', compact('recentCourses', 'totalCourses', 'totalStudents'));
+        } catch (\Exception $e) {
+            Log::error('Failed to load dashboard: ' . $e->getMessage());
+            return view('dashboardInstructor.dashboardInstructor', [
+                'recentCourses' => collect(),
+                'totalCourses' => 0,
+                'totalStudents' => 0
+            ]);
+        }
+    }
+
+    /**
      * Display form untuk create course baru
      */
     public function create()

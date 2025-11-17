@@ -51,7 +51,7 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      color: #667eea;
+      color: #000000;
       text-decoration: none;
       margin-bottom: 20px;
       font-size: 14px;
@@ -64,7 +64,7 @@
     }
 
     .btn-create {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #000000;
       color: white;
       text-decoration: none;
       padding: 12px 24px;
@@ -79,7 +79,7 @@
 
     .btn-create:hover {
       transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     }
 
     .alert {
@@ -123,11 +123,11 @@
     .course-thumbnail {
       width: 100%;
       height: 200px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #e5e5e5;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
+      color: #737373;
       font-size: 48px;
       position: relative;
     }
@@ -167,7 +167,7 @@
     .course-price {
       font-size: 20px;
       font-weight: 700;
-      color: #667eea;
+      color: #000000;
       margin-bottom: 16px;
     }
 

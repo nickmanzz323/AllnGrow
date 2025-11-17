@@ -68,7 +68,7 @@
             <div class="stat-header">
               <div class="stat-icon"><i class="fas fa-book"></i></div>
             </div>
-            <div class="stat-value">8</div>
+            <div class="stat-value">{{ $totalCourses ?? 0 }}</div>
             <div class="stat-label">Total Courses</div>
           </div>
 
@@ -76,7 +76,7 @@
             <div class="stat-header">
               <div class="stat-icon"><i class="fas fa-users"></i></div>
             </div>
-            <div class="stat-value">1,243</div>
+            <div class="stat-value">{{ $totalStudents ?? 0 }}</div>
             <div class="stat-label">Total Students</div>
           </div>
 
@@ -101,61 +101,60 @@
         <section class="section">
           <div class="section-header">
             <h2>Recent Courses</h2>
-            <button class="btn-primary" onclick="switchTab('courses')">
+            <a href="{{ route('instructor.courses.index') }}" class="btn-primary">
               View All
-            </button>
+            </a>
           </div>
           
           <div class="course-table">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Course Name</th>
-                  <th>Students</th>
-                  <th>Rating</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>Web Development Fundamentals</strong></td>
-                  <td>324</td>
-                  <td>⭐ 4.9</td>
-                  <td><span class="status-badge published">Published</span></td>
-                  <td>
-                    <div class="action-btns">
-                      <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
-                      <button class="action-btn" title="Analytics"><i class="fas fa-chart-line"></i></button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><strong>Advanced JavaScript Concepts</strong></td>
-                  <td>218</td>
-                  <td>⭐ 4.7</td>
-                  <td><span class="status-badge published">Published</span></td>
-                  <td>
-                    <div class="action-btns">
-                      <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
-                      <button class="action-btn" title="Analytics"><i class="fas fa-chart-line"></i></button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><strong>React for Beginners</strong></td>
-                  <td>0</td>
-                  <td>-</td>
-                  <td><span class="status-badge pending">Pending Review</span></td>
-                  <td>
-                    <div class="action-btns">
-                      <button class="action-btn" title="Edit"><i class="fas fa-edit"></i></button>
-                      <button class="action-btn" title="Delete"><i class="fas fa-trash"></i></button>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            @if(isset($recentCourses) && $recentCourses->count() > 0)
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Course Name</th>
+                    <th>Modules</th>
+                    <th>Students</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach($recentCourses as $course)
+                    <tr>
+                      <td><strong>{{ $course->title }}</strong></td>
+                      <td>{{ $course->subcourses_count }} modules</td>
+                      <td>{{ $course->students_count }} students</td>
+                      <td>
+                        @if($course->price > 0)
+                          Rp {{ number_format($course->price, 0, ',', '.') }}
+                        @else
+                          Free
+                        @endif
+                      </td>
+                      <td>
+                        <div class="action-btns">
+                          <a href="{{ route('instructor.courses.edit', $course->id) }}" class="action-btn" title="Edit">
+                            <i class="fas fa-edit"></i>
+                          </a>
+                          <form method="POST" action="{{ route('instructor.courses.destroy', $course->id) }}" style="display: inline;" onsubmit="return confirm('Delete this course?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="action-btn" title="Delete">
+                              <i class="fas fa-trash"></i>
+                            </button>
+                          </form>
+                        </div>
+                      </td>
+                    </tr>
+                  @endforeach
+                </tbody>
+              </table>
+            @else
+              <div style="text-align: center; padding: 40px; color: #737373;">
+                <i class="fas fa-book" style="font-size: 48px; margin-bottom: 16px; opacity: 0.3;"></i>
+                <p>No courses yet. <a href="{{ route('instructor.courses.create') }}" style="color: #6c5ce7;">Create your first course</a></p>
+              </div>
+            @endif
           </div>
         </section>
       </div>
