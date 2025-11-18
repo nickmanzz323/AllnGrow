@@ -13,50 +13,73 @@ class CourseController extends Controller
     //
     function course_page() {
 
-        $courses=Course::simplePaginate(6);
-        $categories=Category::orderBy('name')->get();
-        $partners=Partner::orderBy('name')->get();
+        $courses = Course::where('status', 'approved')
+            ->with(['category', 'instructor', 'subcourses', 'students'])
+            ->withCount(['subcourses', 'students'])
+            ->latest()
+            ->simplePaginate(9);
 
-        return view('landingPage.courses', 
-        ['courses'=>$courses,
-        'categories'=>$categories, 
-        'partners'=>$partners,
-        'category'=>null, 'partner'=>null]); 
+        $categories = Category::orderBy('name')->get();
+        $partners = Partner::orderBy('name')->get();
+
+        return view('landingPage.courses',
+        ['courses' => $courses,
+        'categories' => $categories,
+        'partners' => $partners,
+        'category' => null,
+        'partner' => null]);
     }
 
     function search(Request $request){
         $search = $request->input('search');
         $category = $request->input('category');
-        $partner= $request->input('partner');
+        $partner = $request->input('partner');
+        $price = $request->input('price');
 
-        $query = Course::query();
-        // filter by title
+        $query = Course::where('status', 'approved')
+            ->with(['category', 'instructor', 'subcourses', 'students'])
+            ->withCount(['subcourses', 'students']);
+
+        // filter by title or description
         if($search){
-            $query->where('title', 'LIKE', '%'.$search.'%');
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'LIKE', '%'.$search.'%')
+                  ->orWhere('description', 'LIKE', '%'.$search.'%');
+            });
         }
 
+        // filter by category
         if($category){
             $query->whereHas('category', function($q) use ($category){
                 $q->where('name', $category);
             });
-            // $query->where('category', $category);
         }
 
+        // filter by partner
         if($partner){
             $query->whereHas('partner', function($q) use ($partner){
                 $q->where('name', $partner);
             });
         }
 
-        $courses=$query->simplePaginate(6)->withQueryString();
-        $categories=Category::orderBy('name')->get();
-        $partners=Partner::orderBy('name')->get();
+        // filter by price
+        if($price){
+            if($price === 'free'){
+                $query->where('price', 0);
+            } elseif($price === 'paid'){
+                $query->where('price', '>', 0);
+            }
+        }
 
-        return view('landingPage.courses', 
-            ['courses'=>$courses, 
-            'category'=>$category, 
-            'categories'=>$categories, 
-            'partner'=>$partner,
-            'partners'=>$partners]);
+        $courses = $query->latest()->simplePaginate(9)->withQueryString();
+        $categories = Category::orderBy('name')->get();
+        $partners = Partner::orderBy('name')->get();
+
+        return view('landingPage.courses',
+            ['courses' => $courses,
+            'category' => $category,
+            'categories' => $categories,
+            'partner' => $partner,
+            'partners' => $partners]);
     }
 }

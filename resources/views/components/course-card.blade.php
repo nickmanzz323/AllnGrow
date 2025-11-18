@@ -1,36 +1,63 @@
 <article class="course-card">
-    <img src="{{ asset('images/dataPic.png') }}" 
-         alt="{{ $course->title }}" 
-         class="course-image" />
+    <!-- Thumbnail -->
+    @if($course->thumbnail)
+        <img src="{{ asset('storage/' . $course->thumbnail) }}"
+             alt="{{ $course->title }}"
+             class="course-image" />
+    @else
+        <div class="course-image-placeholder">
+            <i class="fas fa-book"></i>
+        </div>
+    @endif
 
-    <!-- Rating -->
-    <div class="course-rating">
-        <img src="{{ asset('images/starSymbol.png') }}" 
-             alt="Rating Stars" 
-             width="78" 
-             height="14" />
-        <span>{{ $course->rating ?? '4.5' }} ★</span>
+    <!-- Category & Price Badge -->
+    <div class="course-badges">
+        @if($course->category)
+            <span class="badge-category">{{ $course->category->name }}</span>
+        @endif
+        @if($course->price == 0)
+            <span class="badge-free">Free</span>
+        @else
+            <span class="badge-price">Rp {{ number_format($course->price, 0, ',', '.') }}</span>
+        @endif
     </div>
 
     <!-- Title -->
     <h3 class="course-title">
-        {{ Str::limit($course->title, 45, '...') }}
+        {{ Str::limit($course->title, 50, '...') }}
     </h3>
+
+    <!-- Description -->
+    @if($course->description)
+        <p class="course-description">
+            {{ Str::limit($course->description, 80, '...') }}
+        </p>
+    @endif
+
+    <!-- Instructor -->
+    @if($course->instructor)
+        <div class="course-instructor">
+            <i class="fas fa-user-circle"></i>
+            <span>{{ $course->instructor->name ?? $course->instructor->email }}</span>
+        </div>
+    @endif
 
     <!-- Meta -->
     <div class="course-meta">
         <span>
-            <img src="{{ asset('images/timeSymbol.png') }}" 
-                 alt="Duration" 
-                 width="18" />
-            {{ $course->duration ?? '—' }}
+            <i class="fas fa-book-open"></i>
+            {{ $course->subcourses_count ?? $course->subcourses()->count() }} Lessons
         </span>
 
         <span>
-            <img src="{{ asset('images/user.png') }}" 
-                 alt="Students" 
-                 width="18" />
-            {{ $course->students_count ?? '0' }} Students
+            <i class="fas fa-users"></i>
+            {{ $course->students_count ?? $course->students()->count() }} Students
         </span>
     </div>
+
+    <!-- Action Button -->
+    <a href="{{ route('student.login') }}" class="course-action-btn">
+        <span>View Course</span>
+        <i class="fas fa-arrow-right"></i>
+    </a>
 </article>

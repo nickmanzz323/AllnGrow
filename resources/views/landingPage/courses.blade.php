@@ -54,7 +54,8 @@
       <form action="{{ route('courses.search') }}" method="GET" class="d-flex w-100">
         <input type="text"
                name="search"
-               placeholder="Search ..."
+               placeholder="Search courses..."
+               value="{{ request('search') }}"
                class="form-control" />
         <button class="search-btn" type="submit">
           <i class="fa fa-search"></i>
@@ -70,18 +71,22 @@
                 type="button"
                 data-bs-toggle="dropdown"
                 aria-expanded="false">
-          Categories
+          {{ request('category') ? request('category') : 'All Categories' }}
         </button>
 
-        <ul class="dropdown-menu">
+        <ul class="dropdown-menu" style="max-height: 400px; overflow-y: auto;">
           <li>
-            <a class="dropdown-item" href="{{ route('courses.search') }}">All</a>
+            <a class="dropdown-item {{ !request('category') ? 'active' : '' }}"
+               href="{{ route('courses.search', request()->except('category')) }}">
+               All Categories
+            </a>
           </li>
+          <li><hr class="dropdown-divider" style="border-color: #333;"></li>
 
           @foreach($categories as $cat)
             <li>
-              <a class="dropdown-item"
-                 href="{{ route('courses.search') . '?' . http_build_query(array_merge(request()->query(), ['category' => $cat->name])) }}">
+              <a class="dropdown-item {{ request('category') == $cat->name ? 'active' : '' }}"
+                 href="{{ route('courses.search', array_merge(request()->except('category'), ['category' => $cat->name])) }}">
                 {{ $cat->name }}
               </a>
             </li>
@@ -95,22 +100,58 @@
                 type="button"
                 data-bs-toggle="dropdown"
                 aria-expanded="false">
-          Partner
+          {{ request('partner') ? request('partner') : 'All Partners' }}
         </button>
 
-        <ul class="dropdown-menu">
+        <ul class="dropdown-menu" style="max-height: 400px; overflow-y: auto;">
           <li>
-            <a class="dropdown-item" href="{{ route('courses.search') }}">All</a>
+            <a class="dropdown-item {{ !request('partner') ? 'active' : '' }}"
+               href="{{ route('courses.search', request()->except('partner')) }}">
+               All Partners
+            </a>
           </li>
+          <li><hr class="dropdown-divider" style="border-color: #333;"></li>
 
           @foreach($partners as $partner)
             <li>
-              <a class="dropdown-item"
-                 href="{{ route('courses.search') . '?' . http_build_query(array_merge(request()->query(), ['partner' => $partner->name])) }}">
+              <a class="dropdown-item {{ request('partner') == $partner->name ? 'active' : '' }}"
+                 href="{{ route('courses.search', array_merge(request()->except('partner'), ['partner' => $partner->name])) }}">
                 {{ $partner->name }}
               </a>
             </li>
           @endforeach
+        </ul>
+      </div>
+
+      <!-- Price Filter -->
+      <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+          {{ request('price') == 'free' ? 'Free' : (request('price') == 'paid' ? 'Paid' : 'All Prices') }}
+        </button>
+
+        <ul class="dropdown-menu">
+          <li>
+            <a class="dropdown-item {{ !request('price') ? 'active' : '' }}"
+               href="{{ route('courses.search', request()->except('price')) }}">
+               All Prices
+            </a>
+          </li>
+          <li><hr class="dropdown-divider" style="border-color: #333;"></li>
+          <li>
+            <a class="dropdown-item {{ request('price') == 'free' ? 'active' : '' }}"
+               href="{{ route('courses.search', array_merge(request()->except('price'), ['price' => 'free'])) }}">
+              Free
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item {{ request('price') == 'paid' ? 'active' : '' }}"
+               href="{{ route('courses.search', array_merge(request()->except('price'), ['price' => 'paid'])) }}">
+              Paid
+            </a>
+          </li>
         </ul>
       </div>
     </div>
@@ -144,30 +185,54 @@
         </span>
       @endif
 
-      @if(request()->hasAny(['search','category','partner']))
-        <a href="{{ route('courses.search') }}"
+      @if(request('price'))
+        <span class="badge bg-info">
+          Price: {{ ucfirst(request('price')) }}
+          <a href="{{ route('courses.search', request()->except('price')) }}"
+             class="text-white ms-1"
+             style="text-decoration: none;">&times;</a>
+        </span>
+      @endif
+
+      @if(request()->hasAny(['search','category','partner','price']))
+        <a href="{{ route('courses') }}"
            class="btn btn-outline-secondary btn-sm ms-2">
           Clear All
         </a>
+      @endif
+    </div>
+
+    <!-- Results count -->
+    <div class="results-count fade-up" style="color: #9ca3af; font-size: 0.9rem;">
+      @if($courses->count() > 0)
+        Showing {{ $courses->count() }} courses
+        @if(request()->hasAny(['search','category','partner','price']))
+          with current filters
+        @endif
       @endif
     </div>
   </section>
 
   <!-- COURSES SECTION -->
   <section class="courses-section mt-4">
-    <!-- RESULT SLIDER (Explore Courses) -->
-    <div class="courses-wrapper-3col">
-      <div class="courses-grid stagger-children">
-        @if($courses->count() > 0)
+    <!-- RESULT GRID (Explore Courses) -->
+    <div class="courses-result-wrapper">
+      @if($courses->count() > 0)
+        <div class="courses-result-grid stagger-children">
           @foreach($courses as $course)
             @include('components.course-card', ['course' => $course])
           @endforeach
-        @else
-          <p class="text-center w-100 empty-state-text">
-            <!-- Courses not found... -->
-          </p>
-        @endif
-      </div>
+        </div>
+      @else
+        <div class="empty-state-container">
+          <i class="fas fa-search" style="font-size: 3rem; color: #333; margin-bottom: 1rem;"></i>
+          <p class="empty-state-text">No courses found</p>
+          <p style="color: #666; font-size: 0.9rem;">Try adjusting your search or filter criteria</p>
+          <a href="{{ route('courses') }}" class="btn btn-outline-light btn-sm mt-3">
+            Clear Filters
+          </a>
+        </div>
+      @endif
     </div>
 
     <!-- Pagination -->
