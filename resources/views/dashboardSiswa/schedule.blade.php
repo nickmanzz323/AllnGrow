@@ -14,12 +14,12 @@
     <aside class="sidebar">
       <div class="logo">AllnGrow</div>
       <nav>
-        <a href="dashboardSiswa"><i class="fas fa-home"></i> Dashboard</a>
-        <a href="myCourses"><i class="fas fa-book"></i> My Courses</a>
+        <a href="{{ route('dashboardSiswa') }}"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="{{ route('student.my-courses') }}"><i class="fas fa-book"></i> My Courses</a>
         <a href="{{ route('student.browse-courses') }}"><i class="fas fa-search"></i> Browse Courses</a>
-        <a class="active" href="schedule"><i class="fas fa-calendar"></i> Schedule</a>
-        <a href="progress"><i class="fas fa-chart-line"></i> Progress</a>
-        <a href="settings"><i class="fas fa-cog"></i> Settings</a>
+        <a class="active" href="{{ route('schedule') }}"><i class="fas fa-calendar"></i> Schedule</a>
+        <a href="{{ route('progress') }}"><i class="fas fa-chart-line"></i> Progress</a>
+        <a href="{{ route('settings') }}"><i class="fas fa-cog"></i> Settings</a>
         <div style="margin-top: auto; padding-top: 2rem; border-top: 1px solid #262626;">
           <form method="POST" action="{{ route('student.logout') }}">
             @csrf
