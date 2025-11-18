@@ -118,7 +118,9 @@ Route::middleware(['web', 'auth.instructor'])->group(function () {
 
     // Course Management
     Route::get('/instructor/courses', [InstructorCourseController::class, 'index'])->name('instructor.courses.index');
+    Route::get('/instructor/my-courses', [InstructorCourseController::class, 'index'])->name('instructor.myCourses'); // Alias
     Route::get('/instructor/courses/create', [InstructorCourseController::class, 'create'])->name('instructor.courses.create');
+    Route::get('/instructor/create-course', [InstructorCourseController::class, 'create'])->name('instructor.createCourse'); // Alias
     Route::post('/instructor/courses', [InstructorCourseController::class, 'store'])->name('instructor.courses.store');
     Route::get('/instructor/courses/{id}/edit', [InstructorCourseController::class, 'edit'])->name('instructor.courses.edit');
     Route::put('/instructor/courses/{id}', [InstructorCourseController::class, 'update'])->name('instructor.courses.update');
