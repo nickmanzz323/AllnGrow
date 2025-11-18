@@ -47,7 +47,7 @@ class Course extends Model
 
     public function subcourses(): HasMany
     {
-        return $this->hasMany(Subcourse::class, 'course_id');
+        return $this->hasMany(Subcourse::class, 'course_id', 'courseID');
     }
 
     public function studentCourses(): HasMany
