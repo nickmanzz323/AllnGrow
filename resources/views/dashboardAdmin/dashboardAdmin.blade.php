@@ -19,7 +19,14 @@
         </a>
         <a class="nav-link" data-page="pending-instructors">
           <i class="fas fa-user-clock"></i> Pending Instructors
-          <span class="badge">3</span>
+          @php
+            $pendingCount = $instructors->filter(function($instructor) {
+              return $instructor->detail && $instructor->detail->status === 'pending';
+            })->count();
+          @endphp
+          @if($pendingCount > 0)
+          <span class="badge">{{ $pendingCount }}</span>
+          @endif
         </a>
         <a class="nav-link" data-page="manage-instructors">
           <i class="fas fa-chalkboard-teacher"></i> Manage Instructors
@@ -61,6 +68,12 @@
                 <div class="user-role">Administrator</div>
               </div>
             </div>
+            <form action="{{ route('admin.logout') }}" method="POST" style="display: inline; margin-left: 10px;">
+              @csrf
+              <button type="submit" style="background:#ff4444;color:#fff;padding:8px 16px;border:none;border-radius:6px;cursor:pointer;font-weight:500;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+              </button>
+            </form>
           </div>
         </header>
 
@@ -71,9 +84,14 @@
               <i class="fas fa-chalkboard-teacher"></i>
             </div>
             <div class="stat-content">
-              <div class="stat-value">124</div>
+              <div class="stat-value">{{ $instructors->count() }}</div>
               <div class="stat-label">Total Instructors</div>
-              <div class="stat-change positive">+12 this month</div>
+              @php
+                $approvedCount = $instructors->filter(function($instructor) {
+                  return $instructor->detail && $instructor->detail->status === 'approved';
+                })->count();
+              @endphp
+              <div class="stat-change positive">{{ $approvedCount }} approved</div>
             </div>
           </div>
 
@@ -82,9 +100,9 @@
               <i class="fas fa-users"></i>
             </div>
             <div class="stat-content">
-              <div class="stat-value">3,847</div>
+              <div class="stat-value">{{ \App\Models\Student::count() }}</div>
               <div class="stat-label">Total Students</div>
-              <div class="stat-change positive">+234 this month</div>
+              <div class="stat-change positive">Active learners</div>
             </div>
           </div>
 
@@ -93,20 +111,25 @@
               <i class="fas fa-book"></i>
             </div>
             <div class="stat-content">
-              <div class="stat-value">456</div>
+              <div class="stat-value">{{ \App\Models\Course::count() }}</div>
               <div class="stat-label">Total Courses</div>
-              <div class="stat-change positive">+18 this month</div>
+              <div class="stat-change positive">Published</div>
             </div>
           </div>
 
           <div class="stat-card">
             <div class="stat-icon purple">
-              <i class="fas fa-dollar-sign"></i>
+              <i class="fas fa-user-clock"></i>
             </div>
             <div class="stat-content">
-              <div class="stat-value">$124,560</div>
-              <div class="stat-label">Total Revenue</div>
-              <div class="stat-change positive">+8.5% this month</div>
+              @php
+                $pendingCount = $instructors->filter(function($instructor) {
+                  return $instructor->detail && $instructor->detail->status === 'pending';
+                })->count();
+              @endphp
+              <div class="stat-value">{{ $pendingCount }}</div>
+              <div class="stat-label">Pending Approvals</div>
+              <div class="stat-change {{ $pendingCount > 0 ? 'negative' : 'positive' }}">Requires action</div>
             </div>
           </div>
         </div>
@@ -119,33 +142,37 @@
               <button class="btn-link" onclick="switchTab('pending-instructors')">View All</button>
             </div>
             <div class="approval-list">
+              @php
+                $pendingInstructors = $instructors->filter(function($instructor) {
+                  return $instructor->detail && $instructor->detail->status === 'pending';
+                })->take(2);
+              @endphp
+              
+              @forelse($pendingInstructors as $instructor)
               <div class="approval-item">
                 <div class="approval-info">
-                  <div class="approval-avatar">MK</div>
+                  <div class="approval-avatar">{{ strtoupper(substr($instructor->name ?? 'IN', 0, 2)) }}</div>
                   <div>
-                    <h4>Dr. Michael Kim</h4>
-                    <p class="muted">Applied 2 hours ago</p>
+                    <h4>{{ $instructor->name ?? 'Unknown' }}</h4>
+                    <p class="muted">{{ $instructor->created_at->diffForHumans() }}</p>
                   </div>
                 </div>
                 <div class="approval-actions">
-                  <button class="btn-approve"><i class="fas fa-check"></i> Approve</button>
-                  <button class="btn-reject"><i class="fas fa-times"></i> Reject</button>
+                  <form action="{{ route('admin.instructor.updateStatus', $instructor->id) }}" method="POST" style="display: inline;">
+                    @csrf
+                    <input type="hidden" name="status" value="approved">
+                    <button type="submit" class="btn-approve"><i class="fas fa-check"></i> Approve</button>
+                  </form>
+                  <form action="{{ route('admin.instructor.updateStatus', $instructor->id) }}" method="POST" style="display: inline;">
+                    @csrf
+                    <input type="hidden" name="status" value="rejected">
+                    <button type="submit" class="btn-reject"><i class="fas fa-times"></i> Reject</button>
+                  </form>
                 </div>
               </div>
-
-              <div class="approval-item">
-                <div class="approval-info">
-                  <div class="approval-avatar">EW</div>
-                  <div>
-                    <h4>Emma Wilson</h4>
-                    <p class="muted">Applied 5 hours ago</p>
-                  </div>
-                </div>
-                <div class="approval-actions">
-                  <button class="btn-approve"><i class="fas fa-check"></i> Approve</button>
-                  <button class="btn-reject"><i class="fas fa-times"></i> Reject</button>
-                </div>
-              </div>
+              @empty
+              <p class="muted" style="text-align: center; padding: 20px;">Tidak ada instructor yang menunggu approval</p>
+              @endforelse
             </div>
           </section>
 
@@ -206,16 +233,33 @@
           </div>
         </header>
 
+        @if(session('success'))
+          <div style="background:#d4edda;border:1px solid #c3e6cb;color:#155724;padding:16px;margin:20px;border-radius:8px;font-weight:500;">
+            <i class="fas fa-check-circle"></i> {{ session('success') }}
+          </div>
+        @endif
+        @if(session('error'))
+          <div style="background:#f8d7da;border:1px solid #f5c6cb;color:#721c24;padding:16px;margin:20px;border-radius:8px;font-weight:500;">
+            <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
+          </div>
+        @endif
+
         <div class="instructor-cards">
-          <!-- Instructor Card 1 -->
+          @php
+            $pendingInstructors = $instructors->filter(function($instructor) {
+              return $instructor->detail && $instructor->detail->status === 'pending';
+            });
+          @endphp
+          
+          @forelse($pendingInstructors as $instructor)
           <div class="instructor-card">
             <div class="card-header">
               <div class="instructor-profile">
-                <div class="instructor-avatar large">MK</div>
+                <div class="instructor-avatar large">{{ strtoupper(substr($instructor->name ?? 'IN', 0, 2)) }}</div>
                 <div class="profile-details">
-                  <h3>Dr. Michael Kim</h3>
-                  <p class="subtitle">PhD in Computer Science</p>
-                  <p class="timestamp"><i class="fas fa-clock"></i> Applied 2 hours ago</p>
+                  <h3>{{ $instructor->name ?? 'Unknown' }}</h3>
+                  <p class="subtitle">{{ $instructor->detail->expertise ?? 'N/A' }}</p>
+                  <p class="timestamp"><i class="fas fa-clock"></i> Applied {{ $instructor->created_at->diffForHumans() }}</p>
                 </div>
               </div>
               <span class="status-badge pending">Pending Review</span>
@@ -225,56 +269,70 @@
               <div class="info-grid">
                 <div class="info-item">
                   <label>Email</label>
-                  <p>michael.kim@university.edu</p>
+                  <p>{{ $instructor->email }}</p>
                 </div>
                 <div class="info-item">
                   <label>Phone</label>
-                  <p>+1 (555) 123-4567</p>
+                  <p>{{ $instructor->detail->phone ?? 'N/A' }}</p>
                 </div>
                 <div class="info-item">
                   <label>Expertise</label>
-                  <p>Web Development, AI, Machine Learning</p>
+                  <p>{{ $instructor->detail->expertise ?? 'N/A' }}</p>
                 </div>
                 <div class="info-item">
                   <label>Years of Experience</label>
-                  <p>12 years</p>
+                  <p>{{ $instructor->detail->experience ?? 'N/A' }}</p>
                 </div>
               </div>
 
               <div class="info-section">
                 <label>Bio</label>
-                <p>Experienced professor with over 12 years in teaching web development and AI. Published multiple research papers and worked with leading tech companies.</p>
+                <p>{{ $instructor->detail->bio ?? 'No bio provided' }}</p>
               </div>
 
+              @if($instructor->detail && $instructor->detail->cv)
               <div class="info-section">
-                <label>Credentials</label>
+                <label>CV / Credentials</label>
                 <div class="file-list">
                   <div class="file-item">
                     <i class="fas fa-file-pdf"></i>
-                    <span>PhD_Certificate.pdf</span>
-                  </div>
-                  <div class="file-item">
-                    <i class="fas fa-file-pdf"></i>
-                    <span>Teaching_License.pdf</span>
+                    <a href="{{ Storage::url($instructor->detail->cv) }}" target="_blank" style="color: inherit; text-decoration: none;">
+                      <span>{{ basename($instructor->detail->cv) }}</span>
+                    </a>
                   </div>
                 </div>
               </div>
+              @endif
             </div>
 
             <div class="card-footer">
-              <button class="btn-secondary">
-                <i class="fas fa-eye"></i> View Details
-              </button>
-              <div class="action-buttons">
-                <button class="btn-reject">
-                  <i class="fas fa-times"></i> Reject
-                </button>
-                <button class="btn-approve">
-                  <i class="fas fa-check"></i> Approve
-                </button>
+              <div class="action-buttons" style="width: 100%; display: flex; gap: 10px; justify-content: flex-end;">
+                <form action="{{ route('admin.instructor.updateStatus', $instructor->id) }}" method="POST" style="display: inline;">
+                  @csrf
+                  <input type="hidden" name="status" value="rejected">
+                  <button type="submit" class="btn-reject" onclick="return confirm('Yakin ingin reject instructor ini?')">
+                    <i class="fas fa-times"></i> Reject
+                  </button>
+                </form>
+                <form action="{{ route('admin.instructor.updateStatus', $instructor->id) }}" method="POST" style="display: inline;">
+                  @csrf
+                  <input type="hidden" name="status" value="approved">
+                  <button type="submit" class="btn-approve" onclick="return confirm('Yakin ingin approve instructor ini?')">
+                    <i class="fas fa-check"></i> Approve
+                  </button>
+                </form>
               </div>
             </div>
           </div>
+          @empty
+          <div style="text-align: center; padding: 60px 20px; color: #737373;">
+            <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+            <h3 style="margin-bottom: 8px;">Tidak ada instructor pending</h3>
+            <p>Semua instructor sudah di-review</p>
+          </div>
+          @endforelse
+        </div>
+      </div>
 
           <!-- Instructor Card 2 -->
           <div class="instructor-card">
