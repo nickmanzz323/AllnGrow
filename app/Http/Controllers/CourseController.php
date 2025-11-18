@@ -82,4 +82,14 @@ class CourseController extends Controller
             'partner' => $partner,
             'partners' => $partners]);
     }
+
+    function show($courseId)
+    {
+        $course = Course::where('status', 'approved')
+            ->with(['category', 'instructor.detail', 'subcourses', 'students', 'ratings'])
+            ->withCount(['subcourses', 'students'])
+            ->findOrFail($courseId);
+
+        return view('detailCourses.overviewcourses', compact('course'));
+    }
 }

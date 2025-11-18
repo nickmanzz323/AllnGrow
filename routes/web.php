@@ -34,12 +34,10 @@ Route::middleware('web')->group(function () {
     Route::get('/search-courses', [CourseController::class, 'search'])->name('courses.search');
 
     // Course overview & detail
-    Route::get('/overviewcourses', function () {
-        return view('detailCourses.overviewcourses'); 
-    })->name('overviewcourses');
+    Route::get('/course/{courseId}', [CourseController::class, 'show'])->name('course.show');
 
     Route::get('/coursesDetail', function () {
-        return view('detailCourses.coursesDetail'); 
+        return view('detailCourses.coursesDetail');
     })->name('coursesDetail');
 
     // Instructor Login

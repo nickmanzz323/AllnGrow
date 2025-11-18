@@ -1,7 +1,7 @@
 body {
   font-family: 'Poppins', sans-serif;
-  background: #ffffff;
-  color: #111111;
+  background: #000000;
+  color: #f5f5f5;
   margin: 0;
   padding: 0;
   line-height: 1.7;
@@ -27,18 +27,18 @@ body {
 .course-header h1 {
   font-size: 2rem;
   font-weight: 600;
-  color: #000;
+  color: #ffffff;
 }
 
 .course-header .subtitle {
-  color: #555;
+  color: #a3a3a3;
   font-size: 1rem;
   margin-top: 10px;
 }
 
 .rating {
   margin-top: 15px;
-  color: #135402;
+  color: #f5f5f5;
   font-weight: 600;
 }
 
@@ -55,27 +55,32 @@ body {
 .course-main h3 {
   margin-top: 30px;
   font-size: 1.1rem;
-  color: #000;
+  color: #ffffff;
 }
 
 .course-main ul {
   margin-top: 10px;
   padding-left: 20px;
-  color: #444;
+  color: #d4d4d4;
 }
 
+/* OUTLINE + DETAILS */
 .course-outline details {
-  background: #f9f9f9;
+  background: #0f0f0f;
   border-radius: 8px;
-  padding: 12px 16px;
-  margin-top: 10px;
+  padding: 16px 18px;
+  margin-bottom: 10px;
   transition: all 0.3s ease;
-  border: 1px solid #eee;
+  border: 1px solid #262626;
 }
 
 .course-outline summary {
-  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   cursor: pointer;
+  font-weight: 600;
+  color: #ffffff;
   list-style: none;
 }
 
@@ -83,11 +88,36 @@ body {
   display: none;
 }
 
-.course-outline details[open] {
-  border-left: 3px solid #135402;
-  background: #f4faf2;
+.course-outline summary::before {
+  content: "●";
+  color: #f5f5f5;
+  font-size: 0.9rem;
 }
 
+.course-outline details[open] {
+  background: #141414;
+  border-left: 3px solid #f5f5f5;
+}
+
+/* text di dalam details */
+.course-outline details p {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: all 0.4s ease;
+  margin-top: 0;
+  color: #d4d4d4;
+}
+
+.course-outline details[open] p {
+  max-height: 200px;
+  opacity: 1;
+  margin-top: 10px;
+}
+
+/* ======================
+   COURSE IMAGE
+   ====================== */
 .course-image {
   width: 100%;
   max-width: 1100px;
@@ -95,14 +125,14 @@ body {
   margin: 0 auto 50px auto;
   border-radius: 24px;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.8);
 }
 
 .course-image img {
   width: 100%;
-  height: fit-content; 
+  height: fit-content;
   object-fit: cover;
-  filter: brightness(0.95);
+  filter: brightness(0.9);
   transition: all 0.4s ease;
 }
 
@@ -111,13 +141,15 @@ body {
   filter: brightness(1);
 }
 
-/* RIGHT SIDE - ENROLL BOX */
+/* ======================
+   RIGHT SIDE - ENROLL BOX
+   ====================== */
 .enroll-box {
-  border: 1px solid #eaeaea;
+  border: 1px solid #262626;
   border-radius: 16px;
   padding: 25px;
-  background: #ffffff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  background: #0f0f0f;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.7);
   height: fit-content;
   position: sticky;
   top: 100px;
@@ -129,30 +161,49 @@ body {
 }
 
 .enroll-box .price h2 {
-  color: #135402;
+  color: #ffffff;
   margin-bottom: 5px;
   font-size: 1.6rem;
 }
 
 .enroll-box .price p {
-  color: #999;
+  color: #a3a3a3;
   font-size: 0.9rem;
 }
 
+/* BUTTON ENROLL */
 .enroll-btn {
   width: 100%;
   padding: 12px;
   border: none;
   border-radius: 8px;
-  background: #135402;
-  color: #ffffff;
+  background: #ffffff;
+  color: #000000;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.4s ease, transform 0.3s ease;
+}
+
+.enroll-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.08);
+  transition: left 0.4s ease;
+}
+
+.enroll-btn:hover::before {
+  left: 0;
 }
 
 .enroll-btn:hover {
-  background: #0e3f01;
+  transform: translateY(-2px);
+  background: #e5e5e5;
 }
 
 .enroll-box ul {
@@ -160,7 +211,7 @@ body {
   padding: 0;
   margin-top: 20px;
   font-size: 0.9rem;
-  color: #444;
+  color: #d4d4d4;
 }
 
 .enroll-box li {
@@ -177,7 +228,7 @@ body {
   margin-top: 30px;
   margin-bottom: 10px;
   font-size: 0.95rem;
-  color: #333;
+  color: #d4d4d4;
 }
 
 .lesson-item {
@@ -188,48 +239,18 @@ body {
 }
 
 .lesson-item i {
-  color: #135402;
+  color: #f5f5f5;
   font-size: 1rem;
 }
 
 .lesson-divider {
   border: none;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid #262626;
   margin: 10px 0 20px;
 }
 
-.course-outline details {
-  border: 1px solid #eaeaea;
-  border-radius: 8px;
-  background: #fff;
-  padding: 16px 18px;
-  margin-bottom: 10px;
-  transition: all 0.3s ease;
-}
-
-.course-outline summary {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  font-weight: 600;
-  color: #222;
-  list-style: none;
-}
-
-.course-outline summary::before {
-  content: "●";
-  color: #135402;
-  font-size: 0.9rem;
-}
-
-.course-outline details[open] {
-  background: #f8fdf7;
-  border-left: 3px solid #135402;
-}
-
 /* ======================
-   INSTRUCTOR SECTION 
+   INSTRUCTOR SECTION
    ====================== */
 .instructor {
   margin-top: 80px;
@@ -240,7 +261,7 @@ body {
 .instructor h2 {
   font-size: 40px;
   font-weight: 500;
-  color: #000;
+  color: #ffffff;
   margin-bottom: 40px;
 }
 
@@ -250,21 +271,22 @@ body {
   align-items: center;
   justify-content: center;
   gap: 30px;
-  background: #f9f9f9;
+  background: #101010;
   border-radius: 24px;
   padding: 40px 50px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 6px 26px rgba(0, 0, 0, 0.8);
   max-width: 900px;
   margin: 0 auto;
   text-align: left;
   transition: all 0.35s ease;
   cursor: pointer;
+  border: 1px solid #262626;
 }
 
 .instructor-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  background: #f5f9f5; 
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.9);
+  background: #151515;
 }
 
 /* INSTRUCTOR IMAGE */
@@ -289,17 +311,17 @@ body {
 .instructor-info h3 {
   font-size: 1.2rem;
   font-weight: 600;
-  color: #000;
+  color: #ffffff;
   margin-bottom: 8px;
   transition: color 0.3s ease;
 }
 
 .instructor-card:hover h3 {
-  color: #135402;
+  color: #e5e5e5;
 }
 
 .instructor-info p {
-  color: #444;
+  color: #d4d4d4;
   margin: 4px 0;
   line-height: 1.6;
 }
@@ -307,11 +329,15 @@ body {
 .instructor-info .bio {
   margin-top: 10px;
   font-size: 0.95rem;
-  color: #555;
+  color: #b3b3b3;
 }
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
+  .course-info {
+    grid-template-columns: 1fr;
+  }
+
   .instructor-card {
     flex-direction: column;
     text-align: center;
@@ -329,7 +355,7 @@ body {
 }
 
 /* ======================
-   TESTIMONIALS 
+   TESTIMONIALS
    ====================== */
 .testimonials {
   overflow: hidden;
@@ -342,7 +368,7 @@ body {
   font-size: 1.8rem;
   font-weight: 600;
   margin-bottom: 50px;
-  color: #000;
+  color: #ffffff;
 }
 
 .testimonial-slider {
@@ -365,13 +391,15 @@ body {
   flex: 0 0 320px;
   padding: 28px 24px;
   border-radius: 20px;
-  background: #f5f5f5;
-  color: #222;
+  background: #111111;
+  color: #f5f5f5;
   transition: all 0.3s ease;
+  border: 1px solid #262626;
+  animation: fadeUp 0.8s ease forwards;
 }
 
 .testimonial-card:hover {
-  background: #eef4ee;
+  background: #181818;
   transform: translateY(-2px);
 }
 
@@ -380,11 +408,12 @@ body {
   font-weight: 400;
   line-height: 1.6;
   margin-bottom: 10px;
+  color: #e5e5e5;
 }
 
 .testimonial-card span {
   display: block;
-  color: #135402;
+  color: #ffffff;
   font-weight: 500;
   font-size: 0.9rem;
 }
@@ -409,7 +438,6 @@ body {
 /* ======================
    GLOBAL ANIMATION EFFECTS
    ====================== */
-
 .fade-up {
   opacity: 0;
   transform: translateY(30px);
@@ -428,45 +456,7 @@ body {
 .delay-3 { animation-delay: 0.6s; }
 .delay-4 { animation-delay: 0.8s; }
 
-.enroll-btn {
-  position: relative;
-  overflow: hidden;
-  transition: background 0.4s ease, transform 0.3s ease;
-}
-
-.enroll-btn::before {
-  content: "";
-  position: absolute;
-  top: 0; left: -100%;
-  width: 100%; height: 100%;
-  background: rgba(255, 255, 255, 0.2);
-  transition: left 0.4s ease;
-}
-
-.enroll-btn:hover::before {
-  left: 0;
-}
-
-.enroll-btn:hover {
-  transform: translateY(-2px);
-  background: #0f3f02;
-}
-
-.course-outline details p {
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: all 0.4s ease;
-  margin-top: 0;
-}
-
-.course-outline details[open] p {
-  max-height: 200px;
-  opacity: 1;
-  margin-top: 10px;
-}
-
-.course-image img, 
+.course-image img,
 .instructor-card img {
   animation: fadeIn 1.2s ease forwards;
   transform: scale(1);
@@ -482,18 +472,3 @@ body {
     transform: scale(1);
   }
 }
-
-@keyframes scrollTestimonials {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-.testimonial-card {
-  animation: fadeUp 0.8s ease forwards;
-}
-
-.testimonial-card:hover {
-  transform: translateY(-3px);
-  background: #f3f7f3;
-}
-

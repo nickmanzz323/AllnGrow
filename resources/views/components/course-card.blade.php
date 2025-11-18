@@ -56,7 +56,7 @@
     </div>
 
     <!-- Action Button -->
-    <a href="{{ route('student.login') }}" class="course-action-btn">
+    <a href="{{ route('course.show', $course->courseID) }}" class="course-action-btn">
         <span>View Course</span>
         <i class="fas fa-arrow-right"></i>
     </a>
