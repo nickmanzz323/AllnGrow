@@ -9,7 +9,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('courses', function (Blueprint $table) {
-            $table->id();
+            $table->id('courseID'); // Custom primary key name
             $table->unsignedBigInteger('instructorID');
             $table->string('title');
             $table->text('description')->nullable();

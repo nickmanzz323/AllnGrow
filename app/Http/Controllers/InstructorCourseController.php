@@ -117,7 +117,7 @@ class InstructorCourseController extends Controller
                     if (isset($request->subcourses[$index]['thumbnail'])) {
                         $file = $request->file("subcourses.{$index}.thumbnail");
                         if ($file) {
-                            $subThumbnail = $file->store("courses/{$course->id}/subcourses/thumbnails", 'public');
+                            $subThumbnail = $file->store("courses/{$course->courseID}/subcourses/thumbnails", 'public');
                         }
                     }
 
@@ -125,12 +125,12 @@ class InstructorCourseController extends Controller
                     if (isset($request->subcourses[$index]['fileUpload'])) {
                         $file = $request->file("subcourses.{$index}.fileUpload");
                         if ($file) {
-                            $subFile = $file->store("courses/{$course->id}/subcourses/files", 'public');
+                            $subFile = $file->store("courses/{$course->courseID}/subcourses/files", 'public');
                         }
                     }
 
                     Subcourse::create([
-                        'course_id' => $course->id,
+                        'course_id' => $course->courseID,
                         'title' => InputSanitizer::sanitizeText($subcourseData['title']),
                         'content' => isset($subcourseData['content']) ? InputSanitizer::sanitizeHtml($subcourseData['content']) : null,
                         'thumbnail' => $subThumbnail,
@@ -141,7 +141,7 @@ class InstructorCourseController extends Controller
 
             Log::info('Course created successfully', [
                 'instructor_id' => $instructor->id,
-                'course_id' => $course->id,
+                'course_id' => $course->courseID,
                 'title' => $course->title,
             ]);
 
@@ -178,10 +178,16 @@ class InstructorCourseController extends Controller
             return view('dashboardInstructor.myCourses', compact('courses'));
         } catch (\Exception $e) {
             Log::error('Failed to load courses: ' . $e->getMessage());
-            return view('dashboardInstructor.myCourses', [
-                'courses' => collect()
-            ]);
-            return redirect()->route('dashboardinstructor')->with('error', 'Failed to load courses. Error: ' . $e->getMessage());
+            
+            // Return empty paginator instead of collection
+            $courses = new \Illuminate\Pagination\LengthAwarePaginator(
+                [],
+                0,
+                10,
+                1
+            );
+            
+            return view('dashboardInstructor.myCourses', compact('courses'));
         }
     }
 

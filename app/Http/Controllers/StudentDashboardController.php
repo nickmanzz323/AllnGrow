@@ -132,9 +132,18 @@ class StudentDashboardController extends Controller
             if ($student) {
                 $student->load('detail');
             }
+            
+            // Return empty paginator instead of collection
+            $courses = new \Illuminate\Pagination\LengthAwarePaginator(
+                [],
+                0,
+                12,
+                1
+            );
+            
             return view('dashboardSiswa.browseCourses', [
                 'student' => $student,
-                'courses' => collect(),
+                'courses' => $courses,
                 'categories' => Category::all(),
                 'enrolledCourseIds' => []
             ]);

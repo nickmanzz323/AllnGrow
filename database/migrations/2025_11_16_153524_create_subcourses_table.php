@@ -23,7 +23,7 @@ return new class extends Migration
         // Foreign key terpisah
         Schema::table('subcourses', function (Blueprint $table) {
             $table->foreign('course_id')
-                  ->references('id')
+                  ->references('courseID')
                   ->on('courses')
                   ->onDelete('cascade');
         });
