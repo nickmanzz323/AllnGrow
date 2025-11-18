@@ -428,9 +428,9 @@ class InstructorCourseController extends Controller
                 }])
                 ->get();
             
-            // Get pending payments count
+            // Get pending payments count - fix column reference
             $pendingCount = \DB::table('student_course')
-                ->join('courses', 'student_course.courseID', '=', 'courses.id')
+                ->join('courses', 'student_course.courseID', '=', 'courses.courseID')
                 ->where('courses.instructorID', $instructor->id)
                 ->where('student_course.payment_status', 'pending')
                 ->count();
