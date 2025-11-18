@@ -6,7 +6,7 @@
   <title>Settings - AllnGrow</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="css/dashboardSiswa/settings.css">
+  <link rel="stylesheet" href="{{ asset('css/dashboardSiswa/dashboardSiswa.css') }}">
 </head>
 <body>
   <div class="app">
@@ -14,10 +14,11 @@
     <aside class="sidebar">
       <div class="logo">AllnGrow</div>
       <nav>
-        <a href="dashboardSiswa"><i class="fas fa-home"></i> Dashboard</a>
-        <a href="myCourses"><i class="fas fa-book"></i> My Courses</a>
-        <a href="schedule"><i class="fas fa-calendar"></i> Schedule</a>
-        <a href="progress"><i class="fas fa-chart-line"></i> Progress</a>
+        <a href="{{ route('dashboardSiswa') }}"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="{{ route('student.my-courses') }}"><i class="fas fa-book"></i> My Courses</a>
+        <a href="{{ route('student.browse-courses') }}"><i class="fas fa-search"></i> Browse Courses</a>
+        <a href="{{ route('schedule') }}"><i class="fas fa-calendar"></i> Schedule</a>
+        <a href="{{ route('progress') }}"><i class="fas fa-chart-line"></i> Progress</a>
         <a class="active"><i class="fas fa-cog"></i> Settings</a>
         <div style="margin-top: auto; padding-top: 2rem; border-top: 1px solid #262626;">
           <form method="POST" action="{{ route('student.logout') }}">
@@ -41,336 +42,176 @@
         <div class="header-right">
           <button class="icon-btn"><i class="fas fa-bell"></i></button>
           <div class="user">
-            <div class="user-avatar">AR</div>
+            <div class="user-avatar">
+              @php
+                $name = $student->detail->fullname ?? $student->email;
+                $words = explode(' ', $name);
+                $initials = '';
+                foreach(array_slice($words, 0, 2) as $word) {
+                  $initials .= strtoupper(substr($word, 0, 1));
+                }
+                echo $initials;
+              @endphp
+            </div>
             <div class="user-info">
-              <div class="user-name">Ahmad Rizki</div>
+              <div class="user-name">{{ $student->detail->fullname ?? 'Student' }}</div>
               <div class="user-role">Student</div>
             </div>
           </div>
         </div>
       </header>
 
-      <!-- Settings Tabs -->
-      <div class="settings-tabs">
-        <button class="tab active" data-tab="profile">
-          <i class="fas fa-user"></i> Profile
-        </button>
-        <button class="tab" data-tab="account">
-          <i class="fas fa-shield-alt"></i> Account
-        </button>
-        <button class="tab" data-tab="notifications">
-          <i class="fas fa-bell"></i> Notifications
-        </button>
-        <button class="tab" data-tab="preferences">
-          <i class="fas fa-sliders-h"></i> Preferences
-        </button>
-      </div>
+      @if(session('success'))
+        <div style="padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; background: #0d3b0d; border: 1px solid #1a5a1a; color: #4ade80;">
+          <i class="fas fa-check-circle"></i> {{ session('success') }}
+        </div>
+      @endif
 
-      <!-- Profile Settings -->
-      <div class="tab-content active" id="profile">
-        <section class="settings-section">
-          <h2>Profile Information</h2>
-          
-          <div class="profile-photo-section">
-            <div class="profile-photo">
-              <div class="photo-placeholder">AR</div>
-              <button class="photo-edit-btn">
-                <i class="fas fa-camera"></i>
-              </button>
+      @if(session('error'))
+        <div style="padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; background: #3b0d0d; border: 1px solid #5a1a1a; color: #f87171;">
+          <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
+        </div>
+      @endif
+
+      @if($errors->any())
+        <div style="padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; background: #3b0d0d; border: 1px solid #5a1a1a; color: #f87171;">
+          <ul style="margin: 0; padding-left: 1.5rem;">
+            @foreach($errors->all() as $error)
+              <li>{{ $error }}</li>
+            @endforeach
+          </ul>
+        </div>
+      @endif
+
+      <!-- Settings Sections -->
+      <section class="section">
+        <!-- Profile Information -->
+        <div style="background: #0d0d0d; border: 1px solid #262626; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;">
+          <h2 style="font-size: 1.25rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fas fa-user"></i> Profile Information
+          </h2>
+          <form method="POST" action="{{ route('student.update-profile') }}">
+            @csrf
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+              <div>
+                <label style="display: block; margin-bottom: 0.5rem; color: #a3a3a3; font-size: 0.9rem;">Full Name</label>
+                <input type="text" name="fullname" value="{{ $student->detail->fullname ?? '' }}" required style="width: 100%; padding: 0.75rem; background: #000; border: 1px solid #262626; border-radius: 8px; color: #f5f5f5;">
+              </div>
+              <div>
+                <label style="display: block; margin-bottom: 0.5rem; color: #a3a3a3; font-size: 0.9rem;">Phone</label>
+                <input type="text" name="phone" value="{{ $student->detail->phone ?? '' }}" required style="width: 100%; padding: 0.75rem; background: #000; border: 1px solid #262626; border-radius: 8px; color: #f5f5f5;">
+              </div>
             </div>
-            <div class="photo-info">
-              <h3>Profile Photo</h3>
-              <p>Upload a new profile photo or avatar</p>
-              <button class="btn-secondary">Change Photo</button>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+              <div>
+                <label style="display: block; margin-bottom: 0.5rem; color: #a3a3a3; font-size: 0.9rem;">Gender</label>
+                <select name="gender" required style="width: 100%; padding: 0.75rem; background: #000; border: 1px solid #262626; border-radius: 8px; color: #f5f5f5; cursor: pointer;">
+                  <option value="male" {{ ($student->detail->gender ?? '') == 'male' ? 'selected' : '' }}>Male</option>
+                  <option value="female" {{ ($student->detail->gender ?? '') == 'female' ? 'selected' : '' }}>Female</option>
+                </select>
+              </div>
+              <div>
+                <label style="display: block; margin-bottom: 0.5rem; color: #a3a3a3; font-size: 0.9rem;">Date of Birth</label>
+                <input type="date" name="dob" value="{{ $student->detail->dob ?? '' }}" required style="width: 100%; padding: 0.75rem; background: #000; border: 1px solid #262626; border-radius: 8px; color: #f5f5f5;">
+              </div>
             </div>
-          </div>
-
-          <div class="form-grid">
-            <div class="form-group">
-              <label>Full Name</label>
-              <input type="text" value="Ahmad Rizki" placeholder="Enter your full name">
+            <div style="margin-bottom: 1rem;">
+              <label style="display: block; margin-bottom: 0.5rem; color: #a3a3a3; font-size: 0.9rem;">Country</label>
+              <input type="text" name="country" value="{{ $student->detail->country ?? '' }}" required style="width: 100%; padding: 0.75rem; background: #000; border: 1px solid #262626; border-radius: 8px; color: #f5f5f5;">
             </div>
-
-            <div class="form-group">
-              <label>Email Address</label>
-              <input type="email" value="ahmad.rizki@example.com" placeholder="Enter your email">
+            <div>
+              <label style="display: block; margin-bottom: 0.5rem; color: #a3a3a3; font-size: 0.9rem;">Email</label>
+              <input type="email" value="{{ $student->email }}" disabled style="width: 100%; padding: 0.75rem; background: #1a1a1a; border: 1px solid #262626; border-radius: 8px; color: #737373; cursor: not-allowed;">
+              <small style="color: #737373; font-size: 0.85rem;">Email cannot be changed</small>
             </div>
+            <button type="submit" style="margin-top: 1rem; padding: 0.75rem 1.5rem; background: #fff; color: #000; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+              <i class="fas fa-save"></i> Save Changes
+            </button>
+          </form>
+        </div>
 
-            <div class="form-group">
-              <label>Phone Number</label>
-              <input type="tel" value="+62 812 3456 7890" placeholder="Enter your phone number">
+        <!-- Change Password -->
+        <div style="background: #0d0d0d; border: 1px solid #262626; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;">
+          <h2 style="font-size: 1.25rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fas fa-lock"></i> Change Password
+          </h2>
+          <form method="POST" action="{{ route('student.update-password') }}">
+            @csrf
+            <div style="margin-bottom: 1rem;">
+              <label style="display: block; margin-bottom: 0.5rem; color: #a3a3a3; font-size: 0.9rem;">Current Password</label>
+              <input type="password" name="current_password" required style="width: 100%; padding: 0.75rem; background: #000; border: 1px solid #262626; border-radius: 8px; color: #f5f5f5;">
             </div>
-
-            <div class="form-group">
-              <label>Student ID</label>
-              <input type="text" value="STD-2024-001" placeholder="Student ID" disabled>
+            <div style="margin-bottom: 1rem;">
+              <label style="display: block; margin-bottom: 0.5rem; color: #a3a3a3; font-size: 0.9rem;">New Password</label>
+              <input type="password" name="new_password" required minlength="8" style="width: 100%; padding: 0.75rem; background: #000; border: 1px solid #262626; border-radius: 8px; color: #f5f5f5;">
+              <small style="color: #737373; font-size: 0.85rem;">Minimum 8 characters</small>
             </div>
-
-            <div class="form-group full-width">
-              <label>Bio</label>
-              <textarea rows="4" placeholder="Tell us about yourself">Passionate learner interested in web development and data science.</textarea>
+            <div style="margin-bottom: 1rem;">
+              <label style="display: block; margin-bottom: 0.5rem; color: #a3a3a3; font-size: 0.9rem;">Confirm New Password</label>
+              <input type="password" name="new_password_confirmation" required minlength="8" style="width: 100%; padding: 0.75rem; background: #000; border: 1px solid #262626; border-radius: 8px; color: #f5f5f5;">
             </div>
-          </div>
+            <button type="submit" style="padding: 0.75rem 1.5rem; background: #fff; color: #000; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+              <i class="fas fa-key"></i> Update Password
+            </button>
+          </form>
+        </div>
 
-          <div class="form-actions">
-            <button class="btn-primary">Save Changes</button>
-            <button class="btn-secondary">Cancel</button>
-          </div>
-        </section>
-      </div>
-
-      <!-- Account Settings -->
-      <div class="tab-content" id="account">
-        <section class="settings-section">
-          <h2>Account Security</h2>
-          
-          <div class="security-item">
-            <div class="security-info">
-              <h3>Password</h3>
-              <p>Last changed 30 days ago</p>
-            </div>
-            <button class="btn-secondary">Change Password</button>
-          </div>
-
-          <div class="security-item">
-            <div class="security-info">
-              <h3>Two-Factor Authentication</h3>
-              <p>Add an extra layer of security to your account</p>
-            </div>
-            <label class="toggle">
-              <input type="checkbox">
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-
-          <div class="security-item">
-            <div class="security-info">
-              <h3>Active Sessions</h3>
-              <p>Manage devices where you're logged in</p>
-            </div>
-            <button class="btn-secondary">View Sessions</button>
-          </div>
-        </section>
-
-        <section class="settings-section">
-          <h2>Connected Accounts</h2>
-          
-          <div class="connected-account">
-            <div class="account-icon google">
-              <i class="fab fa-google"></i>
-            </div>
-            <div class="account-info">
-              <h3>Google</h3>
-              <p>Connected</p>
-            </div>
-            <button class="btn-disconnect">Disconnect</button>
-          </div>
-
-          <div class="connected-account">
-            <div class="account-icon github">
-              <i class="fab fa-github"></i>
-            </div>
-            <div class="account-info">
-              <h3>GitHub</h3>
-              <p>Not connected</p>
-            </div>
-            <button class="btn-secondary">Connect</button>
-          </div>
-        </section>
-
-        <section class="settings-section danger-zone">
-          <h2>Danger Zone</h2>
-          <div class="danger-item">
-            <div class="danger-info">
-              <h3>Delete Account</h3>
-              <p>Permanently delete your account and all data</p>
-            </div>
-            <button class="btn-danger">Delete Account</button>
-          </div>
-        </section>
-      </div>
-
-      <!-- Notifications Settings -->
-      <div class="tab-content" id="notifications">
-        <section class="settings-section">
-          <h2>Email Notifications</h2>
-          
-          <div class="notification-item">
-            <div class="notification-info">
-              <h3>Course Updates</h3>
-              <p>Receive emails about new course content and updates</p>
-            </div>
-            <label class="toggle">
-              <input type="checkbox" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-
-          <div class="notification-item">
-            <div class="notification-info">
-              <h3>Assignment Reminders</h3>
-              <p>Get reminded about upcoming assignments and deadlines</p>
-            </div>
-            <label class="toggle">
-              <input type="checkbox" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-
-          <div class="notification-item">
-            <div class="notification-info">
-              <h3>Weekly Progress Report</h3>
-              <p>Receive weekly summary of your learning progress</p>
-            </div>
-            <label class="toggle">
-              <input type="checkbox" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-
-          <div class="notification-item">
-            <div class="notification-info">
-              <h3>Marketing Emails</h3>
-              <p>Receive promotional content and special offers</p>
-            </div>
-            <label class="toggle">
-              <input type="checkbox">
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-        </section>
-
-        <section class="settings-section">
-          <h2>Push Notifications</h2>
-          
-          <div class="notification-item">
-            <div class="notification-info">
-              <h3>Live Session Alerts</h3>
-              <p>Notify when a live session is about to start</p>
-            </div>
-            <label class="toggle">
-              <input type="checkbox" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-
-          <div class="notification-item">
-            <div class="notification-info">
-              <h3>Messages and Comments</h3>
-              <p>Get notified about new messages and comments</p>
-            </div>
-            <label class="toggle">
-              <input type="checkbox" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-        </section>
-      </div>
-
-      <!-- Preferences Settings -->
-      <div class="tab-content" id="preferences">
-        <section class="settings-section">
-          <h2>Display Settings</h2>
-          
-          <div class="form-group">
-            <label>Language</label>
-            <select>
-              <option>English</option>
-              <option selected>Bahasa Indonesia</option>
-              <option>日本語</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Timezone</label>
-            <select>
-              <option selected>Asia/Jakarta (GMT+7)</option>
-              <option>Asia/Singapore (GMT+8)</option>
-              <option>Asia/Tokyo (GMT+9)</option>
-            </select>
-          </div>
-
-          <div class="notification-item">
-            <div class="notification-info">
-              <h3>Dark Mode</h3>
-              <p>Switch to dark theme for better viewing at night</p>
-            </div>
-            <label class="toggle">
-              <input type="checkbox">
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-        </section>
-
-        <section class="settings-section">
-          <h2>Learning Preferences</h2>
-          
-          <div class="form-group">
-            <label>Video Playback Speed</label>
-            <select>
-              <option>0.5x</option>
-              <option>0.75x</option>
-              <option selected>1x (Normal)</option>
-              <option>1.25x</option>
-              <option>1.5x</option>
-              <option>2x</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Subtitle Language</label>
-            <select>
-              <option selected>English</option>
-              <option>Bahasa Indonesia</option>
-              <option>None</option>
-            </select>
-          </div>
-
-          <div class="notification-item">
-            <div class="notification-info">
-              <h3>Auto-play Next Video</h3>
-              <p>Automatically play the next video when current video ends</p>
-            </div>
-            <label class="toggle">
-              <input type="checkbox" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-
-          <div class="notification-item">
-            <div class="notification-info">
-              <h3>Download Quality</h3>
-              <p>Choose default quality for downloading course videos</p>
-            </div>
-            <select class="inline-select">
-              <option>720p</option>
-              <option selected>1080p</option>
-              <option>Auto</option>
-            </select>
-          </div>
-        </section>
-      </div>
-
+        <!-- Delete Account -->
+        <div style="background: #3b0d0d; border: 1px solid #5a1a1a; border-radius: 12px; padding: 1.5rem;">
+          <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; color: #f87171;">
+            <i class="fas fa-exclamation-triangle"></i> Danger Zone
+          </h2>
+          <p style="color: #f87171; margin-bottom: 1rem;">Once you delete your account, there is no going back. Please be certain.</p>
+          <button onclick="document.getElementById('deleteModal').style.display='flex'" style="padding: 0.75rem 1.5rem; background: #ef4444; color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+            <i class="fas fa-trash"></i> Delete Account
+          </button>
+        </div>
+      </section>
     </main>
   </div>
 
-  <script>
-    // Tab switching functionality
-    const tabs = document.querySelectorAll('.tab');
-    const tabContents = document.querySelectorAll('.tab-content');
+  <!-- Delete Confirmation Modal -->
+  <div id="deleteModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); align-items: center; justify-content: center; z-index: 1000;">
+    <div style="background: #0d0d0d; border: 1px solid #262626; border-radius: 12px; padding: 2rem; max-width: 500px; width: 90%;">
+      <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: #f87171;">
+        <i class="fas fa-exclamation-triangle"></i> Delete Account
+      </h3>
+      <p style="color: #a3a3a3; margin-bottom: 1rem;">This action cannot be undone. All your data, courses, and progress will be permanently deleted.</p>
+      <form method="POST" action="{{ route('student.delete-account') }}">
+        @csrf
+        <div style="margin-bottom: 1rem;">
+          <label style="display: block; margin-bottom: 0.5rem; color: #a3a3a3; font-size: 0.9rem;">Enter your password to confirm</label>
+          <input type="password" name="password" required style="width: 100%; padding: 0.75rem; background: #000; border: 1px solid #262626; border-radius: 8px; color: #f5f5f5;">
+        </div>
+        <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
+          <button type="button" onclick="document.getElementById('deleteModal').style.display='none'" style="padding: 0.75rem 1.5rem; background: #262626; color: #f5f5f5; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+            Cancel
+          </button>
+          <button type="submit" style="padding: 0.75rem 1.5rem; background: #ef4444; color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+            Yes, Delete My Account
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        const targetTab = tab.dataset.tab;
-        
-        // Remove active class from all tabs and contents
-        tabs.forEach(t => t.classList.remove('active'));
-        tabContents.forEach(tc => tc.classList.remove('active'));
-        
-        // Add active class to clicked tab and corresponding content
-        tab.classList.add('active');
-        document.getElementById(targetTab).classList.add('active');
+  <script>
+    // Auto-dismiss alerts
+    setTimeout(() => {
+      document.querySelectorAll('[style*="background: #0d3b0d"], [style*="background: #3b0d0d"]').forEach(alert => {
+        if (!alert.closest('#deleteModal')) {
+          alert.style.transition = 'opacity 0.3s';
+          alert.style.opacity = '0';
+          setTimeout(() => alert.remove(), 300);
+        }
       });
+    }, 5000);
+
+    // Close modal when clicking outside
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.style.display = 'none';
+      }
     });
   </script>
 </body>

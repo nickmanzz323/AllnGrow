@@ -472,4 +472,124 @@ class InstructorCourseController extends Controller
             return redirect()->back()->with('error', 'Failed to confirm payment.');
         }
     }
+
+    /**
+     * Display settings page
+     */
+    public function settings()
+    {
+        try {
+            $instructor = Auth::guard('instructor')->user();
+            
+            if (!$instructor) {
+                return redirect()->route('instructor.login')->with('error', 'Please login first.');
+            }
+
+            $instructor->load('detail');
+            
+            return view('dashboardInstructor.settingsInstructor', compact('instructor'));
+        } catch (\Exception $e) {
+            Log::error('Failed to load settings: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to load settings.');
+        }
+    }
+
+    /**
+     * Update instructor profile
+     */
+    public function updateProfile(Request $request)
+    {
+        try {
+            $instructor = Auth::guard('instructor')->user();
+            
+            $validated = $request->validate([
+                'fullname' => 'required|string|max:255',
+                'phone' => 'required|string|max:20',
+                'gender' => 'required|in:male,female',
+                'dob' => 'required|date',
+                'country' => 'required|string|max:100'
+            ]);
+
+            $instructor->detail()->updateOrCreate(
+                ['instructorID' => $instructor->id],
+                $validated
+            );
+
+            Log::info('Instructor profile updated', ['instructor_id' => $instructor->id]);
+            
+            return redirect()->back()->with('success', 'Profile updated successfully!');
+        } catch (\Exception $e) {
+            Log::error('Failed to update profile: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to update profile.');
+        }
+    }
+
+    /**
+     * Update instructor password
+     */
+    public function updatePassword(Request $request)
+    {
+        try {
+            $instructor = Auth::guard('instructor')->user();
+            
+            $validated = $request->validate([
+                'current_password' => 'required',
+                'new_password' => 'required|min:8|confirmed'
+            ]);
+
+            // Verify current password
+            if (!\Hash::check($validated['current_password'], $instructor->password)) {
+                return redirect()->back()->with('error', 'Current password is incorrect.');
+            }
+
+            $instructor->update([
+                'password' => \Hash::make($validated['new_password'])
+            ]);
+
+            Log::info('Instructor password updated', ['instructor_id' => $instructor->id]);
+            
+            return redirect()->back()->with('success', 'Password updated successfully!');
+        } catch (\Exception $e) {
+            Log::error('Failed to update password: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to update password.');
+        }
+    }
+
+    /**
+     * Delete instructor account
+     */
+    public function deleteAccount(Request $request)
+    {
+        try {
+            $instructor = Auth::guard('instructor')->user();
+            
+            $validated = $request->validate([
+                'password' => 'required'
+            ]);
+
+            // Verify password
+            if (!\Hash::check($validated['password'], $instructor->password)) {
+                return redirect()->back()->with('error', 'Password is incorrect.');
+            }
+
+            // Delete instructor detail first
+            $instructor->detail()->delete();
+
+            // Delete all courses (this will cascade to subcourses and enrollments)
+            Course::where('instructorID', $instructor->id)->delete();
+
+            // Delete instructor account
+            $instructor->delete();
+
+            // Logout
+            Auth::guard('instructor')->logout();
+
+            Log::info('Instructor account deleted', ['instructor_id' => $instructor->id]);
+            
+            return redirect()->route('instructor.login')->with('success', 'Account deleted successfully.');
+        } catch (\Exception $e) {
+            Log::error('Failed to delete account: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to delete account.');
+        }
+    }
 }

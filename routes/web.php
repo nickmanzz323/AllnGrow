@@ -93,9 +93,11 @@ Route::middleware(['web', 'auth.student'])->group(function () {
         return view('dashboardSiswa.schedule'); 
     })->name('schedule');
 
-    Route::get('/settings', function () {
-        return view('dashboardSiswa.settings'); 
-    })->name('settings');
+    // Settings
+    Route::get('/settings', [StudentDashboardController::class, 'settings'])->name('settings');
+    Route::post('/student/update-profile', [StudentDashboardController::class, 'updateProfile'])->name('student.update-profile');
+    Route::post('/student/update-password', [StudentDashboardController::class, 'updatePassword'])->name('student.update-password');
+    Route::post('/student/delete-account', [StudentDashboardController::class, 'deleteAccount'])->name('student.delete-account');
 
     // Legacy route (keep for compatibility)
     Route::get('/myCourses', function () {
@@ -112,9 +114,13 @@ Route::middleware(['web', 'auth.instructor'])->group(function () {
         return view('dashboardInstructor.messageInstructor'); 
     })->name('messageInstructor');
 
-    Route::get('/settingsInstructor', function () {
-        return view('dashboardInstructor.settingsInstructor'); 
-    })->name('settingsInstructor');
+    Route::get('/settingsInstructor', [InstructorCourseController::class, 'settings'])->name('settingsInstructor');
+    
+    // Settings actions
+    Route::post('/instructor/update-profile', [InstructorCourseController::class, 'updateProfile'])->name('instructor.update-profile');
+    Route::post('/instructor/update-password', [InstructorCourseController::class, 'updatePassword'])->name('instructor.update-password');
+    Route::post('/instructor/delete-account', [InstructorCourseController::class, 'deleteAccount'])->name('instructor.delete-account');
+
 
     // Course Management
     Route::get('/instructor/courses', [InstructorCourseController::class, 'index'])->name('instructor.courses.index');

@@ -188,6 +188,7 @@ class StudentDashboardController extends Controller
                 ->orderBy('student_course.created_at', 'desc')
                 ->get();
             
+            
             return view('dashboardSiswa.myCourses', compact('student', 'enrolledCourses'));
         } catch (\Exception $e) {
             Log::error('Failed to load my courses: ' . $e->getMessage());
@@ -197,4 +198,112 @@ class StudentDashboardController extends Controller
             ]);
         }
     }
+
+    /**
+     * Display settings page
+     */
+    public function settings()
+    {
+        $student = Auth::guard('student')->user();
+        $student->load('detail');
+        return view('dashboardSiswa.settings', compact('student'));
+    }
+
+    /**
+     * Update profile information
+     */
+    public function updateProfile(Request $request)
+    {
+        try {
+            $student = Auth::guard('student')->user();
+            
+            $request->validate([
+                'fullname' => 'required|string|max:255',
+                'phone' => 'required|string|max:20',
+                'gender' => 'required|in:male,female',
+                'dob' => 'required|date',
+                'country' => 'required|string|max:100',
+            ]);
+
+            $student->detail()->updateOrCreate(
+                ['studentID' => $student->id],
+                [
+                    'fullname' => $request->fullname,
+                    'phone' => $request->phone,
+                    'gender' => $request->gender,
+                    'dob' => $request->dob,
+                    'country' => $request->country,
+                ]
+            );
+
+            return redirect()->route('settings')->with('success', 'Profile updated successfully!');
+        } catch (\Exception $e) {
+            Log::error('Failed to update profile: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to update profile.');
+        }
+    }
+
+    /**
+     * Update password
+     */
+    public function updatePassword(Request $request)
+    {
+        try {
+            $student = Auth::guard('student')->user();
+            
+            $request->validate([
+                'current_password' => 'required',
+                'new_password' => 'required|min:8|confirmed',
+            ]);
+
+            if (!\Hash::check($request->current_password, $student->password)) {
+                return redirect()->back()->with('error', 'Current password is incorrect.');
+            }
+
+            $student->update([
+                'password' => \Hash::make($request->new_password)
+            ]);
+
+            return redirect()->route('settings')->with('success', 'Password updated successfully!');
+        } catch (\Exception $e) {
+            Log::error('Failed to update password: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to update password.');
+        }
+    }
+
+    /**
+     * Delete account
+     */
+    public function deleteAccount(Request $request)
+    {
+        try {
+            $student = Auth::guard('student')->user();
+            
+            $request->validate([
+                'password' => 'required',
+            ]);
+
+            if (!\Hash::check($request->password, $student->password)) {
+                return redirect()->back()->with('error', 'Password is incorrect.');
+            }
+
+            // Delete student detail first
+            $student->detail()->delete();
+            
+            // Detach all courses
+            $student->courses()->detach();
+            
+            // Delete student account
+            $student->delete();
+            
+            // Logout
+            Auth::guard('student')->logout();
+
+            return redirect()->route('student.login')->with('success', 'Account deleted successfully.');
+        } catch (\Exception $e) {
+            Log::error('Failed to delete account: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to delete account.');
+        }
+    }
 }
+
