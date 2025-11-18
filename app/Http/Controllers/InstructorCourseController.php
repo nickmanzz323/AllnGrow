@@ -401,4 +401,75 @@ class InstructorCourseController extends Controller
             return redirect()->back()->with('error', 'Failed to delete module. Please try again.');
         }
     }
+
+    /**
+     * Display students who purchased instructor's courses
+     */
+    public function viewStudentPurchases()
+    {
+        try {
+            $instructor = Auth::guard('instructor')->user();
+            
+            // Get all courses with enrolled students
+            $courses = Course::where('instructorID', $instructor->id)
+                ->with(['students' => function($query) {
+                    $query->withPivot(['payment_status', 'completion', 'completed', 'created_at', 'id'])
+                        ->with('detail')
+                        ->orderBy('student_course.created_at', 'desc');
+                }])
+                ->get();
+            
+            // Get pending payments count
+            $pendingCount = \DB::table('student_course')
+                ->join('courses', 'student_course.courseID', '=', 'courses.id')
+                ->where('courses.instructorID', $instructor->id)
+                ->where('student_course.payment_status', 'pending')
+                ->count();
+            
+            return view('dashboardInstructor.studentPurchases', compact('instructor', 'courses', 'pendingCount'));
+        } catch (\Exception $e) {
+            Log::error('Failed to load student purchases: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to load student purchases.');
+        }
+    }
+
+    /**
+     * Confirm student payment
+     */
+    public function confirmPayment(Request $request, $enrollmentId)
+    {
+        try {
+            $instructor = Auth::guard('instructor')->user();
+            
+            // Get the enrollment
+            $enrollment = \DB::table('student_course')
+                ->join('courses', 'student_course.courseID', '=', 'courses.id')
+                ->where('student_course.id', $enrollmentId)
+                ->where('courses.instructorID', $instructor->id)
+                ->where('student_course.payment_status', 'pending')
+                ->first();
+            
+            if (!$enrollment) {
+                return redirect()->back()->with('error', 'Enrollment not found or already confirmed.');
+            }
+            
+            // Update payment status
+            \DB::table('student_course')
+                ->where('id', $enrollmentId)
+                ->update([
+                    'payment_status' => 'paid',
+                    'updated_at' => now()
+                ]);
+            
+            Log::info('Payment confirmed by instructor', [
+                'instructor_id' => $instructor->id,
+                'enrollment_id' => $enrollmentId
+            ]);
+            
+            return redirect()->back()->with('success', 'Payment confirmed successfully!');
+        } catch (\Exception $e) {
+            Log::error('Failed to confirm payment: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to confirm payment.');
+        }
+    }
 }

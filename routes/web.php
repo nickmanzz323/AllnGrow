@@ -11,6 +11,7 @@ use App\Http\Controllers\AdminLoginController;
 use App\Http\Controllers\AdminInstructorController;
 use App\Http\Controllers\AdminCourseController;
 use App\Http\Controllers\InstructorCourseController;
+use App\Http\Controllers\StudentDashboardController;
 
 Route::middleware('web')->group(function () {
     // landing page
@@ -73,9 +74,16 @@ Route::middleware('web')->group(function () {
 // Protected routes untuk Student (harus login sebagai student)
 Route::middleware(['web', 'auth.student'])->group(function () {
     // dashboard student
-    Route::get('/dashboardSiswa', function () {
-        return view('dashboardSiswa.dashboardSiswa'); 
-    })->name('dashboardSiswa');
+    Route::get('/dashboardSiswa', [StudentDashboardController::class, 'index'])->name('dashboardSiswa');
+    
+    // Browse/Find Courses
+    Route::get('/student/browse-courses', [StudentDashboardController::class, 'browseCourses'])->name('student.browse-courses');
+    
+    // Enroll Course
+    Route::post('/student/enroll/{courseId}', [StudentDashboardController::class, 'enrollCourse'])->name('student.enroll');
+    
+    // My Courses
+    Route::get('/student/my-courses', [StudentDashboardController::class, 'myCourses'])->name('student.my-courses');
 
     Route::get('/progress', function () {
         return view('dashboardSiswa.progress'); 
@@ -89,9 +97,10 @@ Route::middleware(['web', 'auth.student'])->group(function () {
         return view('dashboardSiswa.settings'); 
     })->name('settings');
 
+    // Legacy route (keep for compatibility)
     Route::get('/myCourses', function () {
-        return view('dashboardSiswa.myCourses'); 
-    })->name('myCourses');
+        return redirect()->route('student.my-courses');
+    });
 });
 
 // Protected routes untuk Instructor (harus login sebagai instructor)
@@ -119,6 +128,10 @@ Route::middleware(['web', 'auth.instructor'])->group(function () {
     Route::post('/instructor/courses/{courseId}/subcourses', [InstructorCourseController::class, 'storeSubcourse'])->name('instructor.subcourses.store');
     Route::put('/instructor/courses/{courseId}/subcourses/{subcourseId}', [InstructorCourseController::class, 'updateSubcourse'])->name('instructor.subcourses.update');
     Route::delete('/instructor/courses/{courseId}/subcourses/{subcourseId}', [InstructorCourseController::class, 'destroySubcourse'])->name('instructor.subcourses.destroy');
+    
+    // Student Purchases & Payment Confirmation
+    Route::get('/instructor/student-purchases', [InstructorCourseController::class, 'viewStudentPurchases'])->name('instructor.student-purchases');
+    Route::post('/instructor/confirm-payment/{enrollmentId}', [InstructorCourseController::class, 'confirmPayment'])->name('instructor.confirm-payment');
 });
 
 // Protected routes untuk Admin (harus login sebagai admin)

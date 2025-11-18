@@ -23,6 +23,9 @@
         <a href="{{ route('instructor.courses.create') }}" class="nav-link">
           <i class="fas fa-plus-circle"></i> Add Course
         </a>
+        <a href="{{ route('instructor.student-purchases') }}" class="nav-link">
+          <i class="fas fa-shopping-cart"></i> Student Purchases
+        </a>
         <a class="nav-link" data-page="students">
           <i class="fas fa-users"></i> Students
         </a>

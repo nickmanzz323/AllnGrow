@@ -14,11 +14,13 @@ return new class extends Migration
             $table->unsignedBigInteger('courseID');
             $table->tinyInteger('completion')->default(0)->comment('0-100 progress percent');
             $table->boolean('completed')->default(false);
+            $table->enum('payment_status', ['pending', 'paid'])->default('pending')->comment('pending = belum dibayar/dikonfirmasi, paid = sudah dikonfirmasi instructor');
             $table->timestamps();
 
             $table->unique(['studentID', 'courseID']);
             $table->index('studentID');
             $table->index('courseID');
+            $table->index('payment_status');
         });
 
         // Foreign keys terpisah
