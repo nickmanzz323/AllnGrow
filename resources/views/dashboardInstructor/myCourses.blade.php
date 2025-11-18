@@ -657,7 +657,7 @@
                   <a href="{{ route('instructor.courses.edit', $course->courseID) }}" class="btn btn-edit">
                     <i class="fas fa-edit"></i> Edit
                   </a>
-                  <form method="POST" action="{{ route('instructor.courses.destroy', $course->id) }}" style="flex: 1;" onsubmit="return confirm('Are you sure you want to delete this course? This action cannot be undone.')">
+                  <form method="POST" action="{{ route('instructor.courses.destroy', $course->courseID) }}" style="flex: 1;" onsubmit="return confirm('Are you sure you want to delete this course? This action cannot be undone.')">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-delete" style="width: 100%;">

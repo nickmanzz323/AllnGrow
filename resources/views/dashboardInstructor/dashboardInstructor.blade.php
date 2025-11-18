@@ -152,7 +152,7 @@
                           <a href="{{ route('instructor.courses.edit', $course->courseID) }}" class="action-btn" title="Edit">
                             <i class="fas fa-edit"></i>
                           </a>
-                          <form method="POST" action="{{ route('instructor.courses.destroy', $course->id) }}" style="display: inline;" onsubmit="return confirm('Delete this course?')">
+                          <form method="POST" action="{{ route('instructor.courses.destroy', $course->courseID) }}" style="display: inline;" onsubmit="return confirm('Delete this course?')">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="action-btn" title="Delete">
