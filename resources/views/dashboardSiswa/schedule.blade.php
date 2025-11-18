@@ -64,11 +64,40 @@
       <!-- Calendar Header -->
       <div class="calendar-header">
         <div class="calendar-nav">
-          <button class="nav-btn"><i class="fas fa-chevron-left"></i></button>
-          <h2 class="current-month">{{ date('F Y') }}</h2>
-          <button class="nav-btn"><i class="fas fa-chevron-right"></i></button>
+          <button class="nav-btn" id="prev-month"><i class="fas fa-chevron-left"></i></button>
+          <h2 class="current-month" id="current-month-display" style="cursor: pointer;" title="Click to select month/year"></h2>
+          <button class="nav-btn" id="next-month"><i class="fas fa-chevron-right"></i></button>
         </div>
-        <button class="btn-today">Today</button>
+        <button class="btn-today" id="btn-today">Today</button>
+      </div>
+
+      <!-- Month/Year Selector Modal -->
+      <div id="month-year-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center;">
+        <div style="background: #1a1a1a; border-radius: 12px; padding: 1.5rem; width: 300px; max-width: 90%;">
+          <h3 style="margin: 0 0 1rem 0; color: #fff; font-size: 1.1rem;">Select Month & Year</h3>
+          <div style="display: flex; gap: 0.75rem; margin-bottom: 1rem;">
+            <select id="select-month" style="flex: 1; padding: 0.75rem; border-radius: 8px; border: 1px solid #333; background: #0f0f0f; color: #fff; font-size: 0.9rem;">
+              <option value="0">January</option>
+              <option value="1">February</option>
+              <option value="2">March</option>
+              <option value="3">April</option>
+              <option value="4">May</option>
+              <option value="5">June</option>
+              <option value="6">July</option>
+              <option value="7">August</option>
+              <option value="8">September</option>
+              <option value="9">October</option>
+              <option value="10">November</option>
+              <option value="11">December</option>
+            </select>
+            <select id="select-year" style="flex: 1; padding: 0.75rem; border-radius: 8px; border: 1px solid #333; background: #0f0f0f; color: #fff; font-size: 0.9rem;">
+            </select>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button id="cancel-modal" style="flex: 1; padding: 0.75rem; border-radius: 8px; border: 1px solid #333; background: transparent; color: #fff; cursor: pointer; font-size: 0.9rem;">Cancel</button>
+            <button id="apply-modal" style="flex: 1; padding: 0.75rem; border-radius: 8px; border: none; background: #fff; color: #000; cursor: pointer; font-weight: 600; font-size: 0.9rem;">Apply</button>
+          </div>
+        </div>
       </div>
 
       <!-- Week Days -->
@@ -83,48 +112,204 @@
       </div>
 
       <!-- Calendar Grid -->
-      <div class="calendar-grid">
-        @php
-          $today = date('j');
-          $month = date('n');
-          $year = date('Y');
-          $firstDay = mktime(0, 0, 0, $month, 1, $year);
-          $daysInMonth = date('t', $firstDay);
-          $dayOfWeek = date('N', $firstDay);
+      <div class="calendar-grid" id="calendar-grid">
+        <!-- Will be populated by JavaScript -->
+      </div>
+
+      <!-- Selected Date Display -->
+      <div id="selected-date-display" style="background: #1a1a1a; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; display: none;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <i class="fas fa-calendar-check" style="color: #4ade80;"></i>
+          <span id="selected-date-text" style="color: #fff;"></span>
+        </div>
+      </div>
+
+      <script>
+        // Calendar State
+        let currentDate = new Date();
+        let selectedDate = null;
+        const today = new Date();
+
+        // Month names
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                           'July', 'August', 'September', 'October', 'November', 'December'];
+
+        // Initialize calendar
+        document.addEventListener('DOMContentLoaded', function() {
+          renderCalendar();
+          setupEventListeners();
+          populateYearSelect();
+        });
+
+        function populateYearSelect() {
+          const yearSelect = document.getElementById('select-year');
+          const currentYear = new Date().getFullYear();
+          for (let year = currentYear - 5; year <= currentYear + 5; year++) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            yearSelect.appendChild(option);
+          }
+          yearSelect.value = currentYear;
+        }
+
+        function setupEventListeners() {
+          // Previous month
+          document.getElementById('prev-month').addEventListener('click', function() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+          });
+
+          // Next month
+          document.getElementById('next-month').addEventListener('click', function() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+          });
+
+          // Today button
+          document.getElementById('btn-today').addEventListener('click', function() {
+            currentDate = new Date();
+            selectedDate = new Date();
+            renderCalendar();
+            showSelectedDate();
+          });
+
+          // Month/Year modal
+          document.getElementById('current-month-display').addEventListener('click', function() {
+            const modal = document.getElementById('month-year-modal');
+            document.getElementById('select-month').value = currentDate.getMonth();
+            document.getElementById('select-year').value = currentDate.getFullYear();
+            modal.style.display = 'flex';
+          });
+
+          document.getElementById('cancel-modal').addEventListener('click', function() {
+            document.getElementById('month-year-modal').style.display = 'none';
+          });
+
+          document.getElementById('apply-modal').addEventListener('click', function() {
+            const month = parseInt(document.getElementById('select-month').value);
+            const year = parseInt(document.getElementById('select-year').value);
+            currentDate.setMonth(month);
+            currentDate.setFullYear(year);
+            renderCalendar();
+            document.getElementById('month-year-modal').style.display = 'none';
+          });
+
+          // Close modal on outside click
+          document.getElementById('month-year-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+              this.style.display = 'none';
+            }
+          });
+        }
+
+        function renderCalendar() {
+          const grid = document.getElementById('calendar-grid');
+          const monthDisplay = document.getElementById('current-month-display');
+
+          const year = currentDate.getFullYear();
+          const month = currentDate.getMonth();
+
+          // Update month display
+          monthDisplay.textContent = `${monthNames[month]} ${year}`;
+
+          // Get first day of month and total days
+          const firstDay = new Date(year, month, 1);
+          const lastDay = new Date(year, month + 1, 0);
+          const daysInMonth = lastDay.getDate();
+          const startingDay = firstDay.getDay() === 0 ? 7 : firstDay.getDay(); // Monday = 1
 
           // Previous month days
-          $prevMonth = $month == 1 ? 12 : $month - 1;
-          $prevYear = $month == 1 ? $year - 1 : $year;
-          $daysInPrevMonth = date('t', mktime(0, 0, 0, $prevMonth, 1, $prevYear));
+          const prevMonth = month === 0 ? 11 : month - 1;
+          const prevYear = month === 0 ? year - 1 : year;
+          const daysInPrevMonth = new Date(prevYear, prevMonth + 1, 0).getDate();
 
-          // Print previous month days
-          for ($i = $dayOfWeek - 1; $i > 0; $i--) {
-            echo '<div class="day other-month">' . ($daysInPrevMonth - $i + 1) . '</div>';
+          let html = '';
+
+          // Previous month days
+          for (let i = startingDay - 1; i > 0; i--) {
+            const day = daysInPrevMonth - i + 1;
+            html += `<div class="day other-month" data-date="${prevYear}-${String(prevMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}">${day}</div>`;
           }
 
-          // Print current month days
-          for ($day = 1; $day <= $daysInMonth; $day++) {
-            $class = 'day';
-            if ($day == $today) {
-              $class .= ' today';
+          // Current month days
+          for (let day = 1; day <= daysInMonth; day++) {
+            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            let classes = 'day';
+
+            // Check if today
+            if (day === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+              classes += ' today';
             }
-            if ($enrolledCourses->count() > 0) {
-              $class .= ' has-event';
+
+            // Check if selected
+            if (selectedDate && day === selectedDate.getDate() && month === selectedDate.getMonth() && year === selectedDate.getFullYear()) {
+              classes += ' selected';
             }
-            echo '<div class="' . $class . '">' . $day;
-            if ($enrolledCourses->count() > 0) {
-              echo '<div class="event-dot"></div>';
-            }
-            echo '</div>';
+
+            // Has events (courses)
+            @if($enrolledCourses->count() > 0)
+            classes += ' has-event';
+            @endif
+
+            html += `<div class="${classes}" data-date="${dateStr}" onclick="selectDate(${year}, ${month}, ${day})">
+              ${day}
+              @if($enrolledCourses->count() > 0)
+              <div class="event-dot"></div>
+              @endif
+            </div>`;
           }
 
-          // Fill remaining cells with next month days
-          $remainingCells = 42 - ($dayOfWeek - 1 + $daysInMonth);
-          for ($i = 1; $i <= $remainingCells; $i++) {
-            echo '<div class="day other-month">' . $i . '</div>';
+          // Next month days
+          const remainingCells = 42 - (startingDay - 1 + daysInMonth);
+          const nextMonth = month === 11 ? 0 : month + 1;
+          const nextYear = month === 11 ? year + 1 : year;
+          for (let i = 1; i <= remainingCells; i++) {
+            html += `<div class="day other-month" data-date="${nextYear}-${String(nextMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}">${i}</div>`;
           }
-        @endphp
-      </div>
+
+          grid.innerHTML = html;
+        }
+
+        function selectDate(year, month, day) {
+          selectedDate = new Date(year, month, day);
+          renderCalendar();
+          showSelectedDate();
+        }
+
+        function showSelectedDate() {
+          const display = document.getElementById('selected-date-display');
+          const text = document.getElementById('selected-date-text');
+
+          if (selectedDate) {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            text.textContent = selectedDate.toLocaleDateString('en-US', options);
+            display.style.display = 'block';
+          }
+        }
+      </script>
+
+      <style>
+        .day {
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+        .day:hover:not(.other-month) {
+          background: #333 !important;
+          transform: scale(1.05);
+        }
+        .day.selected {
+          background: #4ade80 !important;
+          color: #000 !important;
+          font-weight: 600;
+        }
+        .day.selected .event-dot {
+          background: #000 !important;
+        }
+        #current-month-display:hover {
+          color: #4ade80;
+        }
+      </style>
 
       <!-- Upcoming Classes -->
       <section class="section">
