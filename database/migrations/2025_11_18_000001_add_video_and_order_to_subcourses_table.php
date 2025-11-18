@@ -10,21 +10,16 @@ return new class extends Migration
     public function up()
     {
         Schema::table('subcourses', function (Blueprint $table) {
-            // Cek apakah kolom description sudah ada
-            $hasDescription = DB::select("SHOW COLUMNS FROM subcourses LIKE 'description'");
-            if (empty($hasDescription)) {
+            // Add columns if they don't exist (works for both MySQL and SQLite)
+            if (!Schema::hasColumn('subcourses', 'description')) {
                 $table->text('description')->nullable()->after('title');
             }
-            
-            // Cek apakah kolom video_url sudah ada
-            $hasVideoUrl = DB::select("SHOW COLUMNS FROM subcourses LIKE 'video_url'");
-            if (empty($hasVideoUrl)) {
+
+            if (!Schema::hasColumn('subcourses', 'video_url')) {
                 $table->string('video_url')->nullable()->after('content');
             }
-            
-            // Cek apakah kolom order sudah ada
-            $hasOrder = DB::select("SHOW COLUMNS FROM subcourses LIKE 'order'");
-            if (empty($hasOrder)) {
+
+            if (!Schema::hasColumn('subcourses', 'order')) {
                 $table->integer('order')->default(0)->after('video_url');
             }
         });
@@ -34,17 +29,17 @@ return new class extends Migration
     {
         Schema::table('subcourses', function (Blueprint $table) {
             $columns = [];
-            
-            if (DB::select("SHOW COLUMNS FROM subcourses LIKE 'description'")) {
+
+            if (Schema::hasColumn('subcourses', 'description')) {
                 $columns[] = 'description';
             }
-            if (DB::select("SHOW COLUMNS FROM subcourses LIKE 'video_url'")) {
+            if (Schema::hasColumn('subcourses', 'video_url')) {
                 $columns[] = 'video_url';
             }
-            if (DB::select("SHOW COLUMNS FROM subcourses LIKE 'order'")) {
+            if (Schema::hasColumn('subcourses', 'order')) {
                 $columns[] = 'order';
             }
-            
+
             if (!empty($columns)) {
                 $table->dropColumn($columns);
             }
