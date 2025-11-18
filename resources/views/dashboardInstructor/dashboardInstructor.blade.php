@@ -149,7 +149,7 @@
                       </td>
                       <td>
                         <div class="action-btns">
-                          <a href="{{ route('instructor.courses.edit', $course->id) }}" class="action-btn" title="Edit">
+                          <a href="{{ route('instructor.courses.edit', $course->courseID) }}" class="action-btn" title="Edit">
                             <i class="fas fa-edit"></i>
                           </a>
                           <form method="POST" action="{{ route('instructor.courses.destroy', $course->id) }}" style="display: inline;" onsubmit="return confirm('Delete this course?')">

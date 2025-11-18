@@ -654,7 +654,7 @@
                 </div>
 
                 <div class="course-actions">
-                  <a href="{{ route('instructor.courses.edit', $course->id) }}" class="btn btn-edit">
+                  <a href="{{ route('instructor.courses.edit', $course->courseID) }}" class="btn btn-edit">
                     <i class="fas fa-edit"></i> Edit
                   </a>
                   <form method="POST" action="{{ route('instructor.courses.destroy', $course->id) }}" style="flex: 1;" onsubmit="return confirm('Are you sure you want to delete this course? This action cannot be undone.')">
