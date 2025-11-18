@@ -138,8 +138,8 @@ class StudentDashboardController extends Controller
             $student = Auth::guard('student')->user();
             $course = Course::findOrFail($courseId);
             
-            // Check if already enrolled
-            if ($student->courses()->where('courseID', $courseId)->exists()) {
+            // Check if already enrolled - use wherePivot for pivot table columns
+            if ($student->courses()->wherePivot('courseID', $courseId)->exists()) {
                 return redirect()->back()->with('error', 'You are already enrolled in this course.');
             }
             
@@ -148,8 +148,8 @@ class StudentDashboardController extends Controller
                 return redirect()->back()->with('error', 'This course is not available for enrollment.');
             }
             
-            // Enroll with pending payment status
-            $student->courses()->attach($courseId, [
+            // Enroll with pending payment status - use course's primary key
+            $student->courses()->attach($course->courseID, [
                 'completion' => 0,
                 'completed' => false,
                 'payment_status' => 'pending',
@@ -159,7 +159,7 @@ class StudentDashboardController extends Controller
             
             Log::info('Student enrolled in course', [
                 'student_id' => $student->id,
-                'course_id' => $courseId,
+                'course_id' => $course->courseID,
                 'payment_status' => 'pending'
             ]);
             
