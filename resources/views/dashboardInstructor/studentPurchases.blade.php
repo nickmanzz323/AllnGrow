@@ -12,7 +12,7 @@
   <aside class="sidebar">
     <div class="logo">AllnGrow</div>
     <nav>
-      <a href="{{ route('instructor.dashboard') }}"><i class="fas fa-home"></i> Dashboard</a>
+      <a href="{{ route('dashboardinstructor') }}"><i class="fas fa-home"></i> Dashboard</a>
       <a href="{{ route('instructor.myCourses') }}"><i class="fas fa-book"></i> My Courses</a>
       <a href="{{ route('instructor.createCourse') }}"><i class="fas fa-plus"></i> Add Course</a>
       <a class="active">

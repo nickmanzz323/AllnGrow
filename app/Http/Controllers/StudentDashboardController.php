@@ -23,6 +23,9 @@ class StudentDashboardController extends Controller
                 return redirect()->route('student.login')->with('error', 'Please login first.');
             }
 
+            // Load student detail
+            $student->load('detail');
+
             // Get enrolled courses with details
             $enrolledCourses = $student->courses()
                 ->with(['instructor.detail', 'subcourses'])
@@ -65,6 +68,7 @@ class StudentDashboardController extends Controller
     {
         try {
             $student = Auth::guard('student')->user();
+            $student->load('detail');
             
             // Get all categories for filter
             $categories = Category::all();
@@ -114,7 +118,7 @@ class StudentDashboardController extends Controller
             $courses = $query->paginate(12);
             
             // Get enrolled course IDs
-            $enrolledCourseIds = $student->courses()->pluck('courses.id')->toArray();
+            $enrolledCourseIds = $student->courses()->pluck('courseID')->toArray();
             
             return view('dashboardSiswa.browseCourses', compact(
                 'student',
@@ -138,7 +142,7 @@ class StudentDashboardController extends Controller
             $course = Course::findOrFail($courseId);
             
             // Check if already enrolled
-            if ($student->courses()->where('course_id', $courseId)->exists()) {
+            if ($student->courses()->where('courseID', $courseId)->exists()) {
                 return redirect()->back()->with('error', 'You are already enrolled in this course.');
             }
             
@@ -176,6 +180,7 @@ class StudentDashboardController extends Controller
     {
         try {
             $student = Auth::guard('student')->user();
+            $student->load('detail');
             
             $enrolledCourses = $student->courses()
                 ->with(['instructor.detail', 'category', 'subcourses'])

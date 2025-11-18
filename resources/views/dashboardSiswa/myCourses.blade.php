@@ -44,7 +44,7 @@
           <div class="user">
             <div class="user-avatar">
               @php
-                $name = $student->name ?? $student->email;
+                $name = $student->detail->fullname ?? $student->email;
                 $words = explode(' ', $name);
                 $initials = '';
                 foreach(array_slice($words, 0, 2) as $word) {
@@ -54,7 +54,7 @@
               @endphp
             </div>
             <div class="user-info">
-              <div class="user-name">{{ $student->name ?? 'Student' }}</div>
+              <div class="user-name">{{ $student->detail->fullname ?? 'Student' }}</div>
               <div class="user-role">Student</div>
             </div>
           </div>
