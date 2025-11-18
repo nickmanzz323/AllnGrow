@@ -115,10 +115,6 @@ Route::middleware(['web', 'auth.instructor'])->group(function () {
     // dashboard instructor
     Route::get('/dashboardInstructor', [InstructorCourseController::class, 'dashboard'])->name('dashboardinstructor');
 
-    Route::get('/messageInstructor', function () {
-        return view('dashboardInstructor.messageInstructor'); 
-    })->name('messageInstructor');
-
     Route::get('/settingsInstructor', [InstructorCourseController::class, 'settings'])->name('settingsInstructor');
     
     // Settings actions
