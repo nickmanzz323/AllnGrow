@@ -125,7 +125,7 @@
                       <i class="fas fa-lock"></i> Waiting Payment Confirmation
                     </button>
                   @else
-                    <a href="{{ route('student.view-course', $course->courseID) }}" class="btn-continue">Continue Learning</a>
+                    <a href="{{ route('student.view-course', $course->courseID ?? $course->id) }}" class="btn-continue">Continue Learning</a>
                   @endif
                 </div>
               </article>

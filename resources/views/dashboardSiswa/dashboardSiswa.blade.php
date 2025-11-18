@@ -92,7 +92,7 @@
         @if($enrolledCourses->count() > 0)
           <div class="course-grid">
             @foreach($enrolledCourses as $course)
-              <article class="course">
+              <article class="course" style="cursor: {{ $course->pivot->payment_status === 'paid' ? 'pointer' : 'default' }};" onclick="@if($course->pivot->payment_status === 'paid') window.location='{{ route('student.view-course', $course->courseID ?? $course->id) }}' @endif">
                 <div class="thumb">
                   @if($course->thumbnail)
                     <img src="{{ asset('storage/' . $course->thumbnail) }}" alt="{{ $course->title }}" style="width: 100%; height: 100%; object-fit: cover;">
@@ -117,6 +117,10 @@
                   @if($course->pivot->payment_status === 'pending')
                     <p style="font-size: 0.8rem; color: #fbbf24; margin-top: 0.5rem;">
                       <i class="fas fa-clock"></i> Waiting for instructor confirmation
+                    </p>
+                  @else
+                    <p style="font-size: 0.8rem; color: #4ade80; margin-top: 0.5rem;">
+                      <i class="fas fa-play-circle"></i> Click to continue learning
                     </p>
                   @endif
                 </div>
