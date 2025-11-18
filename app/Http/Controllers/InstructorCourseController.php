@@ -178,6 +178,9 @@ class InstructorCourseController extends Controller
             return view('dashboardInstructor.myCourses', compact('courses'));
         } catch (\Exception $e) {
             Log::error('Failed to load courses: ' . $e->getMessage());
+            return view('dashboardInstructor.myCourses', [
+                'courses' => collect()
+            ]);
             return redirect()->route('dashboardinstructor')->with('error', 'Failed to load courses. Error: ' . $e->getMessage());
         }
     }

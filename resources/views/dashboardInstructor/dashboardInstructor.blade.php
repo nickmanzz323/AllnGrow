@@ -14,13 +14,13 @@
     <aside class="sidebar">
       <div class="logo">AllnGrow</div>
       <nav>
-        <a class="nav-link active" data-page="dashboard">
+        <a href="{{ route('dashboardinstructor') }}" class="nav-link active">
           <i class="fas fa-home"></i> Dashboard
         </a>
-        <a href="{{ route('instructor.courses.index') }}" class="nav-link">
+        <a href="{{ route('instructor.myCourses') }}" class="nav-link">
           <i class="fas fa-book"></i> My Courses
         </a>
-        <a href="{{ route('instructor.courses.create') }}" class="nav-link">
+        <a href="{{ route('instructor.createCourse') }}" class="nav-link">
           <i class="fas fa-plus-circle"></i> Add Course
         </a>
         <a href="{{ route('instructor.student-purchases') }}" class="nav-link">
@@ -35,10 +35,10 @@
         <a class="nav-link" data-page="earnings">
           <i class="fas fa-dollar-sign"></i> Earnings
         </a>
-        <a href="messageInstructor" data-page="messages">
+        <a href="{{ route('messageInstructor') }}" class="nav-link">
           <i class="fas fa-envelope"></i> Messages
         </a>
-        <a href="settingsInstructor" data-page="settings">
+        <a href="{{ route('settingsInstructor') }}" class="nav-link">
           <i class="fas fa-cog"></i> Settings
         </a>
         <div style="margin-top: auto; padding-top: 2rem; border-top: 1px solid #262626;">

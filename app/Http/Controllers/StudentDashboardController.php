@@ -128,7 +128,16 @@ class StudentDashboardController extends Controller
             ));
         } catch (\Exception $e) {
             Log::error('Failed to load browse courses: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Failed to load courses.');
+            $student = Auth::guard('student')->user();
+            if ($student) {
+                $student->load('detail');
+            }
+            return view('dashboardSiswa.browseCourses', [
+                'student' => $student,
+                'courses' => collect(),
+                'categories' => Category::all(),
+                'enrolledCourseIds' => []
+            ]);
         }
     }
 
