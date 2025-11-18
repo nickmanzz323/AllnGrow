@@ -12,7 +12,10 @@ return new class extends Migration
             $table->unsignedBigInteger('studentID')->primary();
             $table->string('fullname')->nullable();
             $table->string('phone')->nullable();
+            $table->string('gender')->nullable();
+            $table->date('dob')->nullable();
             $table->text('bio')->nullable();
+            $table->string('country')->nullable();
             $table->timestamps();
         });
 

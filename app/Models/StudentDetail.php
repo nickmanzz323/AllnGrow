@@ -21,7 +21,10 @@ class StudentDetail extends Model
         'studentID',
         'fullname',
         'phone',
+        'gender',
+        'dob',
         'bio',
+        'country',
     ];
 
     public function student(): BelongsTo
