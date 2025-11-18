@@ -66,107 +66,67 @@ class StudentDashboardController extends Controller
      */
     public function browseCourses(Request $request)
     {
-        try {
-            $student = Auth::guard('student')->user();
-            $student->load('detail');
-            
-            // Debug: Check total courses
-            $totalCourses = Course::count();
-            $approvedCount = Course::where('status', 'approved')->count();
-            \Log::info('Browse Courses Debug', [
-                'total_courses' => $totalCourses,
-                'approved_courses' => $approvedCount
-            ]);
-            
-            // Get all categories for filter
-            $categories = Category::all();
-            
-            // Build query - remove instructor.detail to avoid issues
-            $query = Course::with(['instructor', 'category', 'subcourses'])
-                ->where('status', 'approved'); // Only show approved courses
-            
-            // Search by title
-            if ($request->filled('search')) {
-                $query->where('title', 'like', '%' . $request->search . '%');
-            }
-            
-            // Filter by category
-            if ($request->filled('category_id')) {
-                $query->where('category_id', $request->category_id);
-            }
-            
-            // Filter by price
-            if ($request->filled('price_filter')) {
-                switch ($request->price_filter) {
-                    case 'free':
-                        $query->where('price', 0);
-                        break;
-                    case 'paid':
-                        $query->where('price', '>', 0);
-                        break;
-                }
-            }
-            
-            // Sort
-            $sort = $request->get('sort', 'latest');
-            switch ($sort) {
-                case 'price_low':
-                    $query->orderBy('price', 'asc');
-                    break;
-                case 'price_high':
-                    $query->orderBy('price', 'desc');
-                    break;
-                case 'popular':
-                    $query->withCount('students')->orderBy('students_count', 'desc');
-                    break;
-                default: // latest
-                    $query->latest();
-            }
-            
-            $courses = $query->paginate(12);
-            
-            // Debug: Log hasil query
-            \Log::info('Browse Courses Result', [
-                'courses_count' => $courses->count(),
-                'total_items' => $courses->total()
-            ]);
-            
-            // Get enrolled course IDs
-            $enrolledCourseIds = $student->courses()->pluck('courseID')->toArray();
-            
-            return view('dashboardSiswa.browseCourses', compact(
-                'student',
-                'courses',
-                'categories',
-                'enrolledCourseIds'
-            ));
-        } catch (\Exception $e) {
-            \Log::error('Failed to load browse courses', [
-                'error' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            $student = Auth::guard('student')->user();
-            if ($student) {
-                $student->load('detail');
-            }
-            
-            // Return empty paginator instead of collection
-            $courses = new \Illuminate\Pagination\LengthAwarePaginator(
-                [],
-                0,
-                12,
-                1
-            );
-            
-            return view('dashboardSiswa.browseCourses', [
-                'student' => $student,
-                'courses' => $courses,
-                'categories' => Category::all(),
-                'enrolledCourseIds' => []
-            ]);
+        $student = Auth::guard('student')->user();
+        $student->load('detail');
+        
+        // Get all categories for filter
+        $categories = Category::all();
+        
+        // Build query - simplified without complex eager loading
+        $query = Course::where('status', 'approved');
+        
+        // Search by title
+        if ($request->filled('search')) {
+            $query->where('title', 'like', '%' . $request->search . '%');
         }
+        
+        // Filter by category
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+        
+        // Filter by price
+        if ($request->filled('price_filter')) {
+            switch ($request->price_filter) {
+                case 'free':
+                    $query->where('price', 0);
+                    break;
+                case 'paid':
+                    $query->where('price', '>', 0);
+                    break;
+            }
+        }
+        
+        // Sort
+        $sort = $request->get('sort', 'latest');
+        switch ($sort) {
+            case 'price_low':
+                $query->orderBy('price', 'asc');
+                break;
+            case 'price_high':
+                $query->orderBy('price', 'desc');
+                break;
+            case 'popular':
+                $query->withCount('students')->orderBy('students_count', 'desc');
+                break;
+            default: // latest
+                $query->latest();
+        }
+        
+        $courses = $query->paginate(12);
+        
+        // Load relationships after pagination
+        $courses->load(['instructor', 'category', 'subcourses']);
+        
+        // Get enrolled course IDs
+        $enrolledCourseIds = $student->courses()->pluck('courseID')->toArray();
+        
+        return view('dashboardSiswa.browseCourses', compact(
+            'student',
+            'courses',
+            'categories',
+            'enrolledCourseIds'
+        ));
     }
 
     /**
