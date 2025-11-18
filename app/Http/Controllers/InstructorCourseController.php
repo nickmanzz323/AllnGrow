@@ -92,12 +92,13 @@ class InstructorCourseController extends Controller
                 $thumbnailPath = $request->file('thumbnail')->store('courses/thumbnails', 'public');
             }
 
-            // Buat course
+            // Buat course dengan status pending
             $course = Course::create([
                 'instructorID' => $instructor->id,
                 'title' => InputSanitizer::sanitizeText($data['title']),
                 'price' => $data['price'],
                 'thumbnail' => $thumbnailPath,
+                'status' => 'pending',
             ]);
 
             // Buat subcourses jika ada
@@ -138,7 +139,7 @@ class InstructorCourseController extends Controller
                 'title' => $course->title,
             ]);
 
-            return redirect()->route('instructor.courses.index')->with('success', 'Course created successfully!');
+            return redirect()->route('instructor.courses.index')->with('success', 'Course created successfully! Waiting for admin approval.');
         } catch (\Exception $e) {
             Log::error('Failed to create course: ' . $e->getMessage(), [
                 'instructor_id' => $instructor->id,

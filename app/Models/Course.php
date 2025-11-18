@@ -18,6 +18,8 @@ class Course extends Model
         'title',
         'price',
         'thumbnail',
+        'status',
+        'rejection_reason',
     ];
 
     protected $casts = [

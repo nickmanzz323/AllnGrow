@@ -33,7 +33,14 @@
         </a>
         <a class="nav-link" data-page="pending-courses">
           <i class="fas fa-book-medical"></i> Pending Courses
-          <span class="badge">5</span>
+          @php
+            $pendingCoursesCount = $courses->filter(function($course) {
+              return $course->status === 'pending';
+            })->count();
+          @endphp
+          @if($pendingCoursesCount > 0)
+          <span class="badge">{{ $pendingCoursesCount }}</span>
+          @endif
         </a>
         <a class="nav-link" data-page="manage-courses">
           <i class="fas fa-book"></i> Manage Courses
@@ -182,33 +189,37 @@
               <button class="btn-link" onclick="switchTab('pending-courses')">View All</button>
             </div>
             <div class="approval-list">
+              @php
+                $pendingCourses = $courses->filter(function($course) {
+                  return $course->status === 'pending';
+                })->take(2);
+              @endphp
+              
+              @forelse($pendingCourses as $course)
               <div class="approval-item">
                 <div class="approval-info">
-                  <div class="course-icon"><i class="fas fa-code"></i></div>
+                  <div class="course-icon"><i class="fas fa-book"></i></div>
                   <div>
-                    <h4>React for Beginners</h4>
-                    <p class="muted">By Dr. Sarah Johnson</p>
+                    <h4>{{ $course->title }}</h4>
+                    <p class="muted">By {{ $course->instructor->name ?? 'Unknown' }}</p>
                   </div>
                 </div>
                 <div class="approval-actions">
-                  <button class="btn-approve"><i class="fas fa-check"></i> Approve</button>
-                  <button class="btn-reject"><i class="fas fa-times"></i> Reject</button>
+                  <form action="{{ route('admin.course.updateStatus', $course->id) }}" method="POST" style="display: inline;">
+                    @csrf
+                    <input type="hidden" name="status" value="approved">
+                    <button type="submit" class="btn-approve"><i class="fas fa-check"></i> Approve</button>
+                  </form>
+                  <form action="{{ route('admin.course.updateStatus', $course->id) }}" method="POST" style="display: inline;">
+                    @csrf
+                    <input type="hidden" name="status" value="rejected">
+                    <button type="submit" class="btn-reject"><i class="fas fa-times"></i> Reject</button>
+                  </form>
                 </div>
               </div>
-
-              <div class="approval-item">
-                <div class="approval-info">
-                  <div class="course-icon"><i class="fas fa-mobile-alt"></i></div>
-                  <div>
-                    <h4>Flutter Development</h4>
-                    <p class="muted">By John Anderson</p>
-                  </div>
-                </div>
-                <div class="approval-actions">
-                  <button class="btn-approve"><i class="fas fa-check"></i> Approve</button>
-                  <button class="btn-reject"><i class="fas fa-times"></i> Reject</button>
-                </div>
-              </div>
+              @empty
+              <p class="muted" style="text-align: center; padding: 20px;">Tidak ada course yang menunggu approval</p>
+              @endforelse
             </div>
           </section>
         </div>
@@ -488,96 +499,79 @@
           </div>
         </header>
 
+        @if(session('success'))
+          <div style="background:#d4edda;border:1px solid #c3e6cb;color:#155724;padding:16px;margin:20px;border-radius:8px;font-weight:500;">
+            <i class="fas fa-check-circle"></i> {{ session('success') }}
+          </div>
+        @endif
+        @if(session('error'))
+          <div style="background:#f8d7da;border:1px solid #f5c6cb;color:#721c24;padding:16px;margin:20px;border-radius:8px;font-weight:500;">
+            <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
+          </div>
+        @endif
+
         <div class="course-review-list">
-          <!-- Course Review Card 1 -->
+          @php
+            $pendingCourses = $courses->filter(function($course) {
+              return $course->status === 'pending';
+            });
+          @endphp
+          
+          @forelse($pendingCourses as $course)
           <div class="course-review-card">
             <div class="course-thumbnail">
-              <div class="thumbnail-placeholder">
-                <i class="fas fa-code"></i>
-              </div>
+              @if($course->thumbnail)
+                <img src="{{ Storage::url($course->thumbnail) }}" alt="{{ $course->title }}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">
+              @else
+                <div class="thumbnail-placeholder">
+                  <i class="fas fa-book"></i>
+                </div>
+              @endif
             </div>
             <div class="course-details">
               <div class="course-header-section">
                 <div>
-                  <h3>React for Beginners</h3>
-                  <p class="muted">By Dr. Sarah Johnson • Submitted 2 days ago</p>
+                  <h3>{{ $course->title }}</h3>
+                  <p class="muted">By {{ $course->instructor->name ?? 'Unknown' }} • Submitted {{ $course->created_at->diffForHumans() }}</p>
                 </div>
                 <span class="status-badge pending">Pending Review</span>
               </div>
 
               <div class="course-info">
                 <div class="info-row">
-                  <span><i class="fas fa-tag"></i> Development</span>
-                  <span><i class="fas fa-signal"></i> Beginner</span>
-                  <span><i class="fas fa-clock"></i> 12 hours</span>
-                  <span><i class="fas fa-dollar-sign"></i> $29.99</span>
+                  <span><i class="fas fa-book"></i> {{ $course->subcourses->count() }} modules</span>
+                  <span><i class="fas fa-dollar-sign"></i> {{ number_format($course->price, 0) }}</span>
+                  <span><i class="fas fa-user"></i> {{ $course->instructor->name ?? 'Unknown' }}</span>
                 </div>
               </div>
 
               <div class="course-description">
-                <p>Learn React from scratch with hands-on projects. Perfect for beginners who want to master modern web development.</p>
+                <p>{{ Str::limit($course->description ?? 'No description provided', 150) }}</p>
               </div>
 
               <div class="course-actions">
-                <button class="btn-secondary">
-                  <i class="fas fa-eye"></i> Preview Course
-                </button>
-                <div class="action-buttons">
-                  <button class="btn-reject">
+                <div class="action-buttons" style="width: 100%; display: flex; gap: 10px; justify-content: flex-end;">
+                  <button class="btn-reject" onclick="showRejectModal({{ $course->id }}, '{{ addslashes($course->title) }}')">
                     <i class="fas fa-times"></i> Reject
                   </button>
-                  <button class="btn-approve">
-                    <i class="fas fa-check"></i> Approve
-                  </button>
+                  <form action="{{ route('admin.course.updateStatus', $course->id) }}" method="POST" style="display: inline;">
+                    @csrf
+                    <input type="hidden" name="status" value="approved">
+                    <button type="submit" class="btn-approve" onclick="return confirm('Yakin ingin approve course ini?')">
+                      <i class="fas fa-check"></i> Approve
+                    </button>
+                  </form>
                 </div>
               </div>
             </div>
           </div>
-
-          <!-- Course Review Card 2 -->
-          <div class="course-review-card">
-            <div class="course-thumbnail">
-              <div class="thumbnail-placeholder">
-                <i class="fas fa-mobile-alt"></i>
-              </div>
-            </div>
-            <div class="course-details">
-              <div class="course-header-section">
-                <div>
-                  <h3>Flutter Development Masterclass</h3>
-                  <p class="muted">By John Anderson • Submitted 3 days ago</p>
-                </div>
-                <span class="status-badge pending">Pending Review</span>
-              </div>
-
-              <div class="course-info">
-                <div class="info-row">
-                  <span><i class="fas fa-tag"></i> Mobile Development</span>
-                  <span><i class="fas fa-signal"></i> Intermediate</span>
-                  <span><i class="fas fa-clock"></i> 18 hours</span>
-                  <span><i class="fas fa-dollar-sign"></i> $49.99</span>
-                </div>
-              </div>
-
-              <div class="course-description">
-                <p>Master Flutter and build beautiful cross-platform mobile apps. Includes real-world projects and advanced techniques.</p>
-              </div>
-
-              <div class="course-actions">
-                <button class="btn-secondary">
-                  <i class="fas fa-eye"></i> Preview Course
-                </button>
-                <div class="action-buttons">
-                  <button class="btn-reject">
-                    <i class="fas fa-times"></i> Reject
-                  </button>
-                  <button class="btn-approve">
-                    <i class="fas fa-check"></i> Approve
-                  </button>
-                </div>
-              </div>
-            </div>
+          @empty
+          <div style="text-align: center; padding: 60px 20px; color: #737373;">
+            <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+            <h3 style="margin-bottom: 8px;">Tidak ada course pending</h3>
+            <p>Semua course sudah di-review</p>
           </div>
+          @endforelse
         </div>
       </div>
 
@@ -664,6 +658,27 @@
     </main>
   </div>
 
+  <!-- Reject Course Modal -->
+  <div id="rejectModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;justify-content:center;align-items:center;">
+    <div style="background:#fff;padding:30px;border-radius:12px;max-width:500px;width:90%;">
+      <h3 style="margin-bottom:20px;font-size:20px;">Reject Course</h3>
+      <p style="margin-bottom:20px;color:#737373;">Course: <strong id="rejectCourseName"></strong></p>
+      
+      <form id="rejectForm" method="POST">
+        @csrf
+        <input type="hidden" name="status" value="rejected">
+        
+        <label style="display:block;margin-bottom:8px;font-weight:500;">Rejection Reason:</label>
+        <textarea name="rejection_reason" required style="width:100%;min-height:100px;padding:12px;border:1px solid #e5e5e5;border-radius:8px;font-family:inherit;margin-bottom:20px;" placeholder="Berikan alasan penolakan..."></textarea>
+        
+        <div style="display:flex;gap:10px;justify-content:flex-end;">
+          <button type="button" onclick="closeRejectModal()" style="padding:10px 20px;border:1px solid #e5e5e5;background:#fff;border-radius:8px;cursor:pointer;">Cancel</button>
+          <button type="submit" style="padding:10px 20px;border:none;background:#ff4444;color:#fff;border-radius:8px;cursor:pointer;font-weight:500;">Reject Course</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
     // Tab Navigation
     const navLinks = document.querySelectorAll('.nav-link');
@@ -712,6 +727,24 @@
         }
       }
     }
+
+    // Reject Course Modal Functions
+    function showRejectModal(courseId, courseName) {
+      document.getElementById('rejectModal').style.display = 'flex';
+      document.getElementById('rejectCourseName').textContent = courseName;
+      document.getElementById('rejectForm').action = `/admin/course/${courseId}/update-status`;
+    }
+
+    function closeRejectModal() {
+      document.getElementById('rejectModal').style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('rejectModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeRejectModal();
+      }
+    });
   </script>
 </body>
 </html>

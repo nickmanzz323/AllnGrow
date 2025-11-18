@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Instructor;
 use App\Models\InstructorDetail;
+use App\Models\Course;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -17,7 +18,10 @@ class AdminInstructorController extends Controller
         // Ambil semua instructor beserta detail mereka dan courses dengan students count
         $instructors = Instructor::with(['detail', 'courses.students'])->get();
         
-        return view('dashboardAdmin.dashboardAdmin', compact('instructors'));
+        // Ambil semua courses untuk approval
+        $courses = Course::with(['instructor.detail', 'subcourses'])->get();
+        
+        return view('dashboardAdmin.dashboardAdmin', compact('instructors', 'courses'));
     }
 
     /**

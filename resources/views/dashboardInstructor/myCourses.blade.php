@@ -603,9 +603,19 @@
               @endif
               
               <!-- Status Badge -->
-              <div class="course-status-badge status-published">
-                <i class="fas fa-check-circle"></i> Published
-              </div>
+              @if($course->status === 'approved')
+                <div class="course-status-badge status-published">
+                  <i class="fas fa-check-circle"></i> Approved
+                </div>
+              @elseif($course->status === 'pending')
+                <div class="course-status-badge status-draft" style="background:#fbbf24;color:#000;">
+                  <i class="fas fa-clock"></i> Pending Review
+                </div>
+              @else
+                <div class="course-status-badge status-draft" style="background:#ff4444;">
+                  <i class="fas fa-times-circle"></i> Rejected
+                </div>
+              @endif
             </div>
 
             <div class="course-body">

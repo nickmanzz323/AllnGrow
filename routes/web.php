@@ -9,6 +9,7 @@ use App\Http\Controllers\InstructorLoginController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\AdminLoginController;
 use App\Http\Controllers\AdminInstructorController;
+use App\Http\Controllers\AdminCourseController;
 use App\Http\Controllers\InstructorCourseController;
 
 Route::middleware('web')->group(function () {
@@ -127,4 +128,7 @@ Route::middleware(['web', 'auth.admin'])->group(function () {
     
     // Update status instructor (approve/reject)
     Route::post('/admin/instructor/{id}/update-status', [AdminInstructorController::class, 'updateStatus'])->name('admin.instructor.updateStatus');
+    
+    // Update status course (approve/reject)
+    Route::post('/admin/course/{id}/update-status', [AdminCourseController::class, 'updateStatus'])->name('admin.course.updateStatus');
 });
