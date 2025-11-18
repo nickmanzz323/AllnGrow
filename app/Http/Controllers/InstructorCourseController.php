@@ -19,10 +19,13 @@ class InstructorCourseController extends Controller
     {
         try {
             $instructor = Auth::guard('instructor')->user();
-            
+
             if (!$instructor) {
                 return redirect()->route('instructor.login')->with('error', 'Please login first.');
             }
+
+            // Load instructor detail
+            $instructor->load('detail');
 
             // Get recent 5 courses
             $recentCourses = Course::where('instructorID', $instructor->id)

@@ -46,20 +46,20 @@
       <div class="tab-content active" id="dashboard">
         <header class="header">
           <div class="header-left">
-            <h1>Welcome back, {{ $instructor->name ?? $instructor->email }}!</h1>
+            <h1>Welcome back, {{ $instructor->detail->fullname ?? $instructor->name ?? $instructor->email }}!</h1>
             <p class="muted">Here's what's happening with your courses today</p>
           </div>
           <div class="header-right">
             <button class="icon-btn"><i class="fas fa-bell"></i></button>
             <div class="user">
               @php
-                $name = $instructor->name ?? $instructor->email;
+                $name = $instructor->detail->fullname ?? $instructor->name ?? $instructor->email;
                 $initials = collect(explode(' ', $name))->map(fn($word) => strtoupper(substr($word, 0, 1)))->take(2)->join('');
                 if (empty($initials)) $initials = strtoupper(substr($instructor->email, 0, 2));
               @endphp
               <div class="user-avatar">{{ $initials }}</div>
               <div class="user-info">
-                <div class="user-name">{{ $instructor->name ?? $instructor->email }}</div>
+                <div class="user-name">{{ $instructor->detail->fullname ?? $instructor->name ?? $instructor->email }}</div>
                 <div class="user-role">Instructor</div>
               </div>
             </div>

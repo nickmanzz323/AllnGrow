@@ -241,7 +241,6 @@
       height: 100%;
       object-fit: cover;
       transition: transform 0.3s ease;
-      filter: grayscale(100%);
     }
 
     .course-card:hover .course-thumbnail img {
