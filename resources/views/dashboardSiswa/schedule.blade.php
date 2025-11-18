@@ -42,9 +42,19 @@
         <div class="header-right">
           <button class="icon-btn"><i class="fas fa-bell"></i></button>
           <div class="user">
-            <div class="user-avatar">AR</div>
+            <div class="user-avatar">
+              @php
+                $name = $student->detail->fullname ?? $student->email;
+                $words = explode(' ', $name);
+                $initials = '';
+                foreach(array_slice($words, 0, 2) as $word) {
+                  $initials .= strtoupper(substr($word, 0, 1));
+                }
+                echo $initials;
+              @endphp
+            </div>
             <div class="user-info">
-              <div class="user-name">Ahmad Rizki</div>
+              <div class="user-name">{{ $student->detail->fullname ?? 'Student' }}</div>
               <div class="user-role">Student</div>
             </div>
           </div>
@@ -55,7 +65,7 @@
       <div class="calendar-header">
         <div class="calendar-nav">
           <button class="nav-btn"><i class="fas fa-chevron-left"></i></button>
-          <h2 class="current-month">November 2024</h2>
+          <h2 class="current-month">{{ date('F Y') }}</h2>
           <button class="nav-btn"><i class="fas fa-chevron-right"></i></button>
         </div>
         <button class="btn-today">Today</button>
@@ -74,197 +84,111 @@
 
       <!-- Calendar Grid -->
       <div class="calendar-grid">
-        <!-- Previous Month Days -->
-        <div class="day other-month">28</div>
-        <div class="day other-month">29</div>
-        <div class="day other-month">30</div>
-        <div class="day other-month">31</div>
-        
-        <!-- Current Month Days -->
-        <div class="day">1</div>
-        <div class="day">2</div>
-        <div class="day">3</div>
-        
-        <div class="day">4</div>
-        <div class="day">5</div>
-        <div class="day">6</div>
-        <div class="day">7</div>
-        <div class="day has-event">
-          8
-          <div class="event-dot"></div>
-        </div>
-        <div class="day">9</div>
-        <div class="day">10</div>
-        
-        <div class="day">11</div>
-        <div class="day">12</div>
-        <div class="day today">
-          13
-          <div class="event-dot"></div>
-        </div>
-        <div class="day has-event">
-          14
-          <div class="event-dot"></div>
-        </div>
-        <div class="day has-event">
-          15
-          <div class="event-dot"></div>
-        </div>
-        <div class="day">16</div>
-        <div class="day">17</div>
-        
-        <div class="day has-event">
-          18
-          <div class="event-dot"></div>
-        </div>
-        <div class="day">19</div>
-        <div class="day has-event">
-          20
-          <div class="event-dot"></div>
-        </div>
-        <div class="day">21</div>
-        <div class="day">22</div>
-        <div class="day">23</div>
-        <div class="day">24</div>
-        
-        <div class="day">25</div>
-        <div class="day">26</div>
-        <div class="day">27</div>
-        <div class="day">28</div>
-        <div class="day">29</div>
-        <div class="day">30</div>
-        
-        <!-- Next Month Days -->
-        <div class="day other-month">1</div>
+        @php
+          $today = date('j');
+          $month = date('n');
+          $year = date('Y');
+          $firstDay = mktime(0, 0, 0, $month, 1, $year);
+          $daysInMonth = date('t', $firstDay);
+          $dayOfWeek = date('N', $firstDay);
+
+          // Previous month days
+          $prevMonth = $month == 1 ? 12 : $month - 1;
+          $prevYear = $month == 1 ? $year - 1 : $year;
+          $daysInPrevMonth = date('t', mktime(0, 0, 0, $prevMonth, 1, $prevYear));
+
+          // Print previous month days
+          for ($i = $dayOfWeek - 1; $i > 0; $i--) {
+            echo '<div class="day other-month">' . ($daysInPrevMonth - $i + 1) . '</div>';
+          }
+
+          // Print current month days
+          for ($day = 1; $day <= $daysInMonth; $day++) {
+            $class = 'day';
+            if ($day == $today) {
+              $class .= ' today';
+            }
+            if ($enrolledCourses->count() > 0) {
+              $class .= ' has-event';
+            }
+            echo '<div class="' . $class . '">' . $day;
+            if ($enrolledCourses->count() > 0) {
+              echo '<div class="event-dot"></div>';
+            }
+            echo '</div>';
+          }
+
+          // Fill remaining cells with next month days
+          $remainingCells = 42 - ($dayOfWeek - 1 + $daysInMonth);
+          for ($i = 1; $i <= $remainingCells; $i++) {
+            echo '<div class="day other-month">' . $i . '</div>';
+          }
+        @endphp
       </div>
 
       <!-- Upcoming Classes -->
       <section class="section">
-        <h2>Upcoming Classes</h2>
-        
-        <div class="timeline">
-          <!-- Today -->
-          <div class="timeline-item">
-            <div class="timeline-date">
-              <div class="date-day">13</div>
-              <div class="date-info">
-                <div class="date-month">Nov</div>
-                <div class="date-label">Today</div>
-              </div>
-            </div>
-            
-            <div class="timeline-events">
-              <div class="event-card live">
-                <div class="event-time">10:00 AM - 11:30 AM</div>
-                <div class="event-content">
-                  <h3>Web Development Fundamentals</h3>
-                  <p class="event-instructor">
-                    <i class="fas fa-user-circle"></i> Dr. Sarah Johnson
-                  </p>
-                  <div class="event-meta">
-                    <span><i class="fas fa-video"></i> Live Session</span>
-                    <span><i class="fas fa-users"></i> 24 Students</span>
-                  </div>
-                </div>
-                <button class="btn-join">Join Now</button>
-              </div>
+        <h2>My Enrolled Courses</h2>
 
-              <div class="event-card">
-                <div class="event-time">02:00 PM - 03:30 PM</div>
-                <div class="event-content">
-                  <h3>Data Science Basics - Lab Session</h3>
-                  <p class="event-instructor">
-                    <i class="fas fa-user-circle"></i> Prof. Michael Chen
-                  </p>
-                  <div class="event-meta">
-                    <span><i class="fas fa-laptop-code"></i> Lab Practice</span>
-                    <span><i class="fas fa-users"></i> 18 Students</span>
+        @if($enrolledCourses->count() > 0)
+          <div class="timeline">
+            @foreach($enrolledCourses as $index => $course)
+              <div class="timeline-item">
+                <div class="timeline-date">
+                  <div class="date-day">{{ date('d', strtotime($course->pivot->created_at)) }}</div>
+                  <div class="date-info">
+                    <div class="date-month">{{ date('M', strtotime($course->pivot->created_at)) }}</div>
+                    <div class="date-label">Enrolled</div>
                   </div>
                 </div>
-                <button class="btn-reminder">
-                  <i class="fas fa-bell"></i> Set Reminder
-                </button>
+
+                <div class="timeline-events">
+                  <div class="event-card">
+                    <div class="event-time">
+                      <i class="fas fa-clock"></i>
+                      @if($course->subcourses->count() > 0)
+                        {{ $course->subcourses->count() }} Lessons
+                      @else
+                        No lessons yet
+                      @endif
+                    </div>
+                    <div class="event-content">
+                      <h3>{{ $course->title }}</h3>
+                      <p class="event-instructor">
+                        <i class="fas fa-user-circle"></i> {{ $course->instructor->detail->fullname ?? $course->instructor->name ?? $course->instructor->email }}
+                      </p>
+                      <div class="event-meta">
+                        <span><i class="fas fa-book"></i> {{ $course->category->name ?? 'General' }}</span>
+                        <span><i class="fas fa-chart-line"></i> {{ $course->pivot->completion }}% Complete</span>
+                      </div>
+                      <div style="margin-top: 0.75rem;">
+                        <div style="background: #1a1a1a; border-radius: 8px; height: 8px; overflow: hidden;">
+                          <div style="width: {{ $course->pivot->completion }}%; background: #4ade80; height: 100%; transition: width 0.3s;"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <a href="{{ route('student.view-course', $course->courseID) }}" class="btn-join" style="text-decoration: none; display: flex; align-items: center; justify-content: center;">
+                      @if($course->pivot->completed)
+                        <i class="fas fa-check-circle"></i> Review
+                      @else
+                        <i class="fas fa-play"></i> Continue
+                      @endif
+                    </a>
+                  </div>
+                </div>
               </div>
-            </div>
+            @endforeach
           </div>
-
-          <!-- Tomorrow -->
-          <div class="timeline-item">
-            <div class="timeline-date">
-              <div class="date-day">14</div>
-              <div class="date-info">
-                <div class="date-month">Nov</div>
-                <div class="date-label">Tomorrow</div>
-              </div>
-            </div>
-            
-            <div class="timeline-events">
-              <div class="event-card">
-                <div class="event-time">09:00 AM - 10:30 AM</div>
-                <div class="event-content">
-                  <h3>UI/UX Design Principles</h3>
-                  <p class="event-instructor">
-                    <i class="fas fa-user-circle"></i> Emma Williams
-                  </p>
-                  <div class="event-meta">
-                    <span><i class="fas fa-video"></i> Live Session</span>
-                    <span><i class="fas fa-users"></i> 32 Students</span>
-                  </div>
-                </div>
-                <button class="btn-reminder">
-                  <i class="fas fa-bell"></i> Set Reminder
-                </button>
-              </div>
-            </div>
+        @else
+          <div style="text-align: center; padding: 3rem 2rem; color: #a3a3a3;">
+            <i class="fas fa-calendar-times" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+            <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">Tidak ada courses yang diambil</p>
+            <p style="font-size: 0.9rem; margin-bottom: 1.5rem;">Mulai belajar dengan mendaftar courses yang tersedia</p>
+            <a href="{{ route('student.browse-courses') }}" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: #fff; color: #000; text-decoration: none; border-radius: 8px; font-weight: 600; transition: all 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+              <i class="fas fa-search"></i> Browse Courses
+            </a>
           </div>
-
-          <!-- Friday -->
-          <div class="timeline-item">
-            <div class="timeline-date">
-              <div class="date-day">15</div>
-              <div class="date-info">
-                <div class="date-month">Nov</div>
-                <div class="date-label">Friday</div>
-              </div>
-            </div>
-            
-            <div class="timeline-events">
-              <div class="event-card">
-                <div class="event-time">11:00 AM - 12:00 PM</div>
-                <div class="event-content">
-                  <h3>Mobile App Development - Q&A</h3>
-                  <p class="event-instructor">
-                    <i class="fas fa-user-circle"></i> John Anderson
-                  </p>
-                  <div class="event-meta">
-                    <span><i class="fas fa-comments"></i> Q&A Session</span>
-                    <span><i class="fas fa-users"></i> 15 Students</span>
-                  </div>
-                </div>
-                <button class="btn-reminder">
-                  <i class="fas fa-bell"></i> Set Reminder
-                </button>
-              </div>
-
-              <div class="event-card">
-                <div class="event-time">03:00 PM - 04:30 PM</div>
-                <div class="event-content">
-                  <h3>Web Development - Project Review</h3>
-                  <p class="event-instructor">
-                    <i class="fas fa-user-circle"></i> Dr. Sarah Johnson
-                  </p>
-                  <div class="event-meta">
-                    <span><i class="fas fa-clipboard-check"></i> Review</span>
-                    <span><i class="fas fa-users"></i> 24 Students</span>
-                  </div>
-                </div>
-                <button class="btn-reminder">
-                  <i class="fas fa-bell"></i> Set Reminder
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        @endif
       </section>
     </main>
   </div>

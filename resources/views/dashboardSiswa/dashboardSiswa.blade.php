@@ -130,8 +130,9 @@
         @else
           <div style="text-align: center; padding: 3rem 2rem; color: #a3a3a3;">
             <i class="fas fa-book-open" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
-            <p>You haven't enrolled in any courses yet</p>
-            <a href="{{ route('student.browse-courses') }}" style="display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1rem; padding: 0.75rem 1.5rem; background: #fff; color: #000; text-decoration: none; border-radius: 8px; font-weight: 600;">
+            <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">Tidak ada courses yang diambil</p>
+            <p style="font-size: 0.9rem; margin-bottom: 1.5rem;">Mulai perjalanan belajar Anda dengan mendaftar courses yang tersedia</p>
+            <a href="{{ route('student.browse-courses') }}" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: #fff; color: #000; text-decoration: none; border-radius: 8px; font-weight: 600; transition: all 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
               <i class="fas fa-search"></i> Browse Courses
             </a>
           </div>

@@ -316,7 +316,7 @@ class StudentDashboardController extends Controller
     {
         try {
             $student = Auth::guard('student')->user();
-            
+
             $request->validate([
                 'password' => 'required',
             ]);
@@ -327,13 +327,13 @@ class StudentDashboardController extends Controller
 
             // Delete student detail first
             $student->detail()->delete();
-            
+
             // Detach all courses
             $student->courses()->detach();
-            
+
             // Delete student account
             $student->delete();
-            
+
             // Logout
             Auth::guard('student')->logout();
 
@@ -341,6 +341,127 @@ class StudentDashboardController extends Controller
         } catch (\Exception $e) {
             Log::error('Failed to delete account: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Failed to delete account.');
+        }
+    }
+
+    /**
+     * Display schedule page with enrolled courses
+     */
+    public function schedule()
+    {
+        try {
+            $student = Auth::guard('student')->user();
+            $student->load('detail');
+
+            // Get enrolled courses with paid status
+            $enrolledCourses = $student->courses()
+                ->with(['instructor.detail', 'subcourses'])
+                ->wherePivot('payment_status', 'paid')
+                ->withPivot(['completion', 'completed', 'payment_status', 'created_at'])
+                ->get();
+
+            return view('dashboardSiswa.schedule', compact('student', 'enrolledCourses'));
+        } catch (\Exception $e) {
+            Log::error('Failed to load schedule: ' . $e->getMessage());
+            return view('dashboardSiswa.schedule', [
+                'student' => Auth::guard('student')->user(),
+                'enrolledCourses' => collect()
+            ]);
+        }
+    }
+
+    /**
+     * Display progress page with enrolled courses statistics
+     */
+    public function progress()
+    {
+        try {
+            $student = Auth::guard('student')->user();
+            $student->load('detail');
+
+            // Get enrolled courses with details
+            $enrolledCourses = $student->courses()
+                ->with(['instructor.detail', 'subcourses'])
+                ->wherePivot('payment_status', 'paid')
+                ->withPivot(['completion', 'completed', 'payment_status', 'created_at'])
+                ->orderBy('student_course.created_at', 'desc')
+                ->get();
+
+            // Calculate statistics
+            $totalCourses = $enrolledCourses->count();
+            $completedCourses = $enrolledCourses->where('pivot.completed', true)->count();
+            $inProgressCourses = $totalCourses - $completedCourses;
+            $averageCompletion = $totalCourses > 0
+                ? round($enrolledCourses->avg('pivot.completion'), 1)
+                : 0;
+
+            // Calculate achievements
+            $achievements = [];
+
+            if ($completedCourses >= 1) {
+                $achievements[] = [
+                    'title' => 'First Course Complete',
+                    'description' => 'Completed your first course',
+                    'icon' => 'fa-trophy',
+                    'color' => '#4ade80',
+                    'earned' => true,
+                    'date' => $enrolledCourses->where('pivot.completed', true)->first()->pivot->updated_at ?? null
+                ];
+            }
+
+            if ($completedCourses >= 5) {
+                $achievements[] = [
+                    'title' => 'Course Master',
+                    'description' => 'Completed 5 courses',
+                    'icon' => 'fa-star',
+                    'color' => '#fbbf24',
+                    'earned' => true,
+                    'date' => now()
+                ];
+            }
+
+            if ($completedCourses >= 10) {
+                $achievements[] = [
+                    'title' => 'Learning Expert',
+                    'description' => 'Completed 10 courses',
+                    'icon' => 'fa-medal',
+                    'color' => '#ef4444',
+                    'earned' => true,
+                    'date' => now()
+                ];
+            }
+
+            if ($averageCompletion >= 80) {
+                $achievements[] = [
+                    'title' => 'Dedicated Learner',
+                    'description' => 'Maintained 80% average completion',
+                    'icon' => 'fa-fire',
+                    'color' => '#f97316',
+                    'earned' => true,
+                    'date' => now()
+                ];
+            }
+
+            return view('dashboardSiswa.progress', compact(
+                'student',
+                'enrolledCourses',
+                'totalCourses',
+                'completedCourses',
+                'inProgressCourses',
+                'averageCompletion',
+                'achievements'
+            ));
+        } catch (\Exception $e) {
+            Log::error('Failed to load progress: ' . $e->getMessage());
+            return view('dashboardSiswa.progress', [
+                'student' => Auth::guard('student')->user(),
+                'enrolledCourses' => collect(),
+                'totalCourses' => 0,
+                'completedCourses' => 0,
+                'inProgressCourses' => 0,
+                'averageCompletion' => 0,
+                'achievements' => []
+            ]);
         }
     }
 }

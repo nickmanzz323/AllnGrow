@@ -42,9 +42,19 @@
         <div class="header-right">
           <button class="icon-btn"><i class="fas fa-bell"></i></button>
           <div class="user">
-            <div class="user-avatar">AR</div>
+            <div class="user-avatar">
+              @php
+                $name = $student->detail->fullname ?? $student->email;
+                $words = explode(' ', $name);
+                $initials = '';
+                foreach(array_slice($words, 0, 2) as $word) {
+                  $initials .= strtoupper(substr($word, 0, 1));
+                }
+                echo $initials;
+              @endphp
+            </div>
             <div class="user-info">
-              <div class="user-name">Ahmad Rizki</div>
+              <div class="user-name">{{ $student->detail->fullname ?? 'Student' }}</div>
               <div class="user-role">Student</div>
             </div>
           </div>
@@ -56,7 +66,7 @@
         <div class="stat-card">
           <div class="stat-icon"><i class="fas fa-graduation-cap"></i></div>
           <div class="stat-content">
-            <div class="stat-value">8</div>
+            <div class="stat-value">{{ $completedCourses }}</div>
             <div class="stat-label">Courses Completed</div>
           </div>
         </div>
@@ -64,7 +74,7 @@
         <div class="stat-card">
           <div class="stat-icon"><i class="fas fa-certificate"></i></div>
           <div class="stat-content">
-            <div class="stat-value">8</div>
+            <div class="stat-value">{{ $completedCourses }}</div>
             <div class="stat-label">Certificates Earned</div>
           </div>
         </div>
@@ -72,15 +82,15 @@
         <div class="stat-card">
           <div class="stat-icon"><i class="fas fa-clock"></i></div>
           <div class="stat-content">
-            <div class="stat-value">124h</div>
-            <div class="stat-label">Total Learning Time</div>
+            <div class="stat-value">{{ $totalCourses }}</div>
+            <div class="stat-label">Total Enrolled</div>
           </div>
         </div>
 
         <div class="stat-card">
           <div class="stat-icon"><i class="fas fa-trophy"></i></div>
           <div class="stat-content">
-            <div class="stat-value">15</div>
+            <div class="stat-value">{{ count($achievements) }}</div>
             <div class="stat-label">Achievements</div>
           </div>
         </div>
@@ -89,173 +99,131 @@
       <!-- Overall Progress -->
       <section class="section">
         <h2>Overall Progress</h2>
-        <div class="overall-progress-card">
-          <div class="progress-circle">
-            <svg viewBox="0 0 120 120">
-              <circle cx="60" cy="60" r="54" class="progress-bg"></circle>
-              <circle cx="60" cy="60" r="54" class="progress-fill" style="stroke-dasharray: 230 339;"></circle>
-            </svg>
-            <div class="progress-percent">68%</div>
-          </div>
-          <div class="progress-details">
-            <h3>Keep up the great work!</h3>
-            <p>You've completed 8 out of 12 courses. Continue your learning journey to reach your goals.</p>
-            <div class="progress-stats">
-              <div class="progress-stat-item">
-                <span class="stat-num">4</span>
-                <span class="stat-text">In Progress</span>
-              </div>
-              <div class="progress-stat-item">
-                <span class="stat-num">8</span>
-                <span class="stat-text">Completed</span>
-              </div>
-              <div class="progress-stat-item">
-                <span class="stat-num">12</span>
-                <span class="stat-text">Total Courses</span>
+        @if($totalCourses > 0)
+          <div class="overall-progress-card">
+            <div class="progress-circle">
+              @php
+                $circumference = 2 * 3.14159 * 54;
+                $offset = $circumference - ($averageCompletion / 100) * $circumference;
+              @endphp
+              <svg viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="54" class="progress-bg"></circle>
+                <circle cx="60" cy="60" r="54" class="progress-fill" style="stroke-dasharray: {{ $circumference - $offset }} {{ $circumference }};"></circle>
+              </svg>
+              <div class="progress-percent">{{ number_format($averageCompletion, 0) }}%</div>
+            </div>
+            <div class="progress-details">
+              <h3>
+                @if($averageCompletion >= 80)
+                  Excellent progress!
+                @elseif($averageCompletion >= 50)
+                  Keep up the great work!
+                @else
+                  Keep learning!
+                @endif
+              </h3>
+              <p>You've completed {{ $completedCourses }} out of {{ $totalCourses }} courses. Continue your learning journey to reach your goals.</p>
+              <div class="progress-stats">
+                <div class="progress-stat-item">
+                  <span class="stat-num">{{ $inProgressCourses }}</span>
+                  <span class="stat-text">In Progress</span>
+                </div>
+                <div class="progress-stat-item">
+                  <span class="stat-num">{{ $completedCourses }}</span>
+                  <span class="stat-text">Completed</span>
+                </div>
+                <div class="progress-stat-item">
+                  <span class="stat-num">{{ $totalCourses }}</span>
+                  <span class="stat-text">Total Courses</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        @else
+          <div style="text-align: center; padding: 3rem 2rem; background: #0f0f0f; border-radius: 12px; color: #a3a3a3;">
+            <i class="fas fa-chart-line" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+            <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">Tidak ada progress untuk ditampilkan</p>
+            <p style="font-size: 0.9rem; margin-bottom: 1.5rem;">Mulai belajar dengan mendaftar courses yang tersedia</p>
+            <a href="{{ route('student.browse-courses') }}" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: #fff; color: #000; text-decoration: none; border-radius: 8px; font-weight: 600; transition: all 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+              <i class="fas fa-search"></i> Browse Courses
+            </a>
+          </div>
+        @endif
       </section>
 
       <!-- Course Progress -->
       <section class="section">
         <h2>Course Progress Details</h2>
-        <div class="course-progress-list">
-          
-          <!-- Course Item 1 -->
-          <div class="course-progress-item">
-            <div class="course-info">
-              <h3>Web Development Fundamentals</h3>
-              <p class="course-meta">
-                <span><i class="fas fa-user-circle"></i> Dr. Sarah Johnson</span>
-                <span><i class="fas fa-video"></i> 24 Videos</span>
-                <span><i class="fas fa-clock"></i> 12h 30m</span>
-              </p>
-            </div>
-            <div class="course-progress-bar">
-              <div class="progress-info">
-                <span class="progress-label">Progress</span>
-                <span class="progress-percentage">65%</span>
+        @if($enrolledCourses->count() > 0)
+          <div class="course-progress-list">
+            @foreach($enrolledCourses as $course)
+              <div class="course-progress-item">
+                <div class="course-info">
+                  <h3>{{ $course->title }}</h3>
+                  <p class="course-meta">
+                    <span><i class="fas fa-user-circle"></i> {{ $course->instructor->detail->fullname ?? $course->instructor->name ?? $course->instructor->email }}</span>
+                    <span><i class="fas fa-video"></i> {{ $course->subcourses->count() }} Lessons</span>
+                    @if($course->pivot->completed)
+                      <span style="color: #4ade80;"><i class="fas fa-check-circle"></i> Completed</span>
+                    @endif
+                  </p>
+                </div>
+                <div class="course-progress-bar">
+                  <div class="progress-info">
+                    <span class="progress-label">Progress</span>
+                    <span class="progress-percentage">{{ $course->pivot->completion }}%</span>
+                  </div>
+                  <div class="progress-bar-container">
+                    <div class="progress-bar-fill" style="width: {{ $course->pivot->completion }}%"></div>
+                  </div>
+                  @php
+                    $completedLessons = ceil(($course->pivot->completion / 100) * $course->subcourses->count());
+                  @endphp
+                  <div class="progress-details-text">{{ $completedLessons }} of {{ $course->subcourses->count() }} lessons completed</div>
+                </div>
               </div>
-              <div class="progress-bar-container">
-                <div class="progress-bar-fill" style="width: 65%"></div>
-              </div>
-              <div class="progress-details-text">16 of 24 videos completed</div>
-            </div>
+            @endforeach
           </div>
-
-          <!-- Course Item 2 -->
-          <div class="course-progress-item">
-            <div class="course-info">
-              <h3>Data Science Basics</h3>
-              <p class="course-meta">
-                <span><i class="fas fa-user-circle"></i> Prof. Michael Chen</span>
-                <span><i class="fas fa-video"></i> 32 Videos</span>
-                <span><i class="fas fa-clock"></i> 18h 45m</span>
-              </p>
-            </div>
-            <div class="course-progress-bar">
-              <div class="progress-info">
-                <span class="progress-label">Progress</span>
-                <span class="progress-percentage">40%</span>
-              </div>
-              <div class="progress-bar-container">
-                <div class="progress-bar-fill" style="width: 40%"></div>
-              </div>
-              <div class="progress-details-text">13 of 32 videos completed</div>
-            </div>
+        @else
+          <div style="text-align: center; padding: 3rem 2rem; background: #0f0f0f; border-radius: 12px; color: #a3a3a3;">
+            <i class="fas fa-book-open" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+            <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">Tidak ada courses yang diambil</p>
+            <p style="font-size: 0.9rem; margin-bottom: 1.5rem;">Daftar courses untuk melihat progress Anda</p>
+            <a href="{{ route('student.browse-courses') }}" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: #fff; color: #000; text-decoration: none; border-radius: 8px; font-weight: 600; transition: all 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+              <i class="fas fa-search"></i> Browse Courses
+            </a>
           </div>
-
-          <!-- Course Item 3 -->
-          <div class="course-progress-item">
-            <div class="course-info">
-              <h3>UI/UX Design Principles</h3>
-              <p class="course-meta">
-                <span><i class="fas fa-user-circle"></i> Emma Williams</span>
-                <span><i class="fas fa-video"></i> 28 Videos</span>
-                <span><i class="fas fa-clock"></i> 15h 20m</span>
-              </p>
-            </div>
-            <div class="course-progress-bar">
-              <div class="progress-info">
-                <span class="progress-label">Progress</span>
-                <span class="progress-percentage">85%</span>
-              </div>
-              <div class="progress-bar-container">
-                <div class="progress-bar-fill" style="width: 85%"></div>
-              </div>
-              <div class="progress-details-text">24 of 28 videos completed</div>
-            </div>
-          </div>
-
-          <!-- Course Item 4 -->
-          <div class="course-progress-item">
-            <div class="course-info">
-              <h3>Mobile App Development</h3>
-              <p class="course-meta">
-                <span><i class="fas fa-user-circle"></i> John Anderson</span>
-                <span><i class="fas fa-video"></i> 36 Videos</span>
-                <span><i class="fas fa-clock"></i> 20h 15m</span>
-              </p>
-            </div>
-            <div class="course-progress-bar">
-              <div class="progress-info">
-                <span class="progress-label">Progress</span>
-                <span class="progress-percentage">30%</span>
-              </div>
-              <div class="progress-bar-container">
-                <div class="progress-bar-fill" style="width: 30%"></div>
-              </div>
-              <div class="progress-details-text">11 of 36 videos completed</div>
-            </div>
-          </div>
-
-        </div>
+        @endif
       </section>
 
       <!-- Recent Achievements -->
       <section class="section">
         <h2>Recent Achievements</h2>
-        <div class="achievements-grid">
-          
-          <div class="achievement-card">
-            <div class="achievement-icon gold">
-              <i class="fas fa-trophy"></i>
-            </div>
-            <h3>First Course Completed</h3>
-            <p>Completed your first course successfully</p>
-            <span class="achievement-date">Oct 15, 2024</span>
+        @if(count($achievements) > 0)
+          <div class="achievements-grid">
+            @foreach($achievements as $achievement)
+              <div class="achievement-card">
+                <div class="achievement-icon gold">
+                  <i class="fas {{ $achievement['icon'] }}"></i>
+                </div>
+                <h3>{{ $achievement['title'] }}</h3>
+                <p>{{ $achievement['description'] }}</p>
+                @if($achievement['date'])
+                  <span class="achievement-date">{{ \Carbon\Carbon::parse($achievement['date'])->format('M d, Y') }}</span>
+                @endif
+              </div>
+            @endforeach
           </div>
-
-          <div class="achievement-card">
-            <div class="achievement-icon silver">
-              <i class="fas fa-fire"></i>
-            </div>
-            <h3>7 Day Streak</h3>
-            <p>Learned for 7 consecutive days</p>
-            <span class="achievement-date">Nov 10, 2024</span>
+        @else
+          <div style="text-align: center; padding: 3rem 2rem; background: #0f0f0f; border-radius: 12px; color: #a3a3a3;">
+            <i class="fas fa-trophy" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+            <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">Belum ada achievements</p>
+            <p style="font-size: 0.9rem; margin-bottom: 1.5rem;">Selesaikan courses untuk mendapatkan achievements</p>
+            <a href="{{ route('student.browse-courses') }}" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: #fff; color: #000; text-decoration: none; border-radius: 8px; font-weight: 600; transition: all 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+              <i class="fas fa-search"></i> Browse Courses
+            </a>
           </div>
-
-          <div class="achievement-card">
-            <div class="achievement-icon bronze">
-              <i class="fas fa-star"></i>
-            </div>
-            <h3>Fast Learner</h3>
-            <p>Completed 3 courses in one month</p>
-            <span class="achievement-date">Nov 1, 2024</span>
-          </div>
-
-          <div class="achievement-card">
-            <div class="achievement-icon gold">
-              <i class="fas fa-medal"></i>
-            </div>
-            <h3>Certificate Master</h3>
-            <p>Earned 5 certificates</p>
-            <span class="achievement-date">Oct 28, 2024</span>
-          </div>
-
-        </div>
+        @endif
       </section>
 
     </main>

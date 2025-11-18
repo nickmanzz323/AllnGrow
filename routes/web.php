@@ -88,13 +88,9 @@ Route::middleware(['web', 'auth.student'])->group(function () {
     // View Course Detail
     Route::get('/student/course/{courseId}', [StudentDashboardController::class, 'viewCourse'])->name('student.view-course');
 
-    Route::get('/progress', function () {
-        return view('dashboardSiswa.progress'); 
-    })->name('progress');
+    Route::get('/progress', [StudentDashboardController::class, 'progress'])->name('progress');
 
-    Route::get('/schedule', function () {
-        return view('dashboardSiswa.schedule'); 
-    })->name('schedule');
+    Route::get('/schedule', [StudentDashboardController::class, 'schedule'])->name('schedule');
 
     // Settings
     Route::get('/settings', [StudentDashboardController::class, 'settings'])->name('settings');
