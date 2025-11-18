@@ -535,10 +535,18 @@
 </head>
 <body>
   <div class="page-container">
-    <!-- Back Link -->
-    <a href="{{ route('dashboardinstructor') }}" class="back-link">
-      <i class="fas fa-arrow-left"></i> Back to Dashboard
-    </a>
+    <!-- Back Link & Logout -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+      <a href="{{ route('dashboardinstructor') }}" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+      </a>
+      <form method="POST" action="{{ route('instructor.logout') }}" style="margin: 0;">
+        @csrf
+        <button type="submit" class="back-link" style="background: none; border: none; cursor: pointer; color: var(--text-muted);" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='var(--text-muted)'">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </form>
+    </div>
 
     <!-- Page Header -->
     <div class="page-header">

@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Add New Course - AllnGrow Instructor</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -488,10 +489,18 @@
 </head>
 <body>
   <div class="page-container">
-    <!-- Back Link -->
-    <a href="{{ route('instructor.courses.index') }}" class="back-link">
-      <i class="fas fa-arrow-left"></i> Back to My Courses
-    </a>
+    <!-- Back Link & Logout -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+      <a href="{{ route('instructor.courses.index') }}" class="back-link">
+        <i class="fas fa-arrow-left"></i> Back to My Courses
+      </a>
+      <form method="POST" action="{{ route('instructor.logout') }}" style="margin: 0;">
+        @csrf
+        <button type="submit" class="back-link" style="background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 0.5rem 1rem; border-radius: 8px; transition: all 0.2s;" onmouseover="this.style.background='#171717'; this.style.color='#ef4444'" onmouseout="this.style.background=''; this.style.color='var(--text-muted)'">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </form>
+    </div>
 
     <!-- Page Header -->
     <div class="page-header">
@@ -760,6 +769,34 @@
     // window.addEventListener('DOMContentLoaded', () => {
     //   addModule();
     // });
+
+    // Auto-refresh CSRF token setiap 60 menit untuk mencegah 419 error
+    setInterval(function() {
+      fetch('{{ route('instructor.courses.create') }}')
+        .then(response => response.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          const newToken = doc.querySelector('input[name="_token"]');
+          if (newToken) {
+            const oldToken = document.querySelector('input[name="_token"]');
+            if (oldToken) {
+              oldToken.value = newToken.value;
+              console.log('CSRF token refreshed');
+            }
+          }
+        })
+        .catch(error => console.error('Error refreshing CSRF token:', error));
+    }, 3600000); // 60 minutes
+
+    // Handle form submission dengan retry untuk 419 error
+    document.querySelector('form').addEventListener('submit', function(e) {
+      const submitBtn = this.querySelector('button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Course...';
+      }
+    });
   </script>
 </body>
 </html>

@@ -38,6 +38,14 @@
         <a href="settingsInstructor" data-page="settings">
           <i class="fas fa-cog"></i> Settings
         </a>
+        <div style="margin-top: auto; padding-top: 2rem; border-top: 1px solid #262626;">
+          <form method="POST" action="{{ route('instructor.logout') }}" id="logout-form">
+            @csrf
+            <button type="submit" class="nav-link" style="width: 100%; text-align: left; background: none; border: none; color: inherit; cursor: pointer; font: inherit; padding: 0.75rem 1rem; display: flex; align-items: center; gap: 0.75rem; transition: all 0.2s;" onmouseover="this.style.background='#1a1a1a'; this.style.color='#ef4444'" onmouseout="this.style.background=''; this.style.color=''">
+              <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+          </form>
+        </div>
       </nav>
     </aside>
 

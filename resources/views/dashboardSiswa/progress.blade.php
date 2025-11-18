@@ -18,7 +18,15 @@
         <a href="myCourses"><i class="fas fa-book"></i> My Courses</a>
         <a href="schedule"><i class="fas fa-calendar"></i> Schedule</a>
         <a class="active"><i class="fas fa-chart-line"></i> Progress</a>
-        <a href="settings"><i class="fas fa-chart-line"></i> Settings</a>
+        <a href="settings"><i class="fas fa-cog"></i> Settings</a>
+        <div style="margin-top: auto; padding-top: 2rem; border-top: 1px solid #262626;">
+          <form method="POST" action="{{ route('student.logout') }}">
+            @csrf
+            <button type="submit" style="width: 100%; text-align: left; background: none; border: none; color: #f5f5f5; cursor: pointer; font: inherit; padding: 0.75rem 1rem; display: flex; align-items: center; gap: 0.75rem; transition: all 0.2s; border-radius: 8px;" onmouseover="this.style.background='#1a1a1a'; this.style.color='#ef4444'" onmouseout="this.style.background=''; this.style.color='#f5f5f5'">
+              <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+          </form>
+        </div>
       </nav>
     </aside>
 
