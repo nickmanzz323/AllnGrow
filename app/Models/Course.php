@@ -16,6 +16,7 @@ class Course extends Model
         'instructorID',
         'category_id',
         'title',
+        'description',
         'price',
         'thumbnail',
         'status',

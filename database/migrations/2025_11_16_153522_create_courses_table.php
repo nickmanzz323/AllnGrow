@@ -12,11 +12,15 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('instructorID');
             $table->string('title');
+            $table->text('description')->nullable();
             $table->decimal('price', 10, 2)->default(0);
             $table->string('thumbnail')->nullable();
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->text('rejection_reason')->nullable();
             $table->timestamps();
 
             $table->index('instructorID');
+            $table->index('status');
         });
 
         // Foreign key terpisah

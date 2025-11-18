@@ -76,6 +76,8 @@ class InstructorCourseController extends Controller
             'price' => 'required|numeric|min:0',
             'thumbnail' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:5120',
             'description' => 'nullable|string|max:5000',
+            'category' => 'nullable|string',
+            'category_id' => 'nullable|exists:categories,id',
             
             // Subcourses (optional, multiple)
             'subcourses' => 'nullable|array',
@@ -95,7 +97,9 @@ class InstructorCourseController extends Controller
             // Buat course dengan status pending
             $course = Course::create([
                 'instructorID' => $instructor->id,
+                'category_id' => $data['category_id'] ?? null,
                 'title' => InputSanitizer::sanitizeText($data['title']),
+                'description' => isset($data['description']) ? InputSanitizer::sanitizeHtml($data['description']) : null,
                 'price' => $data['price'],
                 'thumbnail' => $thumbnailPath,
                 'status' => 'pending',
