@@ -104,6 +104,18 @@
 
       <!-- Courses Grid -->
       <section class="section">
+        <!-- DEBUG INFO - HAPUS SETELAH SOLVED -->
+        <div style="padding: 1rem; background: #1a1a1a; border: 1px solid #404040; border-radius: 8px; margin-bottom: 1rem; font-family: monospace; font-size: 0.85rem;">
+          <strong>DEBUG INFO:</strong><br>
+          Courses Total: {{ $courses->total() }}<br>
+          Courses Count: {{ $courses->count() }}<br>
+          Current Page: {{ $courses->currentPage() }}<br>
+          Per Page: {{ $courses->perPage() }}<br>
+          Categories: {{ $categories->count() }}<br>
+          Enrolled IDs: {{ count($enrolledCourseIds) }}
+        </div>
+        <!-- END DEBUG -->
+        
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
           <h2 style="margin: 0;">Available Courses ({{ $courses->total() }})</h2>
           <select name="sort" onchange="window.location.href='{{ route('student.browse-courses') }}?sort=' + this.value + '{{ request('search') ? '&search=' . request('search') : '' }}{{ request('category_id') ? '&category_id=' . request('category_id') : '' }}{{ request('price_filter') ? '&price_filter=' . request('price_filter') : '' }}'" style="padding: 0.5rem 1rem; background: #0d0d0d; border: 1px solid #262626; border-radius: 8px; color: #f5f5f5; cursor: pointer;">

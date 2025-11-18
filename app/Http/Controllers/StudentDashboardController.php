@@ -70,11 +70,19 @@ class StudentDashboardController extends Controller
             $student = Auth::guard('student')->user();
             $student->load('detail');
             
+            // Debug: Check total courses
+            $totalCourses = Course::count();
+            $approvedCount = Course::where('status', 'approved')->count();
+            \Log::info('Browse Courses Debug', [
+                'total_courses' => $totalCourses,
+                'approved_courses' => $approvedCount
+            ]);
+            
             // Get all categories for filter
             $categories = Category::all();
             
-            // Build query
-            $query = Course::with(['instructor.detail', 'category', 'subcourses'])
+            // Build query - remove instructor.detail to avoid issues
+            $query = Course::with(['instructor', 'category', 'subcourses'])
                 ->where('status', 'approved'); // Only show approved courses
             
             // Search by title
@@ -117,6 +125,12 @@ class StudentDashboardController extends Controller
             
             $courses = $query->paginate(12);
             
+            // Debug: Log hasil query
+            \Log::info('Browse Courses Result', [
+                'courses_count' => $courses->count(),
+                'total_items' => $courses->total()
+            ]);
+            
             // Get enrolled course IDs
             $enrolledCourseIds = $student->courses()->pluck('courseID')->toArray();
             
@@ -127,7 +141,12 @@ class StudentDashboardController extends Controller
                 'enrolledCourseIds'
             ));
         } catch (\Exception $e) {
-            Log::error('Failed to load browse courses: ' . $e->getMessage());
+            \Log::error('Failed to load browse courses', [
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
             $student = Auth::guard('student')->user();
             if ($student) {
                 $student->load('detail');
