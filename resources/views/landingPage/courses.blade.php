@@ -37,8 +37,8 @@
           Courses
         </a>
 
-        <a href="{{ route('student.login') }}"
-           class="nav-item {{ request()->routeIs('student.login') ? 'active' : '' }}">
+        <a href="{{ route('get-started') }}"
+           class="nav-item {{ request()->routeIs('get-started') ? 'active' : '' }}">
           Get Started
         </a>
       </nav>

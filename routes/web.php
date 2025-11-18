@@ -28,6 +28,11 @@ Route::middleware('web')->group(function () {
         return view('landingPage.about');
     })->name('about');
 
+    // Login choice page (student vs instructor)
+    Route::get('/get-started', function () {
+        return view('landingPage.loginChoice');
+    })->name('get-started');
+
     Route::get('/courses', [CourseController::class, 'course_page'])->name('courses');
 
     // searching courses (filter)
