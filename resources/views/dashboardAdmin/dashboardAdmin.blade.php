@@ -540,7 +540,7 @@
               <div class="course-info">
                 <div class="info-row">
                   <span><i class="fas fa-book"></i> {{ $course->subcourses->count() }} modules</span>
-                  <span><i class="fas fa-dollar-sign"></i> {{ number_format($course->price, 0) }}</span>
+                  <span><i class="fas fa-wallet"></i> Rp {{ number_format($course->price, 0, ',', '.') }}</span>
                   <span><i class="fas fa-user"></i> {{ $course->instructor->name ?? 'Unknown' }}</span>
                 </div>
               </div>

@@ -37,7 +37,7 @@
           <i class="fas fa-chart-bar"></i> Analytics
         </a>
         <a class="nav-link" data-page="earnings">
-          <i class="fas fa-dollar-sign"></i> Earnings
+          <i class="fas fa-wallet"></i> Earnings
         </a>
         <a href="{{ route('messageInstructor') }}" class="nav-link">
           <i class="fas fa-envelope"></i> Messages
@@ -110,7 +110,7 @@
                 <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem;">{{ $course->title }}</h2>
                 <div style="display: flex; gap: 1.5rem; font-size: 0.9rem; color: #a3a3a3;">
                   <span><i class="fas fa-users"></i> {{ $course->students->count() }} Students</span>
-                  <span><i class="fas fa-dollar-sign"></i> Rp {{ number_format($course->price, 0, ',', '.') }}</span>
+                  <span><i class="fas fa-rupiah-sign"></i> Rp {{ number_format($course->price, 0, ',', '.') }}</span>
                 </div>
               </div>
 

@@ -33,7 +33,7 @@
           <i class="fas fa-chart-bar"></i> Analytics
         </a>
         <a class="nav-link" data-page="earnings">
-          <i class="fas fa-dollar-sign"></i> Earnings
+          <i class="fas fa-wallet"></i> Earnings
         </a>
         <a href="{{ route('messageInstructor') }}" class="nav-link">
           <i class="fas fa-envelope"></i> Messages
@@ -106,7 +106,7 @@
 
           <div class="stat-card">
             <div class="stat-header">
-              <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+              <div class="stat-icon"><i class="fas fa-wallet"></i></div>
             </div>
             <div class="stat-value">$12,450</div>
             <div class="stat-label">Total Earnings</div>

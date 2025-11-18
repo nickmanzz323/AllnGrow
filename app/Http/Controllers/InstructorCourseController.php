@@ -450,9 +450,9 @@ class InstructorCourseController extends Controller
         try {
             $instructor = Auth::guard('instructor')->user();
             
-            // Get the enrollment
+            // Get the enrollment - fix column reference
             $enrollment = \DB::table('student_course')
-                ->join('courses', 'student_course.courseID', '=', 'courses.id')
+                ->join('courses', 'student_course.courseID', '=', 'courses.courseID')
                 ->where('student_course.id', $enrollmentId)
                 ->where('courses.instructorID', $instructor->id)
                 ->where('student_course.payment_status', 'pending')
