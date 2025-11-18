@@ -464,6 +464,14 @@
                         </form>
                       @endif
                     @endif
+                    <!-- Delete Button -->
+                    <form action="{{ route('admin.instructor.destroy', $instructor->id) }}" method="POST" style="display: inline;">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" class="action-btn" title="Delete" onclick="return confirm('Yakin ingin menghapus instructor ini? Semua courses dan data terkait akan ikut terhapus!')" style="background:none;border:none;cursor:pointer;color:#ef4444;">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </form>
                   </div>
                 </td>
               </tr>

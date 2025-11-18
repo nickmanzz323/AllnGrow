@@ -58,4 +58,30 @@ class AdminInstructorController extends Controller
 
         return redirect()->back()->with('success', "Status instructor berhasil {$statusText[$request->status]}.");
     }
+
+    /**
+     * Delete instructor and all related data
+     */
+    public function destroy($id)
+    {
+        try {
+            $instructor = Instructor::with(['detail', 'courses'])->findOrFail($id);
+
+            // Log before deletion
+            Log::info('Admin menghapus instructor', [
+                'instructor_id' => $id,
+                'instructor_email' => $instructor->email,
+                'courses_count' => $instructor->courses->count(),
+                'admin_id' => auth('admin')->id(),
+            ]);
+
+            // Delete instructor (cascade will handle related data)
+            $instructor->delete();
+
+            return redirect()->back()->with('success', 'Instructor berhasil dihapus beserta semua data terkait.');
+        } catch (\Exception $e) {
+            Log::error('Gagal menghapus instructor: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal menghapus instructor: ' . $e->getMessage());
+        }
+    }
 }

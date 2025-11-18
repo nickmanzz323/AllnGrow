@@ -150,7 +150,10 @@ Route::middleware(['web', 'auth.admin'])->group(function () {
     
     // Update status instructor (approve/reject)
     Route::post('/admin/instructor/{id}/update-status', [AdminInstructorController::class, 'updateStatus'])->name('admin.instructor.updateStatus');
-    
+
+    // Delete instructor
+    Route::delete('/admin/instructor/{id}', [AdminInstructorController::class, 'destroy'])->name('admin.instructor.destroy');
+
     // Update status course (approve/reject)
     Route::post('/admin/course/{id}/update-status', [AdminCourseController::class, 'updateStatus'])->name('admin.course.updateStatus');
 });
