@@ -17,7 +17,7 @@
   <header class="header">
     <div class="header-content">
       <div class="logo">
-        <img src="{{ asset('images/allngrowlogo.svg') }}" alt="AllnGrow Logo" width="155" height="auto">
+        <img src="{{ asset('images/AllnGrowLogo.svg') }}" alt="AllnGrow Logo" width="155" height="auto">
       </div>
       <nav class="nav-menu">
         <a href="{{ route('home') }}" class="nav-item">Home</a>

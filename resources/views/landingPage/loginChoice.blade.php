@@ -278,7 +278,7 @@
   <!-- Header -->
   <header class="header">
     <a href="{{ route('home') }}" class="logo">
-      <img src="{{ asset('images/allngrowlogo.svg') }}" alt="AllnGrow Logo">
+      <img src="{{ asset('images/AllnGrowLogo.svg') }}" alt="AllnGrow Logo">
     </a>
   </header>
 

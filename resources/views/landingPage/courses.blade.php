@@ -18,7 +18,7 @@
   <header class="header">
     <div class="header-content">
       <div class="logo">
-        <img src="images/allngrowlogo.svg" alt="AllnGrow Logo" width="155" />
+        <img src="{{ asset('images/AllnGrowLogo.svg') }}" alt="AllnGrow Logo" width="155" />
       </div>
 
       <nav class="nav-menu">
