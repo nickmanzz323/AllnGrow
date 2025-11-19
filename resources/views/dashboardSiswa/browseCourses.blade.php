@@ -499,8 +499,8 @@
                       {{ $course->instructor->detail->fullname ?? $course->instructor->name ?? $course->instructor->email ?? 'Instructor' }}
                     </p>
                     <div style="display: flex; gap: 1rem; font-size: 0.85rem; color: #a3a3a3; margin-bottom: 1rem;">
-                      <span><i class="fas fa-book-open"></i> {{ $course->subcourses->count() }} Modules</span>
-                      <span><i class="fas fa-users"></i> {{ $course->students->count() }} Students</span>
+                      <span><i class="fas fa-book"></i> {{ $course->chapters->count() }} Bab</span>
+                      <span><i class="fas fa-users"></i> {{ $course->students->count() }} Siswa</span>
                     </div>
                     <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 1rem; border-top: 1px solid #262626;">
                       <div style="font-size: 1.25rem; font-weight: 700; color: #f5f5f5;">

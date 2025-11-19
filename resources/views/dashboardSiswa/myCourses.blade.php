@@ -110,8 +110,8 @@
                     <i class="fas fa-user-circle"></i> {{ $course->instructor->name ?? $course->instructor->email }}
                   </p>
                   <div class="course-stats">
-                    <span><i class="fas fa-book-open"></i> {{ $course->subcourses->count() }} Modules</span>
-                    <span><i class="fas fa-users"></i> {{ $course->students->count() }} Students</span>
+                    <span><i class="fas fa-book"></i> {{ $course->chapters->count() }} Bab</span>
+                    <span><i class="fas fa-users"></i> {{ $course->students->count() }} Siswa</span>
                   </div>
                   <div class="progress">
                     <div class="progress-bar">

@@ -64,12 +64,18 @@
 
         <h3>Yang Akan Anda Pelajari</h3>
         <ul>
-          @if($course->subcourses->count() > 0)
-            @foreach($course->subcourses->take(5) as $subcourse)
-              <li>{{ $subcourse->title }}</li>
+          @if($course->chapters->count() > 0)
+            @foreach($course->chapters->take(3) as $chapter)
+              <li><strong>{{ $chapter->title }}</strong></li>
+              @foreach($chapter->lessons->take(2) as $lesson)
+                <li style="padding-left: 1rem;">{{ $lesson->title }}</li>
+              @endforeach
             @endforeach
-            @if($course->subcourses->count() > 5)
-              <li>Dan {{ $course->subcourses->count() - 5 }} materi lainnya...</li>
+            @php
+              $totalLessons = $course->chapters->sum(fn($c) => $c->lessons->count());
+            @endphp
+            @if($totalLessons > 6)
+              <li>Dan {{ $totalLessons - 6 }} materi lainnya...</li>
             @endif
           @else
             <li>Materi pembelajaran akan segera tersedia</li>
@@ -97,9 +103,9 @@
           Daftar Sekarang
         </a>
         <ul>
-          <li><i class="fas fa-book-open"></i> {{ $course->subcourses_count }} Lessons</li>
-          <li><i class="fas fa-users"></i> {{ $course->students_count }} Students</li>
-          <li><i class="fas fa-layer-group"></i> Level: {{ $course->level ?? 'All Levels' }}</li>
+          <li><i class="fas fa-book"></i> {{ $course->chapters_count }} Bab</li>
+          <li><i class="fas fa-play-circle"></i> {{ $course->lessons_count }} Materi</li>
+          <li><i class="fas fa-users"></i> {{ $course->students_count }} Siswa</li>
           <li><i class="fas fa-globe"></i> Bahasa: Indonesia</li>
         </ul>
       </div>
@@ -109,12 +115,16 @@
       <!-- Lesson Summary Section -->
       <div class="lesson-summary">
         <div class="lesson-item">
+          <i class="fas fa-book"></i>
+          <span><strong>{{ $course->chapters_count }} Bab</strong></span>
+        </div>
+        <div class="lesson-item">
           <i class="fa-regular fa-file-lines"></i>
-          <span><strong>{{ $course->subcourses_count }} Lessons</strong></span>
+          <span><strong>{{ $course->lessons_count }} Materi</strong></span>
         </div>
         <div class="lesson-item">
           <i class="fa-regular fa-user"></i>
-          <span>{{ $course->students_count }} Students</span>
+          <span>{{ $course->students_count }} Siswa</span>
         </div>
         @if($course->average_rating)
         <div class="lesson-item">
@@ -127,11 +137,32 @@
 
       <!-- Course Outline -->
       <div class="course-outline fade-up delay-4">
-        @if($course->subcourses->count() > 0)
-          @foreach($course->subcourses as $index => $subcourse)
-            <details {{ $index === 0 ? 'open' : '' }}>
-              <summary>{{ $subcourse->title }}</summary>
-              <p>{{ $subcourse->description ?? 'Materi pembelajaran untuk ' . $subcourse->title }}</p>
+        @if($course->chapters->count() > 0)
+          @foreach($course->chapters as $chapterIndex => $chapter)
+            <details {{ $chapterIndex === 0 ? 'open' : '' }}>
+              <summary>
+                <span style="color: #3b82f6; font-weight: 600;">Bab {{ $chapterIndex + 1 }}:</span> {{ $chapter->title }}
+              </summary>
+              <div style="padding-left: 1rem;">
+                @if($chapter->description)
+                  <p style="margin-bottom: 0.5rem;">{{ $chapter->description }}</p>
+                @endif
+                @if($chapter->lessons->count() > 0)
+                  <ul style="list-style: none; padding: 0; margin: 0;">
+                    @foreach($chapter->lessons as $lessonIndex => $lesson)
+                      <li style="padding: 0.5rem 0; border-bottom: 1px solid #262626; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-play-circle" style="color: #4ade80; font-size: 0.8rem;"></i>
+                        {{ $lessonIndex + 1 }}. {{ $lesson->title }}
+                        @if($lesson->is_free)
+                          <span style="background: #22c55e; color: #fff; padding: 0.1rem 0.3rem; border-radius: 3px; font-size: 0.65rem;">FREE</span>
+                        @endif
+                      </li>
+                    @endforeach
+                  </ul>
+                @else
+                  <p style="color: #737373;">Belum ada materi dalam bab ini.</p>
+                @endif
+              </div>
             </details>
           @endforeach
         @else

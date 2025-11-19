@@ -28,7 +28,7 @@ class StudentDashboardController extends Controller
 
             // Get enrolled courses with details
             $enrolledCourses = $student->courses()
-                ->with(['instructor.detail', 'subcourses'])
+                ->with(['instructor.detail', 'chapters.lessons'])
                 ->withPivot(['completion', 'completed', 'payment_status', 'created_at'])
                 ->get();
 
@@ -116,7 +116,7 @@ class StudentDashboardController extends Controller
         $courses = $query->paginate(12);
         
         // Load relationships after pagination
-        $courses->load(['instructor', 'category', 'subcourses']);
+        $courses->load(['instructor', 'category', 'chapters.lessons']);
         
         // Get enrolled course IDs - specify table prefix to avoid ambiguity
         $enrolledCourseIds = $student->courses()->pluck('courses.courseID')->toArray();
@@ -190,7 +190,7 @@ class StudentDashboardController extends Controller
             $student->load('detail');
             
             $enrolledCourses = $student->courses()
-                ->with(['instructor', 'category', 'subcourses'])
+                ->with(['instructor', 'category', 'chapters.lessons'])
                 ->withPivot(['completion', 'completed', 'payment_status', 'created_at'])
                 ->orderBy('student_course.created_at', 'desc')
                 ->get();
@@ -230,8 +230,8 @@ class StudentDashboardController extends Controller
                 return redirect()->route('student.my-courses')->with('error', 'Please wait for payment confirmation before accessing the course.');
             }
             
-            // Load course with all related data - remove instructor.detail to avoid issues
-            $course = Course::with(['instructor', 'category', 'subcourses' => function($query) {
+            // Load course with all related data
+            $course = Course::with(['instructor', 'category', 'chapters.lessons' => function($query) {
                 $query->orderBy('order', 'asc');
             }])->findOrFail($courseId);
             
@@ -365,7 +365,7 @@ class StudentDashboardController extends Controller
 
             // Get enrolled courses with paid status
             $enrolledCourses = $student->courses()
-                ->with(['instructor.detail', 'subcourses'])
+                ->with(['instructor.detail', 'chapters.lessons'])
                 ->wherePivot('payment_status', 'paid')
                 ->withPivot(['completion', 'completed', 'payment_status', 'created_at'])
                 ->get();
@@ -391,8 +391,8 @@ class StudentDashboardController extends Controller
 
             // Get course with all details
             $course = Course::where('status', 'approved')
-                ->with(['category', 'instructor.detail', 'subcourses', 'students', 'ratings'])
-                ->withCount(['subcourses', 'students'])
+                ->with(['category', 'instructor.detail', 'chapters.lessons', 'students', 'ratings'])
+                ->withCount(['chapters', 'lessons', 'students'])
                 ->findOrFail($courseId);
 
             // Check if student is already enrolled
@@ -425,7 +425,7 @@ class StudentDashboardController extends Controller
 
             // Get enrolled courses with details
             $enrolledCourses = $student->courses()
-                ->with(['instructor.detail', 'subcourses'])
+                ->with(['instructor.detail', 'chapters.lessons'])
                 ->wherePivot('payment_status', 'paid')
                 ->withPivot(['completion', 'completed', 'payment_status', 'created_at'])
                 ->orderBy('student_course.created_at', 'desc')

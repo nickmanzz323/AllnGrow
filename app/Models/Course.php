@@ -45,9 +45,70 @@ class Course extends Model
         return $this->belongsTo(Partner::class, 'partner_id');
     }
 
+    /**
+     * Get all chapters for this course
+     */
+    public function chapters(): HasMany
+    {
+        return $this->hasMany(Chapter::class, 'course_id', 'courseID')->orderBy('order');
+    }
+
+    /**
+     * Get all lessons for this course (through chapters)
+     */
+    public function lessons(): HasMany
+    {
+        return $this->hasMany(Lesson::class, 'course_id', 'courseID')->orderBy('order');
+    }
+
+    /**
+     * Backward compatibility - alias for chapters
+     * @deprecated Use chapters() instead
+     */
     public function subcourses(): HasMany
     {
-        return $this->hasMany(Subcourse::class, 'course_id', 'courseID');
+        return $this->chapters();
+    }
+
+    /**
+     * Get total duration of all lessons
+     */
+    public function getTotalDurationAttribute(): int
+    {
+        return $this->lessons()->sum('duration') ?? 0;
+    }
+
+    /**
+     * Get formatted total duration
+     */
+    public function getFormattedDurationAttribute(): string
+    {
+        $minutes = $this->total_duration;
+
+        if (!$minutes) {
+            return '-';
+        }
+
+        if ($minutes < 60) {
+            return $minutes . ' min';
+        }
+
+        $hours = floor($minutes / 60);
+        $mins = $minutes % 60;
+
+        if ($mins === 0) {
+            return $hours . ' jam';
+        }
+
+        return $hours . 'j ' . $mins . 'm';
+    }
+
+    /**
+     * Get total lessons count
+     */
+    public function getTotalLessonsAttribute(): int
+    {
+        return $this->lessons()->count();
     }
 
     public function studentCourses(): HasMany

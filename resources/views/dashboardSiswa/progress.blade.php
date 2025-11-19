@@ -162,9 +162,9 @@
                   <h3>{{ $course->title }}</h3>
                   <p class="course-meta">
                     <span><i class="fas fa-user-circle"></i> {{ $course->instructor->detail->fullname ?? $course->instructor->name ?? $course->instructor->email }}</span>
-                    <span><i class="fas fa-video"></i> {{ $course->subcourses->count() }} Lessons</span>
+                    <span><i class="fas fa-book"></i> {{ $course->chapters->count() }} Bab</span>
                     @if($course->pivot->completed)
-                      <span style="color: #4ade80;"><i class="fas fa-check-circle"></i> Completed</span>
+                      <span style="color: #4ade80;"><i class="fas fa-check-circle"></i> Selesai</span>
                     @endif
                   </p>
                 </div>
@@ -177,9 +177,10 @@
                     <div class="progress-bar-fill" style="width: {{ $course->pivot->completion }}%"></div>
                   </div>
                   @php
-                    $completedLessons = ceil(($course->pivot->completion / 100) * $course->subcourses->count());
+                    $totalLessons = $course->chapters->sum(fn($chapter) => $chapter->lessons->count());
+                    $completedLessons = ceil(($course->pivot->completion / 100) * $totalLessons);
                   @endphp
-                  <div class="progress-details-text">{{ $completedLessons }} of {{ $course->subcourses->count() }} lessons completed</div>
+                  <div class="progress-details-text">{{ $completedLessons }} dari {{ $totalLessons }} materi selesai</div>
                 </div>
               </div>
             @endforeach

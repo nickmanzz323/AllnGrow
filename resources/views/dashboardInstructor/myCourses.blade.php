@@ -630,16 +630,16 @@
               
               <div class="course-stats">
                 <div class="course-stat">
-                  <i class="fas fa-book-open"></i>
-                  <span>{{ $course->subcourses_count ?? 0 }} modules</span>
+                  <i class="fas fa-book"></i>
+                  <span>{{ $course->chapters_count ?? 0 }} bab</span>
+                </div>
+                <div class="course-stat">
+                  <i class="fas fa-play-circle"></i>
+                  <span>{{ $course->lessons_count ?? 0 }} materi</span>
                 </div>
                 <div class="course-stat">
                   <i class="fas fa-users"></i>
-                  <span>{{ $course->students_count ?? 0 }} students</span>
-                </div>
-                <div class="course-stat">
-                  <i class="fas fa-star"></i>
-                  <span>4.8</span>
+                  <span>{{ $course->students_count ?? 0 }} siswa</span>
                 </div>
               </div>
 

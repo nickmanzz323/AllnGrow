@@ -14,8 +14,8 @@ class CourseController extends Controller
     function course_page() {
 
         $courses = Course::where('status', 'approved')
-            ->with(['category', 'instructor', 'subcourses', 'students'])
-            ->withCount(['subcourses', 'students'])
+            ->with(['category', 'instructor', 'chapters.lessons', 'students'])
+            ->withCount(['chapters', 'lessons', 'students'])
             ->latest()
             ->simplePaginate(9);
 
@@ -37,8 +37,8 @@ class CourseController extends Controller
         $price = $request->input('price');
 
         $query = Course::where('status', 'approved')
-            ->with(['category', 'instructor', 'subcourses', 'students'])
-            ->withCount(['subcourses', 'students']);
+            ->with(['category', 'instructor', 'chapters.lessons', 'students'])
+            ->withCount(['chapters', 'lessons', 'students']);
 
         // filter by title or description
         if($search){
@@ -86,8 +86,8 @@ class CourseController extends Controller
     function show($courseId)
     {
         $course = Course::where('status', 'approved')
-            ->with(['category', 'instructor.detail', 'subcourses', 'students', 'ratings'])
-            ->withCount(['subcourses', 'students'])
+            ->with(['category', 'instructor.detail', 'chapters.lessons', 'students', 'ratings'])
+            ->withCount(['chapters', 'lessons', 'students'])
             ->findOrFail($courseId);
 
         return view('detailCourses.overviewcourses', compact('course'));

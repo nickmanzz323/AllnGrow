@@ -133,10 +133,15 @@ Route::middleware(['web', 'auth.instructor'])->group(function () {
     Route::put('/instructor/courses/{id}', [InstructorCourseController::class, 'update'])->name('instructor.courses.update');
     Route::delete('/instructor/courses/{id}', [InstructorCourseController::class, 'destroy'])->name('instructor.courses.destroy');
     
-    // Subcourse Management
-    Route::post('/instructor/courses/{courseId}/subcourses', [InstructorCourseController::class, 'storeSubcourse'])->name('instructor.subcourses.store');
-    Route::put('/instructor/courses/{courseId}/subcourses/{subcourseId}', [InstructorCourseController::class, 'updateSubcourse'])->name('instructor.subcourses.update');
-    Route::delete('/instructor/courses/{courseId}/subcourses/{subcourseId}', [InstructorCourseController::class, 'destroySubcourse'])->name('instructor.subcourses.destroy');
+    // Chapter Management
+    Route::post('/instructor/courses/{courseId}/chapters', [InstructorCourseController::class, 'storeChapter'])->name('instructor.chapters.store');
+    Route::put('/instructor/courses/{courseId}/chapters/{chapterId}', [InstructorCourseController::class, 'updateChapter'])->name('instructor.chapters.update');
+    Route::delete('/instructor/courses/{courseId}/chapters/{chapterId}', [InstructorCourseController::class, 'destroyChapter'])->name('instructor.chapters.destroy');
+
+    // Lesson Management
+    Route::post('/instructor/courses/{courseId}/chapters/{chapterId}/lessons', [InstructorCourseController::class, 'storeLesson'])->name('instructor.lessons.store');
+    Route::put('/instructor/courses/{courseId}/chapters/{chapterId}/lessons/{lessonId}', [InstructorCourseController::class, 'updateLesson'])->name('instructor.lessons.update');
+    Route::delete('/instructor/courses/{courseId}/chapters/{chapterId}/lessons/{lessonId}', [InstructorCourseController::class, 'destroyLesson'])->name('instructor.lessons.destroy');
     
     // Student Purchases & Payment Confirmation
     Route::get('/instructor/student-purchases', [InstructorCourseController::class, 'viewStudentPurchases'])->name('instructor.student-purchases');

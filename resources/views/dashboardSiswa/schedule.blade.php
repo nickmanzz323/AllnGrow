@@ -331,10 +331,10 @@
                   <div class="event-card">
                     <div class="event-time">
                       <i class="fas fa-clock"></i>
-                      @if($course->subcourses->count() > 0)
-                        {{ $course->subcourses->count() }} Lessons
+                      @if($course->chapters->count() > 0)
+                        {{ $course->chapters->count() }} Bab
                       @else
-                        No lessons yet
+                        Belum ada materi
                       @endif
                     </div>
                     <div class="event-content">

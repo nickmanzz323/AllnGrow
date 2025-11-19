@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
-use App\Models\Subcourse;
+use App\Models\Chapter;
+use App\Models\Lesson;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -29,7 +30,8 @@ class InstructorCourseController extends Controller
 
             // Get recent 5 courses
             $recentCourses = Course::where('instructorID', $instructor->id)
-                ->withCount('subcourses')
+                ->withCount('chapters')
+                ->withCount('lessons')
                 ->withCount('students')
                 ->latest()
                 ->take(5)
@@ -83,13 +85,21 @@ class InstructorCourseController extends Controller
             'thumbnail' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:5120',
             'description' => 'nullable|string|max:5000',
             'category_id' => 'nullable|exists:categories,id',
-            
-            // Subcourses (optional, multiple)
-            'subcourses' => 'nullable|array',
-            'subcourses.*.title' => 'required_with:subcourses|string|max:255',
-            'subcourses.*.content' => 'nullable|string|max:10000',
-            'subcourses.*.thumbnail' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:5120',
-            'subcourses.*.fileUpload' => 'nullable|mimes:pdf,doc,docx,ppt,pptx,mp4,mov,avi|max:51200',
+
+            // Chapters (Bab)
+            'chapters' => 'nullable|array',
+            'chapters.*.title' => 'required_with:chapters|string|max:255',
+            'chapters.*.description' => 'nullable|string|max:2000',
+
+            // Lessons within chapters
+            'chapters.*.lessons' => 'nullable|array',
+            'chapters.*.lessons.*.title' => 'required_with:chapters.*.lessons|string|max:255',
+            'chapters.*.lessons.*.content' => 'nullable|string|max:10000',
+            'chapters.*.lessons.*.video_url' => 'nullable|url|max:500',
+            'chapters.*.lessons.*.duration' => 'nullable|integer|min:0',
+            'chapters.*.lessons.*.is_free' => 'nullable|boolean',
+            'chapters.*.lessons.*.thumbnail' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:5120',
+            'chapters.*.lessons.*.fileUpload' => 'nullable|mimes:pdf,doc,docx,ppt,pptx,mp4,mov,avi|max:51200',
         ]);
 
         try {
@@ -110,29 +120,48 @@ class InstructorCourseController extends Controller
                 'status' => 'pending',
             ]);
 
-            // Buat subcourses jika ada
-            if (isset($data['subcourses']) && is_array($data['subcourses'])) {
-                foreach ($data['subcourses'] as $index => $subcourseData) {
-                    $subThumbnail = null;
-                    $subFile = null;
-
-                    // Upload subcourse thumbnail
-                    if ($request->hasFile("subcourses.{$index}.thumbnail")) {
-                        $subThumbnail = $request->file("subcourses.{$index}.thumbnail")->store("courses/{$course->courseID}/subcourses/thumbnails", 'public');
-                    }
-
-                    // Upload subcourse file
-                    if ($request->hasFile("subcourses.{$index}.fileUpload")) {
-                        $subFile = $request->file("subcourses.{$index}.fileUpload")->store("courses/{$course->courseID}/subcourses/files", 'public');
-                    }
-
-                    Subcourse::create([
+            // Buat chapters dan lessons jika ada
+            if (isset($data['chapters']) && is_array($data['chapters'])) {
+                foreach ($data['chapters'] as $chapterIndex => $chapterData) {
+                    $chapter = Chapter::create([
                         'course_id' => $course->courseID,
-                        'title' => InputSanitizer::sanitizeText($subcourseData['title']),
-                        'content' => isset($subcourseData['content']) ? InputSanitizer::sanitizeHtml($subcourseData['content']) : null,
-                        'thumbnail' => $subThumbnail,
-                        'fileUpload' => $subFile,
+                        'title' => InputSanitizer::sanitizeText($chapterData['title']),
+                        'description' => isset($chapterData['description']) ? InputSanitizer::sanitizeText($chapterData['description']) : null,
+                        'order' => $chapterIndex + 1,
                     ]);
+
+                    // Buat lessons dalam chapter
+                    if (isset($chapterData['lessons']) && is_array($chapterData['lessons'])) {
+                        foreach ($chapterData['lessons'] as $lessonIndex => $lessonData) {
+                            $lessonThumbnail = null;
+                            $lessonFile = null;
+
+                            // Upload lesson thumbnail
+                            if ($request->hasFile("chapters.{$chapterIndex}.lessons.{$lessonIndex}.thumbnail")) {
+                                $lessonThumbnail = $request->file("chapters.{$chapterIndex}.lessons.{$lessonIndex}.thumbnail")
+                                    ->store("courses/{$course->courseID}/lessons/thumbnails", 'public');
+                            }
+
+                            // Upload lesson file
+                            if ($request->hasFile("chapters.{$chapterIndex}.lessons.{$lessonIndex}.fileUpload")) {
+                                $lessonFile = $request->file("chapters.{$chapterIndex}.lessons.{$lessonIndex}.fileUpload")
+                                    ->store("courses/{$course->courseID}/lessons/files", 'public');
+                            }
+
+                            Lesson::create([
+                                'chapter_id' => $chapter->id,
+                                'course_id' => $course->courseID,
+                                'title' => InputSanitizer::sanitizeText($lessonData['title']),
+                                'content' => isset($lessonData['content']) ? InputSanitizer::sanitizeHtml($lessonData['content']) : null,
+                                'video_url' => $lessonData['video_url'] ?? null,
+                                'duration' => $lessonData['duration'] ?? null,
+                                'is_free' => $lessonData['is_free'] ?? false,
+                                'order' => $lessonIndex + 1,
+                                'thumbnail' => $lessonThumbnail,
+                                'fileUpload' => $lessonFile,
+                            ]);
+                        }
+                    }
                 }
             }
 
@@ -148,7 +177,7 @@ class InstructorCourseController extends Controller
                 'instructor_id' => $instructor->id ?? null,
                 'exception' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
-                'request_data' => $request->except(['thumbnail', 'subcourses']),
+                'request_data' => $request->except(['thumbnail', 'chapters']),
             ]);
             return redirect()->back()->withInput()->with('error', 'Failed to create course: ' . $e->getMessage());
         }
@@ -161,13 +190,14 @@ class InstructorCourseController extends Controller
     {
         try {
             $instructor = Auth::guard('instructor')->user();
-            
+
             if (!$instructor) {
                 return redirect()->route('instructor.login')->with('error', 'Please login first.');
             }
 
             $courses = Course::where('instructorID', $instructor->id)
-                ->withCount('subcourses')
+                ->withCount('chapters')
+                ->withCount('lessons')
                 ->withCount('students')
                 ->latest()
                 ->paginate(10);
@@ -175,7 +205,7 @@ class InstructorCourseController extends Controller
             return view('dashboardInstructor.myCourses', compact('courses'));
         } catch (\Exception $e) {
             Log::error('Failed to load courses: ' . $e->getMessage());
-            
+
             // Return empty paginator instead of collection
             $courses = new \Illuminate\Pagination\LengthAwarePaginator(
                 [],
@@ -183,7 +213,7 @@ class InstructorCourseController extends Controller
                 10,
                 1
             );
-            
+
             return view('dashboardInstructor.myCourses', compact('courses'));
         }
     }
@@ -195,10 +225,14 @@ class InstructorCourseController extends Controller
     {
         $instructor = Auth::guard('instructor')->user();
         $course = Course::where('instructorID', $instructor->id)
-            ->with('subcourses')
+            ->with(['chapters.lessons' => function($query) {
+                $query->orderBy('order');
+            }])
             ->findOrFail($id);
 
-        return view('dashboardInstructor.editCourse', compact('course'));
+        $categories = \App\Models\Category::all();
+
+        return view('dashboardInstructor.editCourse', compact('course', 'categories'));
     }
 
     /**
@@ -214,6 +248,7 @@ class InstructorCourseController extends Controller
             'title' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
             'description' => 'nullable|string|max:5000',
+            'category_id' => 'nullable|exists:categories,id',
             'thumbnail' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:5120',
         ]);
 
@@ -232,15 +267,16 @@ class InstructorCourseController extends Controller
                 'title' => InputSanitizer::sanitizeText($data['title']),
                 'description' => array_key_exists('description', $data) ? InputSanitizer::sanitizeHtml($data['description'] ?? '') : $course->description,
                 'price' => $data['price'],
+                'category_id' => $data['category_id'] ?? $course->category_id,
                 'thumbnail' => $data['thumbnail'] ?? $course->thumbnail,
             ]);
 
             Log::info('Course updated successfully', [
                 'instructor_id' => $instructor->id,
-                'course_id' => $course->id,
+                'course_id' => $course->courseID,
             ]);
 
-            return redirect()->route('instructor.courses.index')->with('success', 'Course updated successfully!');
+            return redirect()->route('instructor.courses.edit', $course->courseID)->with('success', 'Course updated successfully!');
         } catch (\Exception $e) {
             Log::error('Failed to update course: ' . $e->getMessage(), [
                 'course_id' => $id,
@@ -264,13 +300,13 @@ class InstructorCourseController extends Controller
                 Storage::disk('public')->delete($course->thumbnail);
             }
 
-            // Hapus subcourses files
-            foreach ($course->subcourses as $subcourse) {
-                if ($subcourse->thumbnail) {
-                    Storage::disk('public')->delete($subcourse->thumbnail);
+            // Hapus semua file lessons
+            foreach ($course->lessons as $lesson) {
+                if ($lesson->thumbnail) {
+                    Storage::disk('public')->delete($lesson->thumbnail);
                 }
-                if ($subcourse->fileUpload) {
-                    Storage::disk('public')->delete($subcourse->fileUpload);
+                if ($lesson->fileUpload) {
+                    Storage::disk('public')->delete($lesson->fileUpload);
                 }
             }
 
@@ -278,7 +314,7 @@ class InstructorCourseController extends Controller
 
             Log::info('Course deleted successfully', [
                 'instructor_id' => $instructor->id,
-                'course_id' => $course->id,
+                'course_id' => $course->courseID,
             ]);
 
             return redirect()->route('instructor.courses.index')->with('success', 'Course deleted successfully!');
@@ -292,16 +328,112 @@ class InstructorCourseController extends Controller
     }
 
     /**
-     * Store subcourse baru untuk course
+     * Store chapter baru
      */
-    public function storeSubcourse(Request $request, $courseId)
+    public function storeChapter(Request $request, $courseId)
     {
         $instructor = Auth::guard('instructor')->user();
         $course = Course::where('instructorID', $instructor->id)->findOrFail($courseId);
 
         $data = $request->validate([
             'title' => 'required|string|max:255',
+            'description' => 'nullable|string|max:2000',
+        ]);
+
+        try {
+            $maxOrder = $course->chapters()->max('order') ?? 0;
+
+            Chapter::create([
+                'course_id' => $courseId,
+                'title' => InputSanitizer::sanitizeText($data['title']),
+                'description' => isset($data['description']) ? InputSanitizer::sanitizeText($data['description']) : null,
+                'order' => $maxOrder + 1,
+            ]);
+
+            Log::info('Chapter created', ['course_id' => $courseId]);
+
+            return redirect()->route('instructor.courses.edit', $courseId)->with('success', 'Chapter added successfully!');
+        } catch (\Exception $e) {
+            Log::error('Failed to create chapter: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Failed to add chapter. Please try again.');
+        }
+    }
+
+    /**
+     * Update chapter
+     */
+    public function updateChapter(Request $request, $courseId, $chapterId)
+    {
+        $instructor = Auth::guard('instructor')->user();
+        $course = Course::where('instructorID', $instructor->id)->findOrFail($courseId);
+        $chapter = Chapter::where('course_id', $courseId)->findOrFail($chapterId);
+
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string|max:2000',
+        ]);
+
+        try {
+            $chapter->update([
+                'title' => InputSanitizer::sanitizeText($data['title']),
+                'description' => isset($data['description']) ? InputSanitizer::sanitizeText($data['description']) : null,
+            ]);
+
+            Log::info('Chapter updated', ['chapter_id' => $chapterId]);
+
+            return redirect()->route('instructor.courses.edit', $courseId)->with('success', 'Chapter updated successfully!');
+        } catch (\Exception $e) {
+            Log::error('Failed to update chapter: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Failed to update chapter. Please try again.');
+        }
+    }
+
+    /**
+     * Delete chapter
+     */
+    public function destroyChapter($courseId, $chapterId)
+    {
+        $instructor = Auth::guard('instructor')->user();
+        $course = Course::where('instructorID', $instructor->id)->findOrFail($courseId);
+        $chapter = Chapter::where('course_id', $courseId)->findOrFail($chapterId);
+
+        try {
+            // Hapus semua lesson files dalam chapter
+            foreach ($chapter->lessons as $lesson) {
+                if ($lesson->thumbnail) {
+                    Storage::disk('public')->delete($lesson->thumbnail);
+                }
+                if ($lesson->fileUpload) {
+                    Storage::disk('public')->delete($lesson->fileUpload);
+                }
+            }
+
+            $chapter->delete();
+
+            Log::info('Chapter deleted', ['chapter_id' => $chapterId]);
+
+            return redirect()->route('instructor.courses.edit', $courseId)->with('success', 'Chapter deleted successfully!');
+        } catch (\Exception $e) {
+            Log::error('Failed to delete chapter: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to delete chapter. Please try again.');
+        }
+    }
+
+    /**
+     * Store lesson baru untuk chapter
+     */
+    public function storeLesson(Request $request, $courseId, $chapterId)
+    {
+        $instructor = Auth::guard('instructor')->user();
+        $course = Course::where('instructorID', $instructor->id)->findOrFail($courseId);
+        $chapter = Chapter::where('course_id', $courseId)->findOrFail($chapterId);
+
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
             'content' => 'nullable|string|max:10000',
+            'video_url' => 'nullable|url|max:500',
+            'duration' => 'nullable|integer|min:0',
+            'is_free' => 'nullable|boolean',
             'thumbnail' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:5120',
             'fileUpload' => 'nullable|mimes:pdf,doc,docx,ppt,pptx,mp4,mov,avi|max:51200',
         ]);
@@ -311,102 +443,117 @@ class InstructorCourseController extends Controller
             $filePath = null;
 
             if ($request->hasFile('thumbnail')) {
-                $thumbnailPath = $request->file('thumbnail')->store("courses/{$courseId}/subcourses/thumbnails", 'public');
+                $thumbnailPath = $request->file('thumbnail')->store("courses/{$courseId}/lessons/thumbnails", 'public');
             }
 
             if ($request->hasFile('fileUpload')) {
-                $filePath = $request->file('fileUpload')->store("courses/{$courseId}/subcourses/files", 'public');
+                $filePath = $request->file('fileUpload')->store("courses/{$courseId}/lessons/files", 'public');
             }
 
-            Subcourse::create([
+            $maxOrder = $chapter->lessons()->max('order') ?? 0;
+
+            Lesson::create([
+                'chapter_id' => $chapterId,
                 'course_id' => $courseId,
                 'title' => InputSanitizer::sanitizeText($data['title']),
                 'content' => isset($data['content']) ? InputSanitizer::sanitizeHtml($data['content']) : null,
+                'video_url' => $data['video_url'] ?? null,
+                'duration' => $data['duration'] ?? null,
+                'is_free' => $request->has('is_free'),
+                'order' => $maxOrder + 1,
                 'thumbnail' => $thumbnailPath,
                 'fileUpload' => $filePath,
             ]);
 
-            Log::info('Subcourse created', ['course_id' => $courseId]);
+            Log::info('Lesson created', ['chapter_id' => $chapterId]);
 
-            return redirect()->route('instructor.courses.edit', $courseId)->with('success', 'Module added successfully!');
+            return redirect()->route('instructor.courses.edit', $courseId)->with('success', 'Lesson added successfully!');
         } catch (\Exception $e) {
-            Log::error('Failed to create subcourse: ' . $e->getMessage());
-            return redirect()->back()->withInput()->with('error', 'Failed to add module. Please try again.');
+            Log::error('Failed to create lesson: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Failed to add lesson. Please try again.');
         }
     }
 
     /**
-     * Update subcourse
+     * Update lesson
      */
-    public function updateSubcourse(Request $request, $courseId, $subcourseId)
+    public function updateLesson(Request $request, $courseId, $chapterId, $lessonId)
     {
         $instructor = Auth::guard('instructor')->user();
         $course = Course::where('instructorID', $instructor->id)->findOrFail($courseId);
-        $subcourse = Subcourse::where('course_id', $courseId)->findOrFail($subcourseId);
+        $chapter = Chapter::where('course_id', $courseId)->findOrFail($chapterId);
+        $lesson = Lesson::where('chapter_id', $chapterId)->findOrFail($lessonId);
 
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'nullable|string|max:10000',
+            'video_url' => 'nullable|url|max:500',
+            'duration' => 'nullable|integer|min:0',
+            'is_free' => 'nullable|boolean',
             'thumbnail' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:5120',
             'fileUpload' => 'nullable|mimes:pdf,doc,docx,ppt,pptx,mp4,mov,avi|max:51200',
         ]);
 
         try {
             if ($request->hasFile('thumbnail')) {
-                if ($subcourse->thumbnail) {
-                    Storage::disk('public')->delete($subcourse->thumbnail);
+                if ($lesson->thumbnail) {
+                    Storage::disk('public')->delete($lesson->thumbnail);
                 }
-                $data['thumbnail'] = $request->file('thumbnail')->store("courses/{$courseId}/subcourses/thumbnails", 'public');
+                $data['thumbnail'] = $request->file('thumbnail')->store("courses/{$courseId}/lessons/thumbnails", 'public');
             }
 
             if ($request->hasFile('fileUpload')) {
-                if ($subcourse->fileUpload) {
-                    Storage::disk('public')->delete($subcourse->fileUpload);
+                if ($lesson->fileUpload) {
+                    Storage::disk('public')->delete($lesson->fileUpload);
                 }
-                $data['fileUpload'] = $request->file('fileUpload')->store("courses/{$courseId}/subcourses/files", 'public');
+                $data['fileUpload'] = $request->file('fileUpload')->store("courses/{$courseId}/lessons/files", 'public');
             }
 
-            $subcourse->update([
+            $lesson->update([
                 'title' => InputSanitizer::sanitizeText($data['title']),
-                'content' => isset($data['content']) ? InputSanitizer::sanitizeHtml($data['content']) : $subcourse->content,
-                'thumbnail' => $data['thumbnail'] ?? $subcourse->thumbnail,
-                'fileUpload' => $data['fileUpload'] ?? $subcourse->fileUpload,
+                'content' => isset($data['content']) ? InputSanitizer::sanitizeHtml($data['content']) : $lesson->content,
+                'video_url' => $data['video_url'] ?? $lesson->video_url,
+                'duration' => $data['duration'] ?? $lesson->duration,
+                'is_free' => $request->has('is_free'),
+                'thumbnail' => $data['thumbnail'] ?? $lesson->thumbnail,
+                'fileUpload' => $data['fileUpload'] ?? $lesson->fileUpload,
             ]);
 
-            Log::info('Subcourse updated', ['subcourse_id' => $subcourseId]);
+            Log::info('Lesson updated', ['lesson_id' => $lessonId]);
 
-            return redirect()->route('instructor.courses.edit', $courseId)->with('success', 'Module updated successfully!');
+            return redirect()->route('instructor.courses.edit', $courseId)->with('success', 'Lesson updated successfully!');
         } catch (\Exception $e) {
-            Log::error('Failed to update subcourse: ' . $e->getMessage());
-            return redirect()->back()->withInput()->with('error', 'Failed to update module. Please try again.');
+            Log::error('Failed to update lesson: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Failed to update lesson. Please try again.');
         }
     }
 
     /**
-     * Delete subcourse
+     * Delete lesson
      */
-    public function destroySubcourse($courseId, $subcourseId)
+    public function destroyLesson($courseId, $chapterId, $lessonId)
     {
         $instructor = Auth::guard('instructor')->user();
         $course = Course::where('instructorID', $instructor->id)->findOrFail($courseId);
-        $subcourse = Subcourse::where('course_id', $courseId)->findOrFail($subcourseId);
+        $chapter = Chapter::where('course_id', $courseId)->findOrFail($chapterId);
+        $lesson = Lesson::where('chapter_id', $chapterId)->findOrFail($lessonId);
 
         try {
-            if ($subcourse->thumbnail) {
-                Storage::disk('public')->delete($subcourse->thumbnail);
+            if ($lesson->thumbnail) {
+                Storage::disk('public')->delete($lesson->thumbnail);
             }
-            if ($subcourse->fileUpload) {
-                Storage::disk('public')->delete($subcourse->fileUpload);
+            if ($lesson->fileUpload) {
+                Storage::disk('public')->delete($lesson->fileUpload);
             }
 
-            $subcourse->delete();
+            $lesson->delete();
 
-            Log::info('Subcourse deleted', ['subcourse_id' => $subcourseId]);
+            Log::info('Lesson deleted', ['lesson_id' => $lessonId]);
 
-            return redirect()->route('instructor.courses.edit', $courseId)->with('success', 'Module deleted successfully!');
+            return redirect()->route('instructor.courses.edit', $courseId)->with('success', 'Lesson deleted successfully!');
         } catch (\Exception $e) {
-            Log::error('Failed to delete subcourse: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Failed to delete module. Please try again.');
+            Log::error('Failed to delete lesson: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to delete lesson. Please try again.');
         }
     }
 
@@ -417,7 +564,7 @@ class InstructorCourseController extends Controller
     {
         try {
             $instructor = Auth::guard('instructor')->user();
-            
+
             // Get all courses with enrolled students
             $courses = Course::where('instructorID', $instructor->id)
                 ->with(['students' => function($query) {
@@ -426,14 +573,14 @@ class InstructorCourseController extends Controller
                         ->orderBy('student_course.created_at', 'desc');
                 }])
                 ->get();
-            
-            // Get pending payments count - fix column reference
+
+            // Get pending payments count
             $pendingCount = \DB::table('student_course')
                 ->join('courses', 'student_course.courseID', '=', 'courses.courseID')
                 ->where('courses.instructorID', $instructor->id)
                 ->where('student_course.payment_status', 'pending')
                 ->count();
-            
+
             return view('dashboardInstructor.studentPurchases', compact('instructor', 'courses', 'pendingCount'));
         } catch (\Exception $e) {
             Log::error('Failed to load student purchases: ' . $e->getMessage());
@@ -448,19 +595,19 @@ class InstructorCourseController extends Controller
     {
         try {
             $instructor = Auth::guard('instructor')->user();
-            
-            // Get the enrollment - fix column reference
+
+            // Get the enrollment
             $enrollment = \DB::table('student_course')
                 ->join('courses', 'student_course.courseID', '=', 'courses.courseID')
                 ->where('student_course.id', $enrollmentId)
                 ->where('courses.instructorID', $instructor->id)
                 ->where('student_course.payment_status', 'pending')
                 ->first();
-            
+
             if (!$enrollment) {
                 return redirect()->back()->with('error', 'Enrollment not found or already confirmed.');
             }
-            
+
             // Update payment status
             \DB::table('student_course')
                 ->where('id', $enrollmentId)
@@ -468,12 +615,12 @@ class InstructorCourseController extends Controller
                     'payment_status' => 'paid',
                     'updated_at' => now()
                 ]);
-            
+
             Log::info('Payment confirmed by instructor', [
                 'instructor_id' => $instructor->id,
                 'enrollment_id' => $enrollmentId
             ]);
-            
+
             return redirect()->back()->with('success', 'Payment confirmed successfully!');
         } catch (\Exception $e) {
             Log::error('Failed to confirm payment: ' . $e->getMessage());
@@ -488,13 +635,13 @@ class InstructorCourseController extends Controller
     {
         try {
             $instructor = Auth::guard('instructor')->user();
-            
+
             if (!$instructor) {
                 return redirect()->route('instructor.login')->with('error', 'Please login first.');
             }
 
             $instructor->load('detail');
-            
+
             return view('dashboardInstructor.settingsInstructor', compact('instructor'));
         } catch (\Exception $e) {
             Log::error('Failed to load settings: ' . $e->getMessage());
@@ -509,7 +656,7 @@ class InstructorCourseController extends Controller
     {
         try {
             $instructor = Auth::guard('instructor')->user();
-            
+
             $validated = $request->validate([
                 'fullname' => 'required|string|max:255',
                 'phone' => 'required|string|max:20',
@@ -524,7 +671,7 @@ class InstructorCourseController extends Controller
             );
 
             Log::info('Instructor profile updated', ['instructor_id' => $instructor->id]);
-            
+
             return redirect()->back()->with('success', 'Profile updated successfully!');
         } catch (\Exception $e) {
             Log::error('Failed to update profile: ' . $e->getMessage());
@@ -539,7 +686,7 @@ class InstructorCourseController extends Controller
     {
         try {
             $instructor = Auth::guard('instructor')->user();
-            
+
             $validated = $request->validate([
                 'current_password' => 'required',
                 'new_password' => 'required|min:8|confirmed'
@@ -555,7 +702,7 @@ class InstructorCourseController extends Controller
             ]);
 
             Log::info('Instructor password updated', ['instructor_id' => $instructor->id]);
-            
+
             return redirect()->back()->with('success', 'Password updated successfully!');
         } catch (\Exception $e) {
             Log::error('Failed to update password: ' . $e->getMessage());
@@ -570,7 +717,7 @@ class InstructorCourseController extends Controller
     {
         try {
             $instructor = Auth::guard('instructor')->user();
-            
+
             $validated = $request->validate([
                 'password' => 'required'
             ]);
@@ -583,7 +730,7 @@ class InstructorCourseController extends Controller
             // Delete instructor detail first
             $instructor->detail()->delete();
 
-            // Delete all courses (this will cascade to subcourses and enrollments)
+            // Delete all courses (this will cascade to chapters, lessons, and enrollments)
             Course::where('instructorID', $instructor->id)->delete();
 
             // Delete instructor account
@@ -593,7 +740,7 @@ class InstructorCourseController extends Controller
             Auth::guard('instructor')->logout();
 
             Log::info('Instructor account deleted', ['instructor_id' => $instructor->id]);
-            
+
             return redirect()->route('instructor.login')->with('success', 'Account deleted successfully.');
         } catch (\Exception $e) {
             Log::error('Failed to delete account: ' . $e->getMessage());

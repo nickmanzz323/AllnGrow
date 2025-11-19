@@ -20,6 +20,7 @@
       gap: 2rem;
       margin-top: 1rem;
       color: #a3a3a3;
+      flex-wrap: wrap;
     }
     .course-meta span {
       display: flex;
@@ -45,60 +46,111 @@
       background: #4ade80;
       transition: width 0.3s;
     }
-    .subcourses-section {
+    .curriculum-section {
       background: #0d0d0d;
       border: 1px solid #262626;
       border-radius: 12px;
       padding: 1.5rem;
     }
-    .subcourse-item {
+    .chapter-card {
+      background: #000;
+      border: 1px solid #262626;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+    .chapter-header {
+      padding: 1rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .chapter-header:hover {
+      background: #0a0a0a;
+    }
+    .chapter-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 600;
+    }
+    .chapter-number {
+      background: #3b82f6;
+      color: #fff;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .chapter-meta {
+      font-size: 0.85rem;
+      color: #737373;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .chapter-lessons {
+      border-top: 1px solid #262626;
+      display: none;
+    }
+    .chapter-lessons.active {
+      display: block;
+    }
+    .lesson-item {
       display: flex;
       align-items: center;
       gap: 1rem;
-      padding: 1rem;
-      background: #000;
-      border: 1px solid #262626;
-      border-radius: 8px;
-      margin-bottom: 0.75rem;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid #1a1a1a;
       transition: all 0.2s;
       cursor: pointer;
     }
-    .subcourse-item:hover {
-      border-color: #4ade80;
-      transform: translateX(4px);
+    .lesson-item:last-child {
+      border-bottom: none;
     }
-    .subcourse-number {
+    .lesson-item:hover {
+      background: #0a0a0a;
+    }
+    .lesson-number {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 40px;
-      height: 40px;
+      width: 32px;
+      height: 32px;
       background: #1a1a1a;
-      border-radius: 8px;
+      border-radius: 6px;
+      font-size: 0.8rem;
       font-weight: 600;
       color: #4ade80;
     }
-    .subcourse-content {
+    .lesson-content {
       flex: 1;
     }
-    .subcourse-title {
-      font-weight: 600;
+    .lesson-title {
+      font-weight: 500;
+      font-size: 0.95rem;
       margin-bottom: 0.25rem;
     }
-    .subcourse-desc {
-      font-size: 0.9rem;
-      color: #a3a3a3;
-    }
-    .subcourse-duration {
+    .lesson-meta {
+      font-size: 0.8rem;
       color: #737373;
-      font-size: 0.85rem;
+      display: flex;
+      gap: 1rem;
     }
-    .video-player {
-      width: 100%;
-      aspect-ratio: 16/9;
-      background: #000;
-      border-radius: 8px;
-      margin-top: 1rem;
+    .lesson-meta span {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .lesson-badge {
+      background: #22c55e;
+      color: #fff;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.65rem;
+      font-weight: 600;
     }
     .btn-back {
       display: inline-flex;
@@ -198,17 +250,19 @@
             {{ $course->instructor->detail->fullname ?? $course->instructor->email }}
           </span>
           <span>
-            <i class="fas fa-book-open"></i>
-            {{ $course->subcourses->count() }} Modules
+            <i class="fas fa-book"></i>
+            {{ $course->chapters->count() }} Bab
           </span>
+          <span>
+            <i class="fas fa-play-circle"></i>
+            {{ $course->total_lessons }} Materi
+          </span>
+          @if($course->formatted_duration != '-')
           <span>
             <i class="fas fa-clock"></i>
-            {{ $course->duration ?? 'Self-paced' }}
+            {{ $course->formatted_duration }}
           </span>
-          <span>
-            <i class="fas fa-signal"></i>
-            {{ ucfirst($course->level ?? 'beginner') }}
-          </span>
+          @endif
         </div>
       </div>
 
@@ -230,46 +284,74 @@
         </div>
       </div>
 
-      <!-- Course Content -->
-      <div class="subcourses-section">
+      <!-- Course Curriculum -->
+      <div class="curriculum-section">
         <h2 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1.5rem;">
-          <i class="fas fa-list"></i> Course Content
+          <i class="fas fa-list"></i> Course Curriculum
         </h2>
 
-        @if($course->subcourses->count() > 0)
-          @foreach($course->subcourses as $index => $subcourse)
-            <div class="subcourse-item" onclick="openSubcourse({{ $subcourse->id }})">
-              <div class="subcourse-number">{{ $index + 1 }}</div>
-              <div class="subcourse-content">
-                <div class="subcourse-title">{{ $subcourse->title }}</div>
-                <div class="subcourse-desc">{{ $subcourse->description ?? 'No description available' }}</div>
+        @if($course->chapters->count() > 0)
+          @foreach($course->chapters as $chapterIndex => $chapter)
+            <div class="chapter-card">
+              <div class="chapter-header" onclick="toggleChapter({{ $chapter->id }})">
+                <div class="chapter-title">
+                  <span class="chapter-number">Bab {{ $chapterIndex + 1 }}</span>
+                  <span>{{ $chapter->title }}</span>
+                </div>
+                <div class="chapter-meta">
+                  <span>{{ $chapter->lessons->count() }} materi</span>
+                  <i class="fas fa-chevron-down" id="chapter-icon-{{ $chapter->id }}"></i>
+                </div>
               </div>
-              <div class="subcourse-duration">
-                <i class="fas fa-play-circle"></i> 
-                @if($subcourse->video_url)
-                  Video
-                @elseif($subcourse->content)
-                  Article
+
+              <div class="chapter-lessons" id="chapter-lessons-{{ $chapter->id }}">
+                @if($chapter->lessons->count() > 0)
+                  @foreach($chapter->lessons as $lessonIndex => $lesson)
+                    <div class="lesson-item" onclick="openLesson({{ $lesson->id }})">
+                      <div class="lesson-number">{{ $lessonIndex + 1 }}</div>
+                      <div class="lesson-content">
+                        <div class="lesson-title">
+                          {{ $lesson->title }}
+                          @if($lesson->is_free)
+                            <span class="lesson-badge">FREE</span>
+                          @endif
+                        </div>
+                        <div class="lesson-meta">
+                          @if($lesson->duration)
+                            <span><i class="fas fa-clock"></i> {{ $lesson->formatted_duration }}</span>
+                          @endif
+                          @if($lesson->video_url)
+                            <span><i class="fas fa-video"></i> Video</span>
+                          @endif
+                          @if($lesson->fileUpload)
+                            <span><i class="fas fa-file"></i> File</span>
+                          @endif
+                        </div>
+                      </div>
+                      <i class="fas fa-chevron-right" style="color: #737373;"></i>
+                    </div>
+                  @endforeach
                 @else
-                  Content
+                  <div style="text-align: center; padding: 1.5rem; color: #737373; font-size: 0.9rem;">
+                    No lessons yet
+                  </div>
                 @endif
               </div>
-              <i class="fas fa-chevron-right" style="color: #737373;"></i>
             </div>
           @endforeach
         @else
           <div style="text-align: center; padding: 3rem; color: #737373;">
             <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
-            <p>No modules available yet. The instructor is still preparing the content.</p>
+            <p>No content available yet. The instructor is still preparing the curriculum.</p>
           </div>
         @endif
       </div>
 
-      <!-- Modal for Subcourse Content -->
-      <div id="subcourseModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center;">
+      <!-- Modal for Lesson Content -->
+      <div id="lessonModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center;">
         <div style="background: #0d0d0d; border: 1px solid #262626; border-radius: 12px; width: 90%; max-width: 1200px; max-height: 90vh; overflow-y: auto;">
           <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; border-bottom: 1px solid #262626;">
-            <h3 id="modalTitle" style="font-size: 1.5rem;">Module Title</h3>
+            <h3 id="modalTitle" style="font-size: 1.5rem;">Lesson Title</h3>
             <button onclick="closeModal()" style="background: none; border: none; color: #f5f5f5; font-size: 1.5rem; cursor: pointer; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 8px; transition: all 0.2s;" onmouseover="this.style.background='#262626'" onmouseout="this.style.background='none'">
               <i class="fas fa-times"></i>
             </button>
@@ -283,30 +365,38 @@
   </div>
 
   <script>
-    const subcourses = @json($course->subcourses);
+    // Collect all lessons from all chapters
+    const lessons = @json($course->chapters->flatMap->lessons);
 
-    function openSubcourse(subcourseId) {
-      const subcourse = subcourses.find(s => s.id === subcourseId);
-      if (!subcourse) return;
+    function toggleChapter(chapterId) {
+      const lessons = document.getElementById('chapter-lessons-' + chapterId);
+      const icon = document.getElementById('chapter-icon-' + chapterId);
+      lessons.classList.toggle('active');
+      icon.classList.toggle('fa-chevron-down');
+      icon.classList.toggle('fa-chevron-up');
+    }
 
-      document.getElementById('modalTitle').textContent = subcourse.title;
-      
+    function openLesson(lessonId) {
+      const lesson = lessons.find(l => l.id === lessonId);
+      if (!lesson) return;
+
+      document.getElementById('modalTitle').textContent = lesson.title;
+
       let content = '';
-      
+
       // Video content
-      if (subcourse.video_url) {
-        // Check if it's a YouTube URL
+      if (lesson.video_url) {
         const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-        const match = subcourse.video_url.match(youtubeRegex);
-        
+        const match = lesson.video_url.match(youtubeRegex);
+
         if (match) {
           const videoId = match[1];
           content += `
             <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px;">
-              <iframe 
-                src="https://www.youtube.com/embed/${videoId}" 
-                frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              <iframe
+                src="https://www.youtube.com/embed/${videoId}"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowfullscreen
                 style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
               </iframe>
@@ -315,33 +405,34 @@
         } else {
           content += `
             <video controls style="width: 100%; border-radius: 8px;">
-              <source src="${subcourse.video_url}" type="video/mp4">
+              <source src="${lesson.video_url}" type="video/mp4">
               Your browser does not support the video tag.
             </video>
           `;
         }
       }
-      
+
       // Text content
-      if (subcourse.content) {
+      if (lesson.content) {
         content += `
           <div style="margin-top: 1.5rem; line-height: 1.8; color: #d4d4d4;">
-            ${subcourse.content}
+            ${lesson.content}
           </div>
         `;
       }
-      
-      // Description
-      if (subcourse.description) {
+
+      // File download
+      if (lesson.file_upload) {
         content += `
           <div style="margin-top: 1.5rem; padding: 1rem; background: #000; border: 1px solid #262626; border-radius: 8px;">
-            <h4 style="margin-bottom: 0.5rem; color: #4ade80;"><i class="fas fa-info-circle"></i> Description</h4>
-            <p style="color: #a3a3a3; line-height: 1.6;">${subcourse.description}</p>
+            <a href="/storage/${lesson.file_upload}" target="_blank" style="color: #4ade80; text-decoration: none; display: flex; align-items: center; gap: 0.5rem;">
+              <i class="fas fa-download"></i> Download Attachment
+            </a>
           </div>
         `;
       }
-      
-      if (!subcourse.video_url && !subcourse.content) {
+
+      if (!lesson.video_url && !lesson.content) {
         content = `
           <div style="text-align: center; padding: 3rem; color: #737373;">
             <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
@@ -349,19 +440,32 @@
           </div>
         `;
       }
-      
+
       document.getElementById('modalContent').innerHTML = content;
-      document.getElementById('subcourseModal').style.display = 'flex';
+      document.getElementById('lessonModal').style.display = 'flex';
     }
 
     function closeModal() {
-      document.getElementById('subcourseModal').style.display = 'none';
+      document.getElementById('lessonModal').style.display = 'none';
     }
 
     // Close modal when clicking outside
-    document.getElementById('subcourseModal').addEventListener('click', function(e) {
+    document.getElementById('lessonModal').addEventListener('click', function(e) {
       if (e.target === this) {
         closeModal();
+      }
+    });
+
+    // Expand first chapter by default
+    document.addEventListener('DOMContentLoaded', function() {
+      const firstChapter = document.querySelector('.chapter-lessons');
+      const firstIcon = document.querySelector('.chapter-header i');
+      if (firstChapter) {
+        firstChapter.classList.add('active');
+        if (firstIcon) {
+          firstIcon.classList.remove('fa-chevron-down');
+          firstIcon.classList.add('fa-chevron-up');
+        }
       }
     });
 

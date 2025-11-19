@@ -427,12 +427,16 @@
             <!-- Stats -->
             <div class="course-stats">
               <div class="stat-item">
-                <div class="stat-value">{{ $course->subcourses_count }}</div>
-                <div class="stat-label">Lessons</div>
+                <div class="stat-value">{{ $course->chapters_count }}</div>
+                <div class="stat-label">Bab</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">{{ $course->lessons_count }}</div>
+                <div class="stat-label">Materi</div>
               </div>
               <div class="stat-item">
                 <div class="stat-value">{{ $course->students_count }}</div>
-                <div class="stat-label">Students</div>
+                <div class="stat-label">Siswa</div>
               </div>
               <div class="stat-item">
                 <div class="stat-value">
@@ -454,15 +458,25 @@
               </p>
             </div>
 
-            <!-- Lessons -->
+            <!-- Curriculum -->
             <div class="course-section">
-              <h3><i class="fas fa-list"></i> Materi ({{ $course->subcourses_count }} Lessons)</h3>
-              @if($course->subcourses->count() > 0)
+              <h3><i class="fas fa-list"></i> Kurikulum ({{ $course->chapters_count }} Bab, {{ $course->lessons_count }} Materi)</h3>
+              @if($course->chapters->count() > 0)
                 <div class="lessons-list">
-                  @foreach($course->subcourses as $index => $subcourse)
-                    <div class="lesson-item">
-                      <i class="fas fa-play-circle"></i>
-                      <span>{{ $index + 1 }}. {{ $subcourse->title }}</span>
+                  @foreach($course->chapters as $chapterIndex => $chapter)
+                    <div style="margin-bottom: 1rem;">
+                      <div style="font-weight: 600; margin-bottom: 0.5rem; color: #3b82f6;">
+                        <i class="fas fa-book"></i> Bab {{ $chapterIndex + 1 }}: {{ $chapter->title }}
+                      </div>
+                      @foreach($chapter->lessons as $lessonIndex => $lesson)
+                        <div class="lesson-item" style="padding-left: 1.5rem;">
+                          <i class="fas fa-play-circle"></i>
+                          <span>{{ $lessonIndex + 1 }}. {{ $lesson->title }}</span>
+                          @if($lesson->is_free)
+                            <span style="background: #22c55e; color: #fff; padding: 0.1rem 0.3rem; border-radius: 3px; font-size: 0.65rem; margin-left: 0.5rem;">FREE</span>
+                          @endif
+                        </div>
+                      @endforeach
                     </div>
                   @endforeach
                 </div>
@@ -546,7 +560,7 @@
               <div class="course-features">
                 <div class="feature-item">
                   <i class="fas fa-check"></i>
-                  <span>{{ $course->subcourses_count }} Lessons</span>
+                  <span>{{ $course->lessons_count }} Materi</span>
                 </div>
                 <div class="feature-item">
                   <i class="fas fa-check"></i>
