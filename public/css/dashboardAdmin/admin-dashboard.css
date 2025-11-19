@@ -1,21 +1,24 @@
-/* Variables */
+/* Variables - dark monochrome */
 :root {
-  --bg: #fafafa;
-  --surface: #ffffff;
-  --text: #1a1a1a;
-  --text-muted: #737373;
-  --border: #e5e5e5;
-  --accent: #000000;
-  --primary: #6c5ce7;
-  --success: #00b894;
-  --warning: #fdcb6e;
-  --danger: #e74c3c;
-  --blue: #3498db;
-  --green: #2ecc71;
-  --orange: #e67e22;
-  --purple: #9b59b6;
+  --bg: #000000;
+  --surface: #0b0b0b;
+  --text: #f5f5f5;
+  --text-muted: #9ca3af;
+  --border: #262626;
+  --accent: #ffffff;
+
+  /* semua “warna” dibuat abu-abu */
+  --primary: #ffffff;
+  --success: #f5f5f5;
+  --warning: #d4d4d4;
+  --danger: #3f3f3f;
+  --blue: #111111;
+  --green: #151515;
+  --orange: #1f1f1f;
+  --purple: #262626;
+
   --radius: 12px;
-  --shadow: 0 1px 3px rgba(0,0,0,0.04);
+  --shadow: 0 1px 6px rgba(0,0,0,0.6);
 }
 
 /* Reset */
@@ -73,12 +76,12 @@ body {
 }
 
 .sidebar a:hover {
-  background: var(--bg);
+  background: #111111;
 }
 
 .sidebar a.active {
   background: var(--accent);
-  color: var(--surface);
+  color: #000000;
 }
 
 .sidebar a i {
@@ -88,7 +91,7 @@ body {
 
 .badge {
   background: var(--danger);
-  color: white;
+  color: #ffffff;
   padding: 0.125rem 0.5rem;
   border-radius: 12px;
   font-size: 0.75rem;
@@ -145,6 +148,7 @@ body {
   background: transparent;
   font-size: 0.9rem;
   width: 200px;
+  color: var(--text);
 }
 
 .search-box i {
@@ -167,7 +171,7 @@ body {
 }
 
 .icon-btn:hover {
-  background: var(--bg);
+  background: #111111;
 }
 
 .user {
@@ -179,8 +183,8 @@ body {
 .user-avatar {
   width: 40px;
   height: 40px;
-  background: var(--accent);
-  color: var(--surface);
+  background: #ffffff;
+  color: #000000;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -228,14 +232,14 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
-  color: white;
+  color: #f5f5f5;
   flex-shrink: 0;
 }
 
-.stat-icon.blue { background: var(--blue); }
-.stat-icon.green { background: var(--green); }
-.stat-icon.orange { background: var(--orange); }
-.stat-icon.purple { background: var(--purple); }
+.stat-icon.blue   { background: #111111; }
+.stat-icon.green  { background: #191919; }
+.stat-icon.orange { background: #202020; }
+.stat-icon.purple { background: #2a2a2a; }
 
 .stat-content {
   flex: 1;
@@ -259,7 +263,7 @@ body {
 }
 
 .stat-change.positive {
-  color: var(--success);
+  color: #e5e5e5;
 }
 
 /* Dashboard Grid */
@@ -293,7 +297,7 @@ body {
 .btn-link {
   background: none;
   border: none;
-  color: var(--primary);
+  color: #f5f5f5;
   font-weight: 600;
   font-size: 0.875rem;
   cursor: pointer;
@@ -322,7 +326,7 @@ body {
 }
 
 .approval-item:hover {
-  background: var(--bg);
+  background: #111111;
 }
 
 .approval-info {
@@ -334,8 +338,8 @@ body {
 .approval-avatar {
   width: 48px;
   height: 48px;
-  background: var(--accent);
-  color: var(--surface);
+  background: #ffffff;
+  color: #000000;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -347,8 +351,8 @@ body {
 .course-icon {
   width: 48px;
   height: 48px;
-  background: var(--primary);
-  color: var(--surface);
+  background: #1a1a1a;
+  color: #f5f5f5;
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -369,8 +373,8 @@ body {
 
 .btn-approve {
   padding: 0.5rem 1rem;
-  background: var(--success);
-  color: white;
+  background: #f5f5f5;
+  color: #000000;
   border: none;
   border-radius: 6px;
   font-weight: 600;
@@ -383,13 +387,13 @@ body {
 }
 
 .btn-approve:hover {
-  background: #00a884;
+  background: #e5e5e5;
 }
 
 .btn-reject {
   padding: 0.5rem 1rem;
-  background: var(--danger);
-  color: white;
+  background: #1a1a1a;
+  color: #f5f5f5;
   border: none;
   border-radius: 6px;
   font-weight: 600;
@@ -402,7 +406,7 @@ body {
 }
 
 .btn-reject:hover {
-  background: #c0392b;
+  background: #262626;
 }
 
 /* Tab Content */
@@ -477,19 +481,21 @@ body {
   letter-spacing: 0.5px;
 }
 
+/* semua status pakai abu-abu berbeda */
 .status-badge.pending {
-  background: #fff3cd;
-  color: #856404;
+  background: #111111;
+  color: #e5e5e5;
 }
 
 .status-badge.active {
-  background: #d4edda;
-  color: #155724;
+  background: #181818;
+  color: #f5f5f5;
 }
 
 .status-badge.suspended {
-  background: #f8d7da;
-  color: #721c24;
+  background: #0b0b0b;
+  color: #cfcfcf;
+  border: 1px solid #3f3f3f;
 }
 
 .card-body {
@@ -551,7 +557,7 @@ body {
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem;
-  background: var(--bg);
+  background: #111111;
   border-radius: 6px;
   font-size: 0.875rem;
 }
@@ -584,7 +590,7 @@ body {
 }
 
 .btn-secondary:hover {
-  background: var(--bg);
+  background: #111111;
 }
 
 .action-buttons {
@@ -606,7 +612,7 @@ body {
 }
 
 .table thead {
-  background: var(--bg);
+  background: #111111;
 }
 
 .table th {
@@ -623,7 +629,7 @@ body {
 }
 
 .table tbody tr:hover {
-  background: var(--bg);
+  background: #111111;
 }
 
 .table-user {
@@ -635,8 +641,8 @@ body {
 .table-avatar {
   width: 40px;
   height: 40px;
-  background: var(--accent);
-  color: var(--surface);
+  background: #ffffff;
+  color: #000000;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -670,7 +676,7 @@ body {
 }
 
 .action-btn:hover {
-  background: var(--bg);
+  background: #111111;
 }
 
 /* Course Review */
@@ -696,11 +702,11 @@ body {
 .thumbnail-placeholder {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #111111, #232323);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: #f5f5f5;
   font-size: 3rem;
 }
 
