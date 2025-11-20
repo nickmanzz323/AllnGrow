@@ -355,13 +355,29 @@ class InstructorCourseController extends Controller
             ]);
 
             // Handle sessions
-            // Delete sessions marked for deletion
+            // Delete sessions marked for deletion with enhanced sanitization
             if (!empty($data['deleted_sessions'])) {
-                $deletedIds = array_filter(explode(',', $data['deleted_sessions']));
+                // Sanitize: filter only valid integers
+                $deletedIds = array_filter(
+                    explode(',', $data['deleted_sessions']),
+                    function($id) {
+                        return is_numeric($id) && intval($id) > 0;
+                    }
+                );
+
+                // Cast to integers for safety
+                $deletedIds = array_map('intval', $deletedIds);
+
                 if (!empty($deletedIds)) {
-                    CourseSession::where('course_id', $course->courseID)
+                    // Verify sessions belong to this instructor's course before deleting
+                    $validIds = CourseSession::where('course_id', $course->courseID)
                         ->whereIn('id', $deletedIds)
-                        ->delete();
+                        ->pluck('id')
+                        ->toArray();
+
+                    if (!empty($validIds)) {
+                        CourseSession::whereIn('id', $validIds)->delete();
+                    }
                 }
             }
 

@@ -29,7 +29,8 @@ class InstructorDetail extends Model
         'yearsOfExperience',
         'linkedin',
         'cv',
-        'status',
+        // 'status' removed from fillable to prevent mass assignment vulnerability
+        // Status should only be updated through direct assignment by admin
     ];
 
     public function instructor(): BelongsTo

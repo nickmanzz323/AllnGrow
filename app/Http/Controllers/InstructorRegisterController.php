@@ -81,9 +81,27 @@ class InstructorRegisterController extends Controller
         try {
             $stored = [];
 
-            // Store CV jika ada
+            // Store CV jika ada dengan enhanced MIME type verification
             if ($request->hasFile('cv')) {
-                $path = $request->file('cv')->store('instructors/'.$instructorId.'/cv', 'public');
+                $file = $request->file('cv');
+
+                // Verify actual MIME type, not just extension
+                $mimeType = $file->getMimeType();
+                $allowedMimes = [
+                    'application/pdf',
+                    'application/msword',
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                ];
+
+                if (!in_array($mimeType, $allowedMimes)) {
+                    return redirect()->back()
+                        ->with('error', 'Invalid file type. Only PDF and DOC files are allowed.')
+                        ->withInput();
+                }
+
+                // Sanitize path to prevent path traversal
+                $sanitizedPath = 'instructors/' . intval($instructorId) . '/cv';
+                $path = $file->store($sanitizedPath, 'public');
                 $stored['cv'] = $path;
             }
 

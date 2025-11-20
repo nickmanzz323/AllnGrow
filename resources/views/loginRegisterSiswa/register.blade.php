@@ -1,17 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Sign Up | AllnGrow</title>
-<meta name="description" content="Daftar akun HinGrow sebagai pelajar atau guru. Buat akun dengan email/kata sandi atau Google." />
-<link rel="stylesheet" href="css/registerInstructor.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register | AllnGrow - Join as Student</title>
+  <meta name="description" content="Create your AllnGrow student account. Start learning from the best instructors today." />
+  <link rel="stylesheet" href="css/registerInstructor.css">
+  <style>
+    /* Simple Alert Styling */
+    .alert {
+      padding: 14px 16px;
+      margin: 16px 0;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .alert-success {
+      background: #d4edda;
+      border: 1px solid #c3e6cb;
+      color: #155724;
+    }
+    .alert-warning {
+      background: #fff3cd;
+      border: 1px solid #ffeeba;
+      color: #856404;
+    }
+    .alert-error {
+      background: #f8d7da;
+      border: 1px solid #f5c6cb;
+      color: #721c24;
+    }
+    .alert ul {
+      margin: 8px 0 0 0;
+      padding-left: 20px;
+    }
+    .alert li {
+      margin: 4px 0;
+    }
+  </style>
 </head>
+
 <body>
-      <div class="animated-bg">
+  <!-- Simple Animated Background -->
+  <div class="animated-bg">
     <svg preserveAspectRatio="xMidYMid slice" viewBox="10 10 80 80">
       <defs>
         <style>
+          @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
           .out-top { animation: rotate 25s linear infinite; transform-origin: 13px 25px; }
           .in-top { animation: rotate 15s linear infinite; transform-origin: 13px 25px; }
           .out-bottom { animation: rotate 30s linear infinite; transform-origin: 84px 93px; }
@@ -24,118 +59,159 @@
       <path fill="rgba(255, 255, 255, 1)" class="in-bottom" d="M102,67.1c-9.6-6.1-22-3.1-29.5,2-15.4,10.7-19.6,37.5-7.6,47.8s35.9,3.9,44.5-12.5C115.5,92.6,113.9,74.6,102,67.1Z"/>
     </svg>
   </div>
-    <main class="login-container">
-        <div class="logo-section">
-            <div class="logo">
-                <img src="images/AllnGrowDark.svg" alt="AllnGrow Logo" width="155" height="auto">
-              </div>
-            <h1 class="login-title">Register</h1>
-        </div>
-        <form class="form-container" method="POST" action="{{ route('register') }}">
-            @csrf
-            <input type="hidden" name="level" value="student" />
-            {{-- Prominent warning box when registration fails --}}
-            @if(session('error') || $errors->any())
-                <div style="background:#fff3cd;border:1px solid #ffeeba;color:#856404;padding:14px;margin:12px 0;border-radius:6px;">
-                    <strong style="display:block;margin-bottom:8px;">Registration failed</strong>
-                    @if(session('error'))
-                        <div style="margin-bottom:6px;">{{ session('error') }}</div>
-                    @endif
-                    @if($errors->any())
-                        <ul style="margin:0;padding-left:18px;">
-                            @foreach($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    @endif
-                </div>
-            @endif
-            <div class="form-fields">
-                
-                <div class="input-group">
-                    <label for="name" class="input-label">Name</label>
-                    <div class="input-wrapper">
-                        <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
-                            <circle cx="12" cy="7" r="4"/>
-                        </svg>
-                        <input type="text" id="name" name="name" class="input-field" placeholder="John Doe" value="{{ old('name') }}" required />
-                    </div>
-                </div>
 
-                <div class="input-group">
-                    <label for="email" class="input-label">Email</label>
-                    <div class="input-wrapper">
-                        <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="5" width="18" height="14" rx="2"/>
-                            <path d="m22 7-8.975 5.25L3 7"/>
-                        </svg>
-                        <input type="email" id="email" name="email" class="input-field" placeholder="example@gmail.com" value="{{ old('email') }}" required />
-                    </div>
-                </div>
+  <main class="login-container">
+    <div class="logo-section">
+      <div class="logo">
+        <img src="images/AllnGrowDark.svg" alt="AllnGrow Logo" width="155" height="auto">
+      </div>
+      <h1 class="login-title">Student Registration</h1>
+      <p style="color: #a3a3a3; font-size: 0.9rem; margin-top: 0.5rem;">Begin your learning adventure with us</p>
+    </div>
 
-                <div class="input-group">
-                    <label for="password" class="input-label">Password</label>
-                    <div class="input-wrapper">
-                        <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="11" width="18" height="11" rx="2"/>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                        </svg>
-                        <input type="password" id="password" name="password" class="input-field" placeholder="••••••••" required />
-                    </div>
-                </div>
+    <!-- Alerts -->
+    @if(session('success'))
+      <div class="alert alert-success">
+        <strong>Success!</strong> {{ session('success') }}
+      </div>
+    @endif
 
-              
-                <div class="input-group">
-                    <label for="password_confirmation" class="input-label">Confirm Password</label>
-                    <div class="input-wrapper">
-                         <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="11" width="18" height="11" rx="2"/>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                        </svg>
-                        <input type="password" id="password_confirmation" name="password_confirmation" class="input-field" placeholder="••••••••" required />
-                    </div>
-                </div>
+    @if(session('error') || $errors->any())
+      <div class="alert alert-warning">
+        <strong>Registration failed</strong>
+        @if(session('error'))
+          <div style="margin-top: 6px;">{{ session('error') }}</div>
+        @endif
+        @if($errors->any())
+          <ul>
+            @foreach($errors->all() as $error)
+              <li>{{ $error }}</li>
+            @endforeach
+          </ul>
+        @endif
+      </div>
+    @endif
 
-                
-                <div class="terms-and-privacy">
-                    <div class="checkbox-wrapper">
-                        <input type="checkbox" id="agree-terms" class="checkbox" />
-                        <label for="agree-terms" class="checkbox-label">
-                            I agree with 
-                            <a href="#">Terms</a>
-                            and
-                            <a href="#">Privacy policy</a>.
-                        </label>
-                    </div>
-                </div>
+    <!-- Registration Form -->
+    <form class="form-container" method="POST" action="{{ route('register') }}">
+      @csrf
+      <input type="hidden" name="level" value="student" />
 
-            </div>
-
-           
-            <button type="submit" class="sign-in-btn">Sign up</button>
-        </form>
-
-        ->
-        <div class="divider-section">
-            <div class="divider-row">
-                <div class="divider-line"></div>
-                <span class="divider-text">Or sign up with</span>
-                <div class="divider-line"></div>
-            </div>
-
-            
-            <button type="button" class="google-btn">
-                <img src="images/googleIcon.png" alt="Google Icon" class="google-icon" />
-                Sign in with Google
-            </button>
+      <div class="form-fields">
+        <!-- Name -->
+        <div class="input-group">
+          <label for="name" class="input-label">Full Name</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              class="input-field"
+              placeholder="John Doe"
+              value="{{ old('name') }}"
+              required
+              autocomplete="name"
+            />
+          </div>
         </div>
 
-       
-        <div class="signup-section">
-            <span class="signup-text">Already have an account yet?</span>
-            <a href="/login" class="signup-link">Sign in</a>
+        <!-- Email -->
+        <div class="input-group">
+          <label for="email" class="input-label">Email Address</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="5" width="18" height="14" rx="2"/>
+              <path d="m22 7-8.975 5.25L3 7"/>
+            </svg>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              class="input-field"
+              placeholder="example@gmail.com"
+              value="{{ old('email') }}"
+              required
+              autocomplete="email"
+            />
+          </div>
         </div>
-    </main>
+
+        <!-- Password -->
+        <div class="input-group">
+          <label for="password" class="input-label">Password</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="input-field"
+              placeholder="••••••••"
+              required
+              autocomplete="new-password"
+            />
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="input-group">
+          <label for="password_confirmation" class="input-label">Confirm Password</label>
+          <div class="input-wrapper">
+            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <input
+              type="password"
+              id="password_confirmation"
+              name="password_confirmation"
+              class="input-field"
+              placeholder="••••••••"
+              required
+              autocomplete="new-password"
+            />
+          </div>
+        </div>
+
+        <!-- Terms & Privacy -->
+        <div class="terms-and-privacy">
+          <div class="checkbox-wrapper">
+            <input type="checkbox" id="agree-terms" name="agree_terms" class="checkbox" required />
+            <label for="agree-terms" class="checkbox-label">
+              I agree with <a href="#">Terms</a> and <a href="#">Privacy Policy</a>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="sign-in-btn">Create Student Account</button>
+    </form>
+
+    <!-- Divider -->
+    <div class="divider-section" style="margin-top: 2rem;">
+      <div class="divider-row">
+        <div class="divider-line"></div>
+        <span class="divider-text">Or sign up with</span>
+        <div class="divider-line"></div>
+      </div>
+
+      <button type="button" class="google-btn" onclick="alert('Google Sign-Up not implemented yet')">
+        <img src="images/googleIcon.png" alt="Google" class="google-icon" />
+        Sign up with Google
+      </button>
+    </div>
+
+    <!-- Sign In Link -->
+    <div class="signup-section">
+      <a href="/login" class="signup-link" style="font-size: 1.1rem; font-weight: 600;">Sign In</a>
+    </div>
+  </main>
 </body>
 </html>

@@ -12,6 +12,8 @@ use App\Http\Controllers\AdminInstructorController;
 use App\Http\Controllers\AdminCourseController;
 use App\Http\Controllers\InstructorCourseController;
 use App\Http\Controllers\StudentDashboardController;
+use App\Http\Controllers\StudentPasswordResetController;
+use App\Http\Controllers\InstructorPasswordResetController;
 
 Route::middleware('web')->group(function () {
     // landing page
@@ -72,6 +74,18 @@ Route::middleware('web')->group(function () {
     Route::post('/register', [RegisterController::class, 'register'])->name('register');
     Route::post('/register-instructor-step1', [InstructorRegisterController::class, 'registerStep1'])->name('register.instructor.step1');
     Route::post('/register-instructor-step2', [InstructorRegisterController::class, 'registerStep2'])->name('register.instructor.step2');
+
+    // Student Password Reset
+    Route::get('/student/password/forgot', [StudentPasswordResetController::class, 'showForgotForm'])->name('student.password.forgot');
+    Route::post('/student/password/email', [StudentPasswordResetController::class, 'sendResetLink'])->name('student.password.email')->middleware('throttle:3,1');
+    Route::get('/student/password/reset/{token}', [StudentPasswordResetController::class, 'showResetForm'])->name('student.password.reset');
+    Route::post('/student/password/update', [StudentPasswordResetController::class, 'resetPassword'])->name('student.password.update');
+
+    // Instructor Password Reset
+    Route::get('/instructor/password/forgot', [InstructorPasswordResetController::class, 'showForgotForm'])->name('instructor.password.forgot');
+    Route::post('/instructor/password/email', [InstructorPasswordResetController::class, 'sendResetLink'])->name('instructor.password.email')->middleware('throttle:3,1');
+    Route::get('/instructor/password/reset/{token}', [InstructorPasswordResetController::class, 'showResetForm'])->name('instructor.password.reset');
+    Route::post('/instructor/password/update', [InstructorPasswordResetController::class, 'resetPassword'])->name('instructor.password.update');
 });
 
 // Protected routes untuk Student (harus login sebagai student)

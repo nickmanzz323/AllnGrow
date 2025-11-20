@@ -42,10 +42,18 @@ class CourseController extends Controller
     }
 
     function search(Request $request){
-        $search = $request->input('search');
-        $category = $request->input('category');
-        $partner = $request->input('partner');
-        $price = $request->input('price');
+        // Validate input to prevent injection and invalid data
+        $validated = $request->validate([
+            'search' => 'nullable|string|max:255',
+            'category' => 'nullable|string|max:100',
+            'partner' => 'nullable|string|max:100',
+            'price' => 'nullable|in:free,paid',
+        ]);
+
+        $search = $validated['search'] ?? null;
+        $category = $validated['category'] ?? null;
+        $partner = $validated['partner'] ?? null;
+        $price = $validated['price'] ?? null;
 
         $query = Course::where('status', 'approved')
             ->with(['category', 'instructor', 'chapters.lessons', 'students'])

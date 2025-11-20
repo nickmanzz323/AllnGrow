@@ -13,6 +13,12 @@ class AdminCourseController extends Controller
      */
     public function updateStatus(Request $request, $id)
     {
+        // Verify admin is properly authenticated
+        $admin = auth('admin')->user();
+        if (!$admin) {
+            abort(401, 'Unauthorized - Admin authentication required');
+        }
+
         $request->validate([
             'status' => 'required|in:approved,rejected,pending',
             'rejection_reason' => 'nullable|string|max:1000',

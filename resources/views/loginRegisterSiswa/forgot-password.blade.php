@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login | AllnGrow - Student Portal</title>
-  <meta name="description" content="Sign in to your AllnGrow student account. Continue your learning journey." />
-  <link rel="stylesheet" href="css/login.css">
+  <title>Forgot Password | AllnGrow - Student Portal</title>
+  <meta name="description" content="Reset your AllnGrow student account password." />
+  <link rel="stylesheet" href="{{ asset('css/login.css') }}">
   <style>
     /* Simple Alert Styling */
     .alert {
@@ -29,13 +29,6 @@
       background: #f8d7da;
       border: 1px solid #f5c6cb;
       color: #721c24;
-    }
-    .alert ul {
-      margin: 8px 0 0 0;
-      padding-left: 20px;
-    }
-    .alert li {
-      margin: 4px 0;
     }
   </style>
 </head>
@@ -63,10 +56,10 @@
   <main class="login-container">
     <section class="logo-section">
       <div class="logo">
-        <img src="images/AllnGrowDark.svg" alt="AllnGrow Logo" width="155" height="auto">
+        <img src="{{ asset('images/AllnGrowDark.svg') }}" alt="AllnGrow Logo" width="155" height="auto">
       </div>
-      <h1 class="login-title">Student Login</h1>
-      <p style="color: #a3a3a3; font-size: 0.9rem; margin-top: 0.5rem;">Continue your learning journey</p>
+      <h1 class="login-title">Forgot Password</h1>
+      <p style="color: #a3a3a3; font-size: 0.9rem; margin-top: 0.5rem;">Enter your email to reset your password</p>
     </section>
 
     <!-- Alerts -->
@@ -93,15 +86,15 @@
       </div>
     @endif
 
-    <!-- Login Form -->
-    <form class="form-container" method="POST" action="{{ route('student.login.post') }}">
+    <!-- Forgot Password Form -->
+    <form class="form-container" method="POST" action="{{ route('student.password.email') }}">
       @csrf
       <div class="form-fields">
         <!-- Email -->
         <div class="input-group">
           <label for="email" class="input-label">Email Address</label>
           <div class="input-wrapper">
-            <img src="images/mailLogo.png" alt="Email" class="input-icon" />
+            <img src="{{ asset('images/mailLogo.png') }}" alt="Email" class="input-icon" />
             <input
               type="email"
               name="email"
@@ -114,54 +107,14 @@
             />
           </div>
         </div>
-
-        <!-- Password -->
-        <div class="input-group">
-          <label for="password" class="input-label">Password</label>
-          <div class="input-wrapper">
-            <img src="images/lockPicture.png" alt="Password" class="input-icon" />
-            <input
-              type="password"
-              name="password"
-              id="password"
-              class="input-field"
-              placeholder="••••••••"
-              required
-              autocomplete="current-password"
-            />
-          </div>
-        </div>
-
-        <!-- Remember & Forgot -->
-        <div class="remember-forgot-row">
-          <div class="checkbox-wrapper">
-            <input type="checkbox" id="remember" name="remember" class="checkbox" />
-            <label for="remember" class="checkbox-label">Remember me</label>
-          </div>
-          <a href="{{ route('student.password.forgot') }}" class="forgot-link">Forgot Password?</a>
-        </div>
       </div>
 
-      <button type="submit" class="sign-in-btn">Sign In</button>
+      <button type="submit" class="sign-in-btn">Send Reset Link</button>
     </form>
 
-    <!-- Sign Up Link -->
+    <!-- Back to Login Link -->
     <div class="signup-section">
-      <a href="/register" class="signup-link" style="font-size: 1.1rem; font-weight: 600;">Register as Student</a>
-    </div>
-
-    <!-- Divider -->
-    <div class="divider-section" style="margin-top: 2rem;">
-      <div class="divider-row">
-        <div class="divider-line"></div>
-        <span class="divider-text">Or continue with</span>
-        <div class="divider-line"></div>
-      </div>
-
-      <button type="button" class="google-btn" onclick="alert('Google Sign-In not implemented yet')">
-        <img src="images/googleIcon.png" alt="Google" class="google-icon" />
-        Sign in with Google
-      </button>
+      <a href="{{ route('student.login') }}" class="signup-link" style="font-size: 1.1rem; font-weight: 600;">Back to Login</a>
     </div>
   </main>
 </body>
