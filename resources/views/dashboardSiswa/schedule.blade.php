@@ -124,7 +124,44 @@
         </div>
       </div>
 
+      @php
+        // Collect all sessions from enrolled courses
+        $allSessions = collect();
+        foreach($enrolledCourses as $course) {
+          if($course->has_live_sessions && isset($course->sessions)) {
+            foreach($course->sessions as $session) {
+              $allSessions->push([
+                'session' => $session,
+                'course' => $course
+              ]);
+            }
+          }
+        }
+
+        // Sort sessions by start_time
+        $allSessions = $allSessions->sortBy(function($item) {
+          return $item['session']->start_time;
+        });
+
+        // Filter upcoming sessions
+        $upcomingSessions = $allSessions->filter(function($item) {
+          return $item['session']->is_upcoming || $item['session']->is_ongoing;
+        });
+
+        // Organize sessions by date for JavaScript
+        $sessionsByDate = [];
+        foreach($allSessions as $item) {
+          $date = date('Y-m-d', strtotime($item['session']->start_time));
+          if(!isset($sessionsByDate[$date])) {
+            $sessionsByDate[$date] = [];
+          }
+          $sessionsByDate[$date][] = $item;
+        }
+      @endphp
+
       <script>
+        // Sessions data from PHP
+        const sessionsByDate = @json($sessionsByDate);
         // Calendar State
         let currentDate = new Date();
         let selectedDate = null;
@@ -247,16 +284,15 @@
               classes += ' selected';
             }
 
-            // Has events (courses)
-            @if($enrolledCourses->count() > 0)
-            classes += ' has-event';
-            @endif
+            // Check if date has sessions
+            const hasSession = sessionsByDate[dateStr] && sessionsByDate[dateStr].length > 0;
+            if (hasSession) {
+              classes += ' has-event';
+            }
 
             html += `<div class="${classes}" data-date="${dateStr}" onclick="selectDate(${year}, ${month}, ${day})">
               ${day}
-              @if($enrolledCourses->count() > 0)
-              <div class="event-dot"></div>
-              @endif
+              ${hasSession ? '<div class="event-dot"></div>' : ''}
             </div>`;
           }
 
@@ -309,7 +345,91 @@
         #current-month-display:hover {
           color: #4ade80;
         }
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.7; }
+        }
       </style>
+
+      <!-- Upcoming Sessions -->
+      @if($upcomingSessions->count() > 0)
+      <section class="section" style="margin-bottom: 2rem;">
+        <h2><i class="fas fa-calendar-alt"></i> Upcoming Sessions</h2>
+        <div style="display: grid; gap: 1rem; margin-top: 1rem;">
+          @foreach($upcomingSessions as $item)
+            @php
+              $session = $item['session'];
+              $course = $item['course'];
+            @endphp
+            <div style="background: #1a1a1a; border: 1px solid #262626; border-radius: 12px; padding: 1.25rem; display: grid; grid-template-columns: auto 1fr auto; gap: 1.25rem; align-items: center;">
+              <!-- Date Badge -->
+              <div style="text-align: center; background: #0d0d0d; border: 1px solid #333; border-radius: 8px; padding: 0.75rem; min-width: 80px;">
+                <div style="font-size: 1.5rem; font-weight: 700; color: #4ade80; line-height: 1;">
+                  {{ date('d', strtotime($session->start_time)) }}
+                </div>
+                <div style="font-size: 0.75rem; color: #a3a3a3; text-transform: uppercase; margin-top: 0.25rem;">
+                  {{ date('M Y', strtotime($session->start_time)) }}
+                </div>
+              </div>
+
+              <!-- Session Info -->
+              <div>
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                  <h3 style="margin: 0; color: #fff; font-size: 1.1rem; font-weight: 600;">{{ $session->title }}</h3>
+                  @if($session->is_ongoing)
+                    <span style="display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.75rem; background: #16a34a; color: white; border-radius: 12px; font-size: 0.75rem; font-weight: 600; animation: pulse 2s infinite;">
+                      <i class="fas fa-circle" style="font-size: 0.5rem;"></i> LIVE NOW
+                    </span>
+                  @else
+                    <span style="display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.25rem 0.75rem; background: #3b82f6; color: white; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">
+                      <i class="fas fa-clock"></i> Soon
+                    </span>
+                  @endif
+                </div>
+
+                <div style="color: #a3a3a3; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                  <i class="fas fa-book"></i> {{ $course->title }}
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.75rem; margin-top: 0.75rem;">
+                  <div style="display: flex; align-items: center; gap: 0.5rem; color: #d4d4d4;">
+                    <i class="fas fa-clock" style="color: #4ade80;"></i>
+                    <span style="font-size: 0.85rem;">{{ $session->formatted_time }}</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 0.5rem; color: #d4d4d4;">
+                    <i class="fas fa-hourglass-half" style="color: #4ade80;"></i>
+                    <span style="font-size: 0.85rem;">{{ $session->formatted_duration }}</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 0.5rem; color: #d4d4d4;">
+                    @if($session->session_type === 'online')
+                      <i class="fas fa-video" style="color: #4ade80;"></i>
+                      <span style="font-size: 0.85rem;">Online</span>
+                    @else
+                      <i class="fas fa-map-marker-alt" style="color: #4ade80;"></i>
+                      <span style="font-size: 0.85rem;">Offline</span>
+                    @endif
+                  </div>
+                </div>
+              </div>
+
+              <!-- Action Button -->
+              <div>
+                @if($session->session_type === 'online' && $session->meeting_link)
+                  <a href="{{ $session->meeting_link }}" target="_blank" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.25rem; background: #4ade80; color: #000; text-decoration: none; border-radius: 8px; font-weight: 600; transition: all 0.2s; white-space: nowrap;" onmouseover="this.style.background='#22c55e'" onmouseout="this.style.background='#4ade80'">
+                    <i class="fas fa-external-link-alt"></i> Join Meeting
+                  </a>
+                @elseif($session->session_type === 'offline' && $course->location_name)
+                  <div style="text-align: center; padding: 0.75rem; background: #0d0d0d; border: 1px solid #333; border-radius: 8px;">
+                    <div style="font-size: 0.75rem; color: #a3a3a3; margin-bottom: 0.25rem;">Location</div>
+                    <div style="font-size: 0.85rem; color: #fff; font-weight: 600;">{{ $course->location_name }}</div>
+                  </div>
+                @endif
+              </div>
+            </div>
+          @endforeach
+        </div>
+      </section>
+      @endif
 
       <!-- Upcoming Classes -->
       <section class="section">

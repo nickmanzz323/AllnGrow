@@ -359,6 +359,11 @@
       color: #fbbf24;
     }
 
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
     @media (max-width: 768px) {
       .course-content {
         grid-template-columns: 1fr;
@@ -553,6 +558,65 @@
                 </p>
               @endif
             </div>
+
+            <!-- Scheduled Sessions -->
+            @if($course->has_live_sessions && isset($course->sessions) && $course->sessions->count() > 0)
+              <div class="course-section">
+                <h3><i class="fas fa-calendar-alt"></i> Jadwal Session</h3>
+                <p style="color: #a3a3a3; font-size: 0.9rem; margin-bottom: 1rem;">
+                  Berikut adalah jadwal pertemuan untuk course ini
+                </p>
+
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                  @foreach($course->sessions as $index => $session)
+                    <div style="background: #1a1a1a; border: 1px solid #262626; border-radius: 8px; padding: 1rem;">
+                      <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.75rem;">
+                        <div style="flex: 1;">
+                          <div style="font-weight: 600; font-size: 0.95rem; margin-bottom: 0.25rem; color: #fff;">
+                            {{ $index + 1 }}. {{ $session->title }}
+                          </div>
+                          @if($session->description)
+                            <p style="font-size: 0.8rem; color: #a3a3a3; margin: 0;">{{ $session->description }}</p>
+                          @endif
+                        </div>
+                        @if($session->is_upcoming)
+                          <span style="background: #1e3a5f; color: #60a5fa; padding: 0.25rem 0.75rem; border-radius: 6px; font-size: 0.7rem; font-weight: 600; white-space: nowrap;">
+                            <i class="fas fa-clock"></i> Soon
+                          </span>
+                        @elseif($session->is_ongoing)
+                          <span style="background: #065f46; color: #4ade80; padding: 0.25rem 0.75rem; border-radius: 6px; font-size: 0.7rem; font-weight: 600; white-space: nowrap; animation: pulse 2s infinite;">
+                            <i class="fas fa-circle" style="font-size: 0.5rem;"></i> Live Now
+                          </span>
+                        @else
+                          <span style="background: #3f3f46; color: #a3a3a3; padding: 0.25rem 0.75rem; border-radius: 6px; font-size: 0.7rem; font-weight: 600; white-space: nowrap;">
+                            <i class="fas fa-check"></i> Passed
+                          </span>
+                        @endif
+                      </div>
+
+                      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; font-size: 0.85rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: #d4d4d4;">
+                          <i class="fas fa-calendar" style="color: #60a5fa; width: 16px;"></i>
+                          <span>{{ $session->formatted_date }}</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: #d4d4d4;">
+                          <i class="fas fa-clock" style="color: #60a5fa; width: 16px;"></i>
+                          <span>{{ $session->formatted_time }}</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: #d4d4d4;">
+                          <i class="fas fa-hourglass-half" style="color: #60a5fa; width: 16px;"></i>
+                          <span>{{ $session->formatted_duration }}</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; color: #d4d4d4;">
+                          <i class="fas {{ $session->session_type === 'online' ? 'fa-video' : 'fa-map-marker-alt' }}" style="color: #60a5fa; width: 16px;"></i>
+                          <span>{{ ucfirst($session->session_type) }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  @endforeach
+                </div>
+              </div>
+            @endif
 
             <!-- Curriculum -->
             <div class="course-section">

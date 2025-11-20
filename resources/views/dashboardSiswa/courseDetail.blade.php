@@ -323,6 +323,119 @@
         </div>
       </div>
 
+      <!-- Upcoming Sessions -->
+      @if($course->has_live_sessions && isset($course->sessions) && $course->sessions->count() > 0)
+        <div style="background: #0d0d0d; border: 1px solid #262626; border-radius: 12px; padding: 1.5rem; margin-bottom: 2rem;">
+          <h2 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fas fa-calendar-alt" style="color: #3b82f6;"></i> Scheduled Sessions
+          </h2>
+
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            @php
+              $upcomingSessions = $course->sessions->filter(function($session) {
+                return $session->is_upcoming || $session->is_ongoing;
+              });
+            @endphp
+
+            @if($upcomingSessions->count() > 0)
+              @foreach($upcomingSessions as $session)
+                <div style="background: {{ $session->is_ongoing ? '#052e16' : '#1a1a1a' }}; border: 1px solid {{ $session->is_ongoing ? '#166534' : '#262626' }}; border-radius: 10px; padding: 1.25rem;">
+                  <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                    <div style="flex: 1;">
+                      <div style="font-weight: 600; font-size: 1rem; margin-bottom: 0.25rem; color: #fff;">
+                        {{ $session->title }}
+                      </div>
+                      @if($session->description)
+                        <p style="font-size: 0.85rem; color: #a3a3a3; margin: 0;">{{ $session->description }}</p>
+                      @endif
+                    </div>
+                    @if($session->is_ongoing)
+                      <span style="background: #4ade80; color: #000; padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700; white-space: nowrap; animation: pulse 2s infinite;">
+                        <i class="fas fa-circle" style="font-size: 0.5rem;"></i> LIVE NOW
+                      </span>
+                    @else
+                      <span style="background: #1e3a5f; color: #60a5fa; padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; white-space: nowrap;">
+                        <i class="fas fa-clock"></i> Soon
+                      </span>
+                    @endif
+                  </div>
+
+                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; color: #d4d4d4; font-size: 0.9rem;">
+                      <i class="fas fa-calendar" style="color: #3b82f6; width: 18px;"></i>
+                      <span>{{ $session->formatted_date }}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; color: #d4d4d4; font-size: 0.9rem;">
+                      <i class="fas fa-clock" style="color: #3b82f6; width: 18px;"></i>
+                      <span>{{ $session->formatted_time }}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; color: #d4d4d4; font-size: 0.9rem;">
+                      <i class="fas fa-hourglass-half" style="color: #3b82f6; width: 18px;"></i>
+                      <span>{{ $session->formatted_duration }}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; color: #d4d4d4; font-size: 0.9rem;">
+                      <i class="fas {{ $session->session_type === 'online' ? 'fa-video' : 'fa-map-marker-alt' }}" style="color: #3b82f6; width: 18px;"></i>
+                      <span>{{ ucfirst($session->session_type) }}</span>
+                    </div>
+                  </div>
+
+                  @if($session->session_type === 'online' && $session->meeting_link)
+                    <a href="{{ $session->meeting_link }}" target="_blank" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.25rem; background: #3b82f6; color: #fff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.9rem; transition: all 0.2s;">
+                      <i class="fas fa-external-link-alt"></i> Join Meeting
+                    </a>
+                  @elseif($session->session_type === 'offline' && $course->location_name)
+                    <div style="background: #111; border: 1px solid #262626; border-radius: 6px; padding: 0.75rem; margin-top: 0.5rem;">
+                      <p style="font-size: 0.85rem; color: #4ade80; font-weight: 600; margin: 0 0 0.25rem 0;">
+                        <i class="fas fa-map-marker-alt"></i> {{ $course->location_name }}
+                      </p>
+                      @if($course->location_address)
+                        <p style="font-size: 0.8rem; color: #a3a3a3; margin: 0;">
+                          {{ $course->location_address }}
+                        </p>
+                      @endif
+                    </div>
+                  @endif
+                </div>
+              @endforeach
+
+              @php
+                $completedSessions = $course->sessions->filter(function($session) {
+                  return !$session->is_upcoming && !$session->is_ongoing;
+                });
+              @endphp
+
+              @if($completedSessions->count() > 0)
+                <details style="background: #111; border: 1px solid #262626; border-radius: 10px; padding: 1rem;">
+                  <summary style="cursor: pointer; font-weight: 600; color: #a3a3a3; list-style: none; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-history"></i> View Past Sessions ({{ $completedSessions->count() }})
+                  </summary>
+                  <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #262626;">
+                    @foreach($completedSessions as $session)
+                      <div style="font-size: 0.9rem; color: #737373; display: flex; justify-content: space-between;">
+                        <span>{{ $session->title }}</span>
+                        <span style="color: #525252;">{{ $session->formatted_date }}</span>
+                      </div>
+                    @endforeach
+                  </div>
+                </details>
+              @endif
+            @else
+              <div style="text-align: center; padding: 2rem; color: #737373;">
+                <i class="fas fa-calendar-times" style="font-size: 2.5rem; margin-bottom: 0.75rem; opacity: 0.3;"></i>
+                <p style="margin: 0;">All sessions have been completed</p>
+              </div>
+            @endif
+          </div>
+        </div>
+
+        <style>
+          @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+          }
+        </style>
+      @endif
+
       <!-- Course Curriculum -->
       <div class="curriculum-section">
         <h2 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1.5rem;">

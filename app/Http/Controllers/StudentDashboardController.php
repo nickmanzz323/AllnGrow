@@ -234,7 +234,11 @@ class StudentDashboardController extends Controller
             // Load course with all related data
             $course = Course::with(['instructor', 'category', 'chapters.lessons' => function($query) {
                 $query->orderBy('order', 'asc');
-            }])->findOrFail($courseId);
+            }])
+            ->with(['sessions' => function($query) {
+                $query->orderBy('start_time', 'asc');
+            }])
+            ->findOrFail($courseId);
             
             // Lazy load instructor detail if exists
             if ($course->instructor) {
@@ -526,6 +530,9 @@ class StudentDashboardController extends Controller
             // Get enrolled courses with paid status
             $enrolledCourses = $student->courses()
                 ->with(['instructor.detail', 'chapters.lessons'])
+                ->with(['sessions' => function($query) {
+                    $query->orderBy('start_time', 'asc');
+                }])
                 ->wherePivot('payment_status', 'paid')
                 ->withPivot(['completion', 'completed', 'payment_status', 'created_at'])
                 ->get();
@@ -552,6 +559,9 @@ class StudentDashboardController extends Controller
             // Get course with all details
             $course = Course::where('status', 'approved')
                 ->with(['category', 'instructor.detail', 'chapters.lessons', 'students', 'ratings'])
+                ->with(['sessions' => function($query) {
+                    $query->orderBy('start_time', 'asc');
+                }])
                 ->withCount(['chapters', 'lessons', 'students'])
                 ->findOrFail($courseId);
 
