@@ -54,7 +54,6 @@
       @endif
 
       <form method="POST" action="{{ route('register.instructor.step2') }}" enctype="multipart/form-data">
-      <form method="POST" action="{{ route('register.instructor.step2') }}" enctype="multipart/form-data">
         @csrf
         
         <!-- Profile Photo Upload -->
@@ -133,7 +132,6 @@
 
         <div class="form-actions">
           <button type="submit" class="btn primary">Complete Registration</button>
-          <a href="{{ route('instructor.login') }}" class="btn secondary">Skip for Now</a>
         </div>
       </form>
     </div>

@@ -46,7 +46,7 @@ class AdminLoginController extends Controller
 
         Log::warning('Admin login gagal', ['email' => $request->email]);
 
-        return redirect()->back()
+        return redirect()->route('admin.login')
             ->with('error', 'Email atau password salah.')
             ->withInput($request->only('email'));
     }

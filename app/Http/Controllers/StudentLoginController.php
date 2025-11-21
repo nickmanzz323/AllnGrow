@@ -46,7 +46,7 @@ class StudentLoginController extends Controller
 
         Log::warning('Student login gagal', ['email' => $request->email]);
 
-        return redirect()->back()
+        return redirect()->route('student.login')
             ->with('error', 'Email atau password salah.')
             ->withInput($request->only('email'));
     }

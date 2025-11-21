@@ -36,13 +36,13 @@ class InstructorLoginController extends Controller
             $detail = $instructor->detail;
             
             if ($detail && $detail->status === 'rejected') {
-                return redirect()->back()
+                return redirect()->route('instructor.login')
                     ->with('error', 'Akun Anda ditolak. Silakan hubungi administrator.')
                     ->withInput($request->only('email'));
             }
 
             if ($detail && $detail->status === 'pending') {
-                return redirect()->back()
+                return redirect()->route('instructor.login')
                     ->with('error', 'Akun Anda masih dalam proses review. Mohon tunggu persetujuan admin.')
                     ->withInput($request->only('email'));
             }
@@ -61,7 +61,7 @@ class InstructorLoginController extends Controller
 
         Log::warning('Instructor login gagal', ['email' => $request->email]);
 
-        return redirect()->back()
+        return redirect()->route('instructor.login')
             ->with('error', 'Email atau password salah.')
             ->withInput($request->only('email'));
     }
